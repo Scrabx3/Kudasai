@@ -2,9 +2,9 @@ Scriptname Kudasai Hidden
 
 
 
-Function ForceBleedout(Actor subject) global
+Function ForceBleedout(Actor subject, bool animation) global
   subject.SetNoBleedoutRecovery(true)
-  If (!subject.IsBleedingOut())
+  If (animation)
     Debug.SendAnimationEvent(subject, "bleedoutstart")
   EndIf
   If(subject != Game.GetPlayer())

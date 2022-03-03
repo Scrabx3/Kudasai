@@ -1,0 +1,97 @@
+# Genders
+# This list is used to validate different Gender Combinations. If a combination is not listed, the last aggressor  
+# will be removed until only 1 aggressor is left. This does NOT affect who will participate in the assault
+# If this combination is not found either, the request will be considered invalid (the aggressor(s) will be 
+# considered unintrested in the victim)
+# To create a new combination, simply add them to the below list
+# Syntax: Victim<-Aggressor(s)
+# Keys:
+#   * - Wildcard, represents any Gender. Only checked if there are no other matching Combinations
+#   M - Male
+#   F - Female
+#   H - Futa
+#   C - Creature
+#   Z - F. Creature
+# Priority: M > F > H > C > Z
+# Examples:
+#   F<-M: true    => A male is allowed to assault a female
+#   F<-M: false   => A male is NOT allowed to assault a female
+#   F<-MM: true   => Two males are allowed to assault a female (including when F<-M is not allowed or not present)
+#   M<-MH: true   => A male and a Futa are allowed to assault a male
+#   M<-HM: true   => Invalid, because males have ahigher priority, they must be listed first. This will never be read
+Combinations:
+  # Male
+  M<-*: true
+  M<-C: false
+  M<-**: false # overrides M<-*, thus only 1v1 Assaults are allowed for male victims, 1v2+ assaults fall back to this
+  # Female
+  F<-*: true
+  # Futa
+  H<-*: true
+  H<-H: false
+  H<-C: false
+  # Creature
+  C<-*: false
+  # F. Creature
+  Z<-*: false
+
+# Creatures
+# Creatures are divided & grouped based on their individual body data, rather than the race itself. This means that similar
+# Creatures will be considered equal. To customize this section, you can eiher disable the entire Racegroup (by commenting out or
+# deleting the entry in the "RaceGroup" section) or add specific Races to the Exceptions Section
+# Exceptions target individual Races, independend of their RaceGroup. An Exception can be including or excluding, they do not need
+# to be listed in a RaceGroup. This allows you to exclude individual Races from a Racegroup without disabling the entire Racegroup
+# (e.g. Wolves & Foxes share 1 Racegroup, you can use Exception to exclude Foxes specifically) or add custom Races from other mods
+# Adding an Exception:
+#   Open the mod containing the race you want to exclude in the Creation Kit (or xEdit) and search for the race's EditorID. Add
+#   this ID to the exceptions list (Note: Exceptions use partial matching, thus a unique substring will suffice). Then state if
+#   the Exception is including or excluding, by adding either ": true" (including) or ": false" (excluding) behind the ID
+Exceptions:
+  DLC2BoarRace: true # Boars use the default (human) race group, thus aren't listed below
+  dlc2AshGuardianRace: true
+  Skeleton: true
+  FoxRace: false
+  WolfRace: true
+  DeathHound: true
+RaceGroup:
+  - 0x800691C # Flame Atronach
+  - 0x500B2E9 # Frost Atronach
+  - 0x600B7c9 # Storm Atronach
+  - 0x80068FC # Bears
+  - 0x4028537 # DLC2 Lurker
+  - 0x0059060 # Chaurs (+ Reaper)
+  - 0x2005205 # Chaurus Hunter
+  - 0x00A919E # Chicken
+  - 0x004E782 # Cow
+  - 0x0076B30 # Deer
+  - 0x401BC4A # Dragon
+  - 0x401DCBC # DLC2 Seeker
+  - 0x401FEB9 # DLC2 Netch
+  - 0x4017F53 # DLC2 Riekling
+  - 0x401E2A3 # DLC2 Riekling (Mounted)
+  - 0x4019AD2 # DLC2 Ash Hopper
+  - 0x004FBF5 # Dog, Husky, Death Hound, Wolf, Fox
+  - 0x0043592 # Dragon Priest
+  - 0x0048C13 # Draugr, Skeletons, Ash Guardians, DLC1 Keeper
+  - 0x402B018 # DLC2 Dwarven Ballista
+  - 0x007874D # Dwarven Sphere
+  - 0x0081C7A # Dwarven Spider
+  - 0x00800EC # Dwarven Centurion
+  - 0x005DDA2 # Falmer
+  - 0x0017929 # Frostbite Spider (Common, Large, Giant)
+  - 0x200A2C7 # DLC1 Gargoyle
+  - 0x00517AB # Giant, Frost Giant
+  - 0x006F276 # Goat
+  - 0x0097242 # Hagraven
+  - 0x006DC9C # Hare
+  - 0x008CA6B # Horker
+  - 0x0060716 # Horse
+  - 0x00538F9 # Ice Wrath, Magic Anomaly (Winterhold College), DLC2 Spectral Dragon (Wyverns)
+  - 0x0059255 # Mammoth
+  - 0x00BA549 # Mudcrab
+  - 0x0020E26 # Sabrecat
+  - 0x00264EF # Skeever
+  - 0x0040C6A # Slaughterfish
+  - 0x00A0420 # Spriggan
+  - 0x0092C93 # Troll
+  - 0x00CDD85 # Werewolf, Werebear

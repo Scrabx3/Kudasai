@@ -18,6 +18,10 @@ int Property iNotifyColorChoice Auto Hidden
 bool Property bMidCombatAssault Auto Hidden
 bool Property bPostCombatAssault Auto Hidden
 
+; ----------- Defeat
+
+float Property fLethalPlayer = 100.0 Auto Hidden
+float Property fLethalNPC = 100.0 Auto Hidden
 
 ; ----------- NSFW
 
