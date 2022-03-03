@@ -37,8 +37,8 @@ Combinations:
 
 # Creatures
 # Creatures are divided & grouped based on their individual body data, rather than the race itself. This means that similar
-# Creatures will be considered equal. To customize this section, you can eiher disable the entire Racegroup (by commenting out or
-# deleting the entry in the "RaceGroup" section) or add specific Races to the Exceptions Section
+# Creatures will be considered equal. To customize this section, you can eiher disable the entire Racegroup or add specific 
+# Races to the Exceptions Section
 # Exceptions target individual Races, independend of their RaceGroup. An Exception can be including or excluding, they do not need
 # to be listed in a RaceGroup. This allows you to exclude individual Races from a Racegroup without disabling the entire Racegroup
 # (e.g. Wolves & Foxes share 1 Racegroup, you can use Exception to exclude Foxes specifically) or add custom Races from other mods
@@ -54,44 +54,44 @@ Exceptions:
   WolfRace: true
   DeathHound: true
 RaceGroup:
-  - 0x800691C # Flame Atronach
-  - 0x500B2E9 # Frost Atronach
-  - 0x600B7c9 # Storm Atronach
-  - 0x80068FC # Bears
-  - 0x4028537 # DLC2 Lurker
-  - 0x0059060 # Chaurs (+ Reaper)
-  - 0x2005205 # Chaurus Hunter
-  - 0x00A919E # Chicken
-  - 0x004E782 # Cow
-  - 0x0076B30 # Deer
-  - 0x401BC4A # Dragon
-  - 0x401DCBC # DLC2 Seeker
-  - 0x401FEB9 # DLC2 Netch
-  - 0x4017F53 # DLC2 Riekling
-  - 0x401E2A3 # DLC2 Riekling (Mounted)
-  - 0x4019AD2 # DLC2 Ash Hopper
-  - 0x004FBF5 # Dog, Husky, Death Hound, Wolf, Fox
-  - 0x0043592 # Dragon Priest
-  - 0x0048C13 # Draugr, Skeletons, Ash Guardians, DLC1 Keeper
-  - 0x402B018 # DLC2 Dwarven Ballista
-  - 0x007874D # Dwarven Sphere
-  - 0x0081C7A # Dwarven Spider
-  - 0x00800EC # Dwarven Centurion
-  - 0x005DDA2 # Falmer
-  - 0x0017929 # Frostbite Spider (Common, Large, Giant)
-  - 0x200A2C7 # DLC1 Gargoyle
-  - 0x00517AB # Giant, Frost Giant
-  - 0x006F276 # Goat
-  - 0x0097242 # Hagraven
-  - 0x006DC9C # Hare
-  - 0x008CA6B # Horker
-  - 0x0060716 # Horse
-  - 0x00538F9 # Ice Wrath, Magic Anomaly (Winterhold College), DLC2 Spectral Dragon (Wyverns)
-  - 0x0059255 # Mammoth
-  - 0x00BA549 # Mudcrab
-  - 0x0020E26 # Sabrecat
-  - 0x00264EF # Skeever
-  - 0x0040C6A # Slaughterfish
-  - 0x00A0420 # Spriggan
-  - 0x0092C93 # Troll
-  - 0x00CDD85 # Werewolf, Werebear
+  0x0800691C: true # Flame Atronach
+  0x0500B2E9: true # Frost Atronach
+  0x0600B7c9: true # Storm Atronach
+  0x080068FC: true # Bears
+  0x04028537: true # DLC2 Lurker
+  0x00059060: true # Chaurs (+ Reaper)
+  0x02005205: true # Chaurus Hunter
+  0x000A919E: true # Chicken
+  0x0004E782: true # Cow
+  0x00076B30: true # Deer
+  0x0401BC4A: true # Dragon
+  0x0401DCBC: true # DLC2 Seeker
+  0x0401FEB9: true # DLC2 Netch
+  0x04017F53: true # DLC2 Riekling
+  0x0401E2A3: true # DLC2 Riekling (Mounted)
+  0x04019AD2: true # DLC2 Ash Hopper
+  0x0004FBF5: true # Dog, Husky, Death Hound, Wolf, Fox
+  0x00043592: true # Dragon Priest
+  0x00048C13: true # Draugr, Skeletons, Ash Guardians, DLC1 Keeper
+  0x0402B018: true # DLC2 Dwarven Ballista
+  0x0007874D: true # Dwarven Sphere
+  0x00081C7A: true # Dwarven Spider
+  0x000800EC: true # Dwarven Centurion
+  0x0005DDA2: true # Falmer
+  0x00017929: true # Frostbite Spider (Common, Large, Giant)
+  0x0200A2C7: true # DLC1 Gargoyle
+  0x000517AB: true # Giant, Frost Giant
+  0x0006F276: true # Goat
+  0x00097242: true # Hagraven
+  0x0006DC9C: true # Hare
+  0x0008CA6B: true # Horker
+  0x00060716: true # Horse
+  0x000538F9: true # Ice Wrath, Magic Anomaly (Winterhold College), DLC2 Spectral Dragon (Wyverns)
+  0x00059255: true # Mammoth
+  0x000BA549: true # Mudcrab
+  0x00020E26: true # Sabrecat
+  0x000264EF: true # Skeever
+  0x00040C6A: true # Slaughterfish
+  0x000A0420: true # Spriggan
+  0x00092C93: true # Troll
+  0x000CDD85: true # Werewolf, Werebear

@@ -32,25 +32,30 @@ int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool che
       res = KudasaiAnimationOStim.CreateAnimation(MCM, victim, partners, partners[0])
     EndIf
   EndIf
-  int handle
   If (res == -1)
     Debug.Trace("[Kudasai] <CreateAssault> Animation = -1", 1)
-    handle = ModEvent.Create("KCreatureAssaultFailure_" + hook)
+    ; If call from .dll failed, force the victim into Bleedout & unpacify the aggressors
+    If (StringUtil.Find(hook, "native") > -1)
+      Kudasai.DefeatActor(victim)
+      int i = 0
+      While(i < partners.Length)
+        KudasaiInternal.SetDamageImmune(partners[i], false)
+        Kudasai.UndoPacify(partners[i])
+        i += 1
+      EndWhile
+    EndIf
   Else
     Debug.Trace("[Kudasai] <CreateAssault> Animation = " + res, 0)
-    handle = ModEvent.Create("KCreatureAssaultSuccess_" + hook)
-  EndIf
-  ModEvent.PushForm(handle, victim)
-  int i = 0
-  While(i < 4)
-    If(partners.length < i)
-      ModEvent.PushForm(handle, partners[i])
-    Else
-      ModEvent.PushForm(handle, none)
+    ; If call from .dll & OStim call, remove damage negation here (otherwise do it in the SL calls)
+    If (res > 15 && StringUtil.Find(hook, "native") > -1)
+      KudasaiInternal.SetDamageImmune(victim, false)
+      int i = 0
+      While(i < partners.Length)
+        KudasaiInternal.SetDamageImmune(partners[i], false)
+        i += 1
+      EndWhile
     EndIf
-    i += 1
-  EndWhile
-  ModEvent.Send(handle)
+  EndIf
   return res
 EndFunction
 

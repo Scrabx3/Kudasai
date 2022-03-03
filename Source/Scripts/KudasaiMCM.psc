@@ -60,7 +60,7 @@ Event OnConfigInit()
   Pages[0] = "$YK_General"
   Pages[1] = "$YK_Combat"
 
-  SLTags = new String[5]
+  SLTags = new String[6]
 EndEvent
 
 Event OnPageReset(string page)

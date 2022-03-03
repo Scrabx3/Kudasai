@@ -12,6 +12,7 @@ Keyword Property ActorTypeNPC Auto
 Faction Property GuardDialogueFaction Auto
 Race Property ElderRace Auto
 ImageSpaceModifier Property FadeToBlackImod Auto
+ImageSpaceModifier Property FadeToBlackHoldImod Auto
 ImageSpaceModifier Property FadeToBlackBackImod Auto
 FormList Property CrimeFactions Auto
 MiscObject Property Gold001 Auto
@@ -57,8 +58,6 @@ Event OnInit()
     Stop()
     return
   EndIf
-  Debug.Trace("[Kudasai] <Surrender> Pacifying Player")
-  Kudasai.DefeatActor(PlayerRef, false)
 
   Hostiles = PapyrusUtil.ActorArray(Enemies.Length)
   Creatures = PapyrusUtil.ActorArray(Enemies.Length)
@@ -115,7 +114,16 @@ Event OnInit()
           EndIf
         EndIf
       Else ; Creature
-        If (!Creatures[0] && Kudasai.ValidCreature(enemy) || Creatures[0].GetRace() == enemy.GetRace())
+        If (Creatures[0] == none)
+          Debug.Trace("[Kudasai] First Creature")
+          If (Kudasai.ValidCreature(enemy))
+            Debug.Trace("[Kudasai] Race is valid, adding")
+            Creatures[ci] = enemy
+            ci += 1
+          Else
+            Debug.Trace("[Kudasai] Race is invalid, skipping")
+          EndIf
+        ElseIf (Creatures[0].GetRace() == enemy.GetRace())
           Creatures[ci] = enemy
           ci += 1
         EndIf
@@ -123,26 +131,27 @@ Event OnInit()
     EndIf
     i += 1
   EndWhile
-  Debug.Trace("[Kudasai] Hostiles = " + Hostiles)
+  Debug.Trace("[Kudasai] Hostiles = " + Hostiles + " Creatures = " + Creatures)
   If (Hostiles[0] == none && Creatures[0] == none)
     ERRNoActors.Show()
     Debug.Trace("[Kudasai] No Actors to surrender to")
-    Kudasai.RestoreActor(PlayerRef, false)
     Stop()
     return
   EndIf
+  Debug.Trace("[Kudasai] <Surrender> Pacifying Player")
+  Kudasai.PacifyActor(PlayerRef)
 
-  ; Game.SetPlayerAIDriven(true)
+  Game.SetPlayerAIDriven(true)
   Debug.SendAnimationEvent(PlayerRef, "IdleSurrender")
   ; Debug.SendAnimationEvent(PlayerRef, "KudasaiIdleSurrender")
 
   int n = 0
   While(n < Hostiles.Length)
     If (Hostiles[n])
-      Kudasai.DefeatActor(Hostiles[n], false)
+      Kudasai.PacifyActor(Hostiles[n])
     EndIf
     If (Creatures[n])
-      Kudasai.DefeatActor(Creatures[n], false)
+      Kudasai.PacifyActor(Creatures[n])
     EndIf
     n += 1
   EndWhile
@@ -150,6 +159,7 @@ Event OnInit()
   Creatures = PapyrusUtil.RemoveActor(Creatures, none)
 
   Utility.Wait(0.7)
+  Game.SetPlayerAIDriven(false)
   
   ; At this point, there is at least 1 Valid Hostile and all Hostiles are either NPC or Creatures of the same Race
   If (!primus)
@@ -171,6 +181,9 @@ Event OnInit()
     Else ; ----------------------------------- Ignore
       Debug.Trace("[Kudasai] Creature -> Ignored")
       CrtIgnore.Show()
+      SurrenderEnd()
+      Stop()
+      return
     EndIf
   Else
     DialogueAlias.ForceRefTo(primus)
@@ -182,7 +195,6 @@ Event OnInit()
   EndIf
   Debug.Trace("[Kudasai] Surrender Setup = completed")
   RegisterForSingleUpdate(0.5) ; cant start Scenes in OnInit..
-  ; Game.SetPlayerAIDriven(false)
   RegisterForModEvent("HookAnimationEnd_KSurrender", "SLSceneEnd")
   RegisterForModEvent("ostim_end", "OStimCreatureEnd")
 EndEvent
@@ -193,26 +205,28 @@ EndEvent
 Function SurrenderEnd()
   Debug.Trace("[Kudasai] SurrenderQ End Hostiles = " + Hostiles)
   Debug.Trace("[Kudasai] SurrenderQ End Creatures = " + Creatures)
+  Kudasai.UndoPacify(Game.GetPlayer())
   int i = 0
   While(i < Hostiles.Length)
     If (Hostiles[i])
-      Kudasai.RestoreActor(Hostiles[i], false)
+      Kudasai.UndoPacify(Hostiles[i])
       TimeoutSpell.Cast(Hostiles[i])
       If (Hostiles[i].GetLeveledActorBase().IsUnique())
         KnowsPlayer.AddForm(Hostiles[i])
       EndIf
+      Hostiles[i].EvaluatePackage()
     EndIf
     i += 1
   EndWhile
   int n = 0
   While(n < Creatures.Length)
     If (Creatures[n])
-      Kudasai.RestoreActor(Creatures[n], false)
+      Kudasai.UndoPacify(Creatures[n])
       TimeoutSpell.Cast(Creatures[n])
+      Creatures[n].EvaluatePackage()
     EndIf
     n += 1
   EndWhile
-  Kudasai.RestoreActor(Game.GetPlayer(), false)
 EndFunction
 
 bool Function ValidGuard(Actor subject)
@@ -230,7 +244,7 @@ bool Function ValidGuard(Actor subject)
 EndFunction
 
 Function SellOut()
-  SetStage(75)
+  SetStage(100)
   FadeToBlackImod.Apply()
   Utility.Wait(1.8)
   ; If(MCM.SimpleSlavery != 0)
@@ -243,10 +257,10 @@ Function SellOut()
     cf.SendPlayerToJail()
   ; EndIf
   FadeToBlackImod.PopTo(FadeToBlackBackImod)
-  Stop()
 EndFunction
 
 Function Imprison(Faction crimefaction)
+  SetStage(100)
   If (!crimefaction)
     crimefaction = CrimeFactions.GetAt(Utility.RandomInt(0, CrimeFactions.GetSize() - 1)) as Faction
   EndIf
@@ -261,23 +275,36 @@ EndFunction
 
 Function StripAndHandOver(Actor tostrip, Actor handover)
   Armor[] wornz = Kudasai.GetWornArmor(tostrip)
+  Debug.Trace("<StripAndHandOver> Subject = " + tostrip + " Worn Armor = " + wornz)
+  ; No need to check for DD, they use SLNoStrip
+  Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
+  Keyword ToysToy = Keyword.GetKeyword("ToysToy")
   int i = 0
   While (i < wornz.length)
-    tostrip.UnequipItem(wornz[i])
-    tostrip.RemoveItem(wornz[i], 1, true, handover)
+    If ((!SexLabNoStrip || !wornz[i].HasKeyword(SexLabNoStrip)) && (!ToysToy || !wornz[i].HasKeyword(ToysToy)))
+      tostrip.UnequipItem(wornz[i], abSilent = true)
+      tostrip.RemoveItem(wornz[i], 1, true, handover)
+    EndIf
+    i += 1
   EndWhile
 EndFunction
 
 Function StripAndHandOverAll(Actor handover)
   Actor target = Game.GetPlayer()
+  Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
+  Keyword ToysToy = Keyword.GetKeyword("ToysToy")
   int n = Followers.Length
   While(true)
     If (target)
       Armor[] wornz = Kudasai.GetWornArmor(target)
+      Debug.Trace("<StripAndHandOver> Subject = " + target + " Worn Armor = " + wornz)
       int i = 0
       While (i < wornz.length)
-        target.UnequipItem(wornz[i])
-        target.RemoveItem(wornz[i], 1, true, handover)
+        If ((!SexLabNoStrip || !wornz[i].HasKeyword(SexLabNoStrip)) && (!ToysToy || !wornz[i].HasKeyword(ToysToy)))
+          target.UnequipItem(wornz[i], abSilent = true)
+          target.RemoveItem(wornz[i], 1, true, handover)
+        EndIf
+        i += 1
       EndWhile
     EndIf
     If (n == 0)
@@ -383,7 +410,7 @@ Function StartSceneCustom(Actor victim, Actor secundus, String tags)
   EndIf
 EndFunction
 
-Event SLSceneEnd(bool hasPlayer, int tid)
+Event SLSceneEnd(int tid, bool hasPlayer)
   SetStage(100)
 EndEvent
 Event OStimEnd(string eventName, string strArg, float numArg, Form sender)

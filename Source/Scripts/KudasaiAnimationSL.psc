@@ -2,19 +2,19 @@ Scriptname KudasaiAnimationSL Hidden
 
 ; Expecting this to never be called with more than 5 Actors in array. Array may be unsorted
 ; Assume the victim to never be a creature
-int Function CreateAnimation(KudasaiMCM MCM, Actor[] array, Actor victim, String hook) global
-  Debug.Trace("[Kudasai] SL Scene called with Actors = " + array + " ;; Victim = " + victim + " >> hook = " + hook)
-  If(array.length < 2)
+int Function CreateAnimation(KudasaiMCM MCM, Actor[] positions, Actor victim, String hook) global
+  Debug.Trace("[Kudasai] SL Scene called with Actors = " + positions + " ;; Victim = " + victim + " >> hook = " + hook)
+  If(positions.length < 2)
     Debug.Trace("[Kudasai] Not enough Actors", 1)
     return -1
   EndIf
-  int v = ValidateArray(array)
+  int v = ValidateArray(positions)
   If(v > -1)
-    Debug.Trace("[Kudasai] Actor at " + v + "(" + array[v] + ") is invalid, aborting", 2)
+    Debug.Trace("[Kudasai] Actor at " + v + "(" + positions[v] + ") is invalid, aborting", 2)
     return -1
   EndIf
   SexLabFramework SL = SexLabUtil.GetAPI()
-  Actor[] positions = SL.SortActorsByAnimation(array)
+  SortActors(positions)
   int vpos = positions.find(victim)
   int[] genders = Utility.CreateIntArray(positions.length)
   int i = 0
@@ -25,9 +25,10 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor[] array, Actor victim, String
   sslBaseAnimation[] anims
 	bool breakLoop = false
 	While(!breakLoop)
+    bool creatures = genders.find(3) > -1 || genders.find(4) > -1
     int n
-    If(positions.length == 2 && genders.find(3) == -1 && genders.find(4) == -1)
-	    int males = genders.find(0)
+    If(positions.length == 2 && !creatures)
+	    int males = SL.MaleCount(positions)
 	    If(genders[0] == 1 && males == 1) ; Female first & Male Partner
         n = 0
 	    ElseIf(males == 2)
@@ -45,11 +46,16 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor[] array, Actor victim, String
       EndIf
 	  EndIf
     String[] tags = GetTags(MCM.SLTags[n])
-    anims = SL.GetAnimationsByTags(positions.length, tags[0], tags[1])
+    If (creatures)
+      anims = SL.GetCreatureAnimationsByRaceTags(positions.Length, positions[positions.Length - 1].GetRace(), tags[0], tags[1])
+    Else
+      anims = SL.GetAnimationsByTags(positions.length, tags[0], tags[1])
+    EndIf
 		If(anims.Length)
+      Debug.Trace("[Kudasai] Found Animations = " + anims.Length)
 			breakLoop = true
 		Else
-      If(positions.length < 3)
+      If(positions.length <= 2) ; Didnt find an animation with 2 or less actors
         Debug.Trace("[Kudasai] No Animations found", 2)
         return -1
       EndIf
@@ -59,11 +65,10 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor[] array, Actor victim, String
         j -= 1
         If(positions[j] != victim)
           positions = PapyrusUtil.RemoveActor(positions, positions[j])
-          ; might wanna create my own removeat() function here..
           genders = Utility.CreateIntArray(positions.length)
           int k = 0
           While(k < genders.length)
-            genders[i] = SL.GetGender(positions[i])
+            genders[k] = SL.GetGender(positions[k])
             k += 1
           EndWhile
         EndIf
@@ -155,4 +160,43 @@ Function FilterArousal(Actor[] subjects) global
     EndIf
     i += 1
   EndWhile
+EndFunction
+
+Function SortActors(Actor[] subjects) global
+  SexLabFramework SL = SexLabUtil.GetAPI()
+  int i = 1
+  While(i < subjects.Length)
+    Actor sortthis = subjects[i]
+    int gender = SL.GetGender(sortthis)
+    int n = i - 1
+    While(n != -1 && IsLesserGender(gender, SL.GetGender(subjects[n])))
+      subjects[n + 1] = subjects[n]
+      n -= 1
+    EndWhile
+    subjects[n + 1] = sortthis
+    i += 1
+  EndWhile
+EndFunction
+
+Actor[] Function GetActorsInScene(int tid) global
+  SexLabFramework SL = SexLabUtil.GetAPI()
+  sslThreadController Controller = SL.GetController(tid)
+  return Controller.Positions
+EndFunction
+
+Actor Function GetVictimInScene(int tid) global
+  SexLabFramework SL = SexLabUtil.GetAPI()
+  sslThreadController Controller = SL.GetController(tid)
+  return Controller.VictimRef
+EndFunction
+
+; returns true if prim < sec
+; Male = 0, Female = 1, Crt = 2, FCrt = 3
+; Female > Male > Creature > FCrt
+bool Function IsLesserGender(int prim, int sec) global
+  If (prim == 1)
+    return true
+  Else
+    return prim < sec
+  EndIf
 EndFunction

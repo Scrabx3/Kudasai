@@ -1,5 +1,7 @@
 Scriptname KudasaiInternal Hidden
 
+Function SetDamageImmune(Actor subject, bool immune) global native
+
 KudasaiMCM Function GetMCM() global
   return Game.GetFormFromFile(0x7853F1, "YKudasai.esp") as KudasaiMCM
 EndFunction
@@ -21,16 +23,17 @@ int Function GetFromWeight(int[] weights) global
   EndWhile
   int this = Utility.RandomInt(1, all)
   int limit = 0
-  int res = 0
+  int n = 0
   While(limit < this)
-    limit += weights[i]
-    res += 1
+    limit += weights[n]
+    n += 1
   EndWhile
-  return res
+  return n
 EndFunction
 
-Function ForceBleedout(Actor subject) global
+Function FinalizeDefeat(Actor subject) global
   If (!subject.IsBleedingOut())
+    Debug.Trace("[Kudasai] Forcing Bleedout...")
     Debug.SendAnimationEvent(subject, "bleedoutstart")
   EndIf
   If(subject != Game.GetPlayer())
@@ -40,7 +43,7 @@ Function ForceBleedout(Actor subject) global
   EndIf
 EndFunction
 
-Function ClearBleedout(Actor subject) global
+Function FinalizeRescue(Actor subject) global
   If (subject != Game.GetPlayer())
     Package p = Game.GetFormFromFile(0x7802E8, "YKudasai.esp") as Package
     ActorUtil.RemovePackageOverride(subject, p)
