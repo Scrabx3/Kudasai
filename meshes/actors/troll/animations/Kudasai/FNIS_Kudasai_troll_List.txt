@@ -1,0 +1,2 @@
+b KudasaiTrollStruggle_A2_Start TrollStruggle_A2_Start.hkx 
+b -a KudasaiTrollStruggle_A2_Stop TrollStruggle_A2_Stop.hkx

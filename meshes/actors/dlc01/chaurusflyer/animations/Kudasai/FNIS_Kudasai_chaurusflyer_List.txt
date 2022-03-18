@@ -1,0 +1,2 @@
+b KudasaiChaurusHunterStruggle_A2_Start ChaurusHunterStruggle_A2_Start.hkx 
+b -a KudasaiChaurusHunterStruggle_A2_Stop ChaurusHunterStruggle_A2_Stop.hkx 

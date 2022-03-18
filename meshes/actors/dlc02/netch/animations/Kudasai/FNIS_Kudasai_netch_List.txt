@@ -1,0 +1,3 @@
+b KudasaiNetchStruggle_A2_Start NetchStruggle_A2_Start.hkx 
+b -a KudasaiNetchStruggle_A2_Stop NetchStruggle_A2_Stop.hkx
+'/// NetchStruggle_A2_Stop no motion

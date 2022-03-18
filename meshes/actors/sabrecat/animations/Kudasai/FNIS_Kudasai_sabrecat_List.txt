@@ -1,0 +1,2 @@
+b KudasaiSabrecatStruggle_A2_Start SabrecatStruggle_A2_Start.hkx 
+b -a KudasaiSabrecatStruggle_A2_Stop SabrecatStruggle_A2_Stop.hkx

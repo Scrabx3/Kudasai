@@ -1,0 +1,2 @@
+b KudasaiGiantStruggle_A2_Start GiantStruggle_A2_Start.hkx 
+b -a KudasaiGiantStruggle_A2_Stop GiantStruggle_A2_Stop.hkx

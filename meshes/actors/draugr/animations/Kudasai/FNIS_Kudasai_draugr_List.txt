@@ -1,0 +1,2 @@
+b KudasaiDraugrStruggle_A2_Start DraugrStruggle_A2_Start.hkx 
+b -a KudasaiDraugrStruggle_A2_Stop DraugrStruggle_A2_Stop.hkx

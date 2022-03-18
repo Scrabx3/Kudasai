@@ -1,0 +1,6 @@
+b KudasaiSpiderStruggle_A2_Start SpiderStruggle_A2_Start.hkx 
+b -a KudasaiSpiderStruggle_A2_Stop SpiderStruggle_A2_Stop.hkx
+
+b KudasaiGiantSpiderStruggle_A2_Start GiantSpiderStruggle_A2_Start.hkx 
+b -a KudasaiGiantSpiderStruggle_A2_Stop GiantSpiderStruggle_A2_Stop.hkx
+'/// GiantSpiderStruggle_A2_Stop no motion

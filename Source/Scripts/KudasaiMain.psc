@@ -1,5 +1,7 @@
 Scriptname KudasaiMain extends Quest  
 
+KudasaiMCM Property MCM Auto
+
 Quest Property SurrenderQuest Auto
 Message Property SurrenderQFailure Auto
 

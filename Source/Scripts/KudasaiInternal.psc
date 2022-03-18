@@ -31,23 +31,15 @@ int Function GetFromWeight(int[] weights) global
   return n
 EndFunction
 
+; Called by the .dll, never called for subject == Player
 Function FinalizeDefeat(Actor subject) global
-  If (!subject.IsBleedingOut())
-    Debug.Trace("[Kudasai] Forcing Bleedout...")
-    Debug.SendAnimationEvent(subject, "bleedoutstart")
-  EndIf
-  If(subject != Game.GetPlayer())
-    Package p = Game.GetFormFromFile(0x7802E8, "YKudasai.esp") as Package
-    ActorUtil.AddPackageOverride(subject, p, 100)
-    subject.EvaluatePackage()
-  EndIf
+  Package p = Game.GetFormFromFile(0x7802E8, "YKudasai.esp") as Package
+  ActorUtil.AddPackageOverride(subject, p, 100)
+  subject.EvaluatePackage()
 EndFunction
 
 Function FinalizeRescue(Actor subject) global
-  If (subject != Game.GetPlayer())
-    Package p = Game.GetFormFromFile(0x7802E8, "YKudasai.esp") as Package
-    ActorUtil.RemovePackageOverride(subject, p)
-    subject.EvaluatePackage()
-  EndIf
-  Debug.SendAnimationEvent(subject, "bleedoutstop")
+  Package p = Game.GetFormFromFile(0x7802E8, "YKudasai.esp") as Package
+  ActorUtil.RemovePackageOverride(subject, p)
+  subject.EvaluatePackage()
 EndFunction

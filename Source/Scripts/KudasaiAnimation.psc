@@ -121,3 +121,17 @@ int Function GetAllowedParticipants(int limit) global
   EndIf
   return limit
 EndFunction
+
+bool Function StopAnimating(Actor subject, KudasaiMCM MCM) global
+  If (MCM.fSLWeight > 0.0)
+    If (KudasaiAnimationSL.StopAnimating(subject))
+      return true
+    EndIf
+  EndIf
+  If (MCM.fOStimWeight > 0.0)
+    If (KudasaiAnimationOStim.StopAnimating(subject))
+      return true
+    EndIf
+  EndIf
+  return false
+EndFunction

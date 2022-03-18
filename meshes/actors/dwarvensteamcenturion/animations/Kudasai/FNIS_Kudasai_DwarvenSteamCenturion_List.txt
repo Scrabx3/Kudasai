@@ -1,0 +1,3 @@
+b KudasaiDwarvenCenturionStruggle_A2_Start DwarvenCenturionStruggle_A2_Start.hkx 
+b -a KudasaiDwarvenCenturionStruggle_A2_Stop DwarvenCenturionStruggle_A2_Stop.hkx
+'/// DwarvenCenturionStruggle_A2_Stop no motion

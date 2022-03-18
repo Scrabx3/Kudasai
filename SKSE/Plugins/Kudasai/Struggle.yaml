@@ -1,0 +1,155 @@
+# Struggle animations Kudasai has access to, sorted by RaceKey (@RaceKey.yaml)
+# There should be no reason for you to be here
+Human:
+  Victim: KudasaiHumanStruggleA1S1
+  Aggressor: KudasaiHumanStruggleA2S1
+  # Breakfree:
+  #   Victim: 
+  #   Aggressor: 
+
+AshHopper:
+  Victim:
+  Aggressor: KudasaiAshHopperStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiAshHopperStruggle_A2_Stop
+
+Bear:
+  Victim:
+  Aggressor: KudasaiBearStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiBearStruggle_A2_Stop
+
+Chaurus:
+  Victim:
+  Aggressor: KudasaiChaurusStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiChaurusStruggle_A2_Stop
+
+ChaurusReaper:
+  Victim:
+  Aggressor: KudasaiChaurusReaperStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiChaurusReaperStruggle_A2_Stop
+
+ChaurusHunter:
+  Victim:
+  Aggressor: KudasaiChaurusHunterStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiChaurusHunterStruggle_A2_Stop
+
+Draugr:
+  Victim:
+  Aggressor: KudasaiDraugrStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiDraugrStruggle_A2_Stop
+
+DwarvenCenturion:
+  Victim:
+  Aggressor: KudasaiDwarvenCenturionStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiDwarvenCenturionStruggle_A2_Stop
+
+DwarvenSpider:
+  Victim:
+  Aggressor: KudasaiDwarvenSpiderStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiDwarvenSpiderStruggle_A2_Stop
+
+Falmer:
+  Victim:
+  Aggressor: KudasaiFalmerStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiFalmerStruggle_A2_Stop
+
+FrostbiteSpider:
+  Victim:
+  Aggressor: KudasaiSpiderStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiSpiderStruggle_A2_Stop
+
+FrostbiteSpiderGiant:
+  Victim:
+  Aggressor: KudasaiGiantSpiderStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiGiantSpiderStruggle_A2_Stop
+
+Gargoyle:
+  Victim:
+  Aggressor: KudasaiGargoyleStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiGargoyleStruggle_A2_Stop
+
+Giant:
+  Victim:
+  Aggressor: KudasaiGiantStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiGiantStruggle_A2_Stop
+
+MountedRiekling:
+  Victim:
+  Aggressor: KudasaiBoarStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiBoarStruggle_A2_Stop
+
+Netch:
+  Victim:
+  Aggressor: KudasaiNetchStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiNetchStruggle_A2_Stop
+
+Riekling:
+  Victim:
+  Aggressor: KudasaiRieklingStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiRieklingStruggle_A2_Stop
+
+SabreCat:
+  Victim:
+  Aggressor: KudasaiSabrecatStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiSabrecatStruggle_A2_Stop
+
+Skeever:
+  Victim:
+  Aggressor: KudasaiSkeeverStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiSkeeverStruggle_A2_Stop
+
+Troll:
+  Victim:
+  Aggressor: KudasaiTrollStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiTrollStruggle_A2_Stop
+
+Werewolf:
+  Victim:
+  Aggressor: KudasaiWerewolfStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: KudasaiWerewolfStruggle_A2_Stop
+
+Wolf:
+  Victim:
+  Aggressor: WolfStruggle_A2_Start
+  Breakfree:
+    Victim:
+    Aggressor: WolfStruggle_A2_Stop

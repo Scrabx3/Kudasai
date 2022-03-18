@@ -44,7 +44,8 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor prim, Actor[] secundi, Actor 
 EndFunction
 
 float Function GetArousal(Actor subject) global
-  return (Quest.GetQuest("sla_Framework") as slaFrameworkScr).GetActorArousal(subject)
+  OArousedScript Aroused = OArousedScript.GetOAroused()
+  return Aroused.getArousal(subject)
 EndFunction
 
 ; if filter = true, remove the actors from the array
@@ -62,4 +63,47 @@ Function FilterArousal(Actor[] subjects) global
     EndIf
     i += 1
   EndWhile
+EndFunction
+
+OStimSubthread Function GetSubthreadFromActor(Actor subject) global
+  OSexIntegrationMain OStim = OUtils.GetOStim()
+  Quest sq = OStim.subthreadquest
+  Alias[] aliases = sq.GetAliases()
+  int i = 0
+	While (i < aliases.Length) 
+		OStimSubthread thread = aliases[i] as OStimSubthread
+    if (thread.actorlist.find(subject) > -1)
+      return thread
+    endif
+		i += 1
+	EndWhile
+  return none
+EndFunction
+
+bool Function StopAnimating(Actor subject) global
+  OSexIntegrationMain OStim = OUtils.GetOStim()
+  If (!Ostim.isactoractive(subject))
+    return false
+  ElseIf (Ostim.IsActorInvolved(subject))
+    OStim.EndAnimation()
+    return true
+  Else
+    OStimSubthread thread = GetSubthreadFromActor(subject)
+    if (thread)
+      thread.EndAnimation()
+      return true
+    endif
+  EndIf
+  return false
+EndFunction
+
+Actor[] Function GetPositions(int id) global
+  OSexIntegrationMain OStim = OUtils.GetOStim()
+  If (id == -1)
+    return OStim.GetActors()
+  Else
+    OStimSubthread thread = OStim.GetSubthread(id)
+    return thread.actorlist
+  EndIf
+  return PapyrusUtil.ActorArray(0)
 EndFunction

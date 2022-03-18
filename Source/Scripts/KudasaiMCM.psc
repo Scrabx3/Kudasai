@@ -1,18 +1,23 @@
 Scriptname KudasaiMCM extends SKI_ConfigBase
 
 ; --------------------- Properties
+
+String red = "<font color = '#c70700'>"
+String green = "<font color = '#32d12a'>"
+
 ; ----------- General
 
 bool Property bEnabled = true Auto Hidden
 
-int Property iHunterPrideKey Auto Hidden
-int Property iSurrenderKey Auto Hidden
+int Property iHunterPrideKey = -1 Auto Hidden ; Allowing Player to defeat through Combat
+int Property iSurrenderKey = -1 Auto Hidden ; Surrender
+int Property iAssaultKey = -1 Auto Hidden ; Player initiated Struggle Game
 
-bool Property bNotifyDefeat Auto Hidden
-bool Property bNotifyDestroy Auto Hidden
-bool Property bNotifyColored Auto Hidden
-int iNotifyColorChoice
-String Property sNotifyColorChoice Auto Hidden
+bool Property bNotifyDefeat = false Auto Hidden
+bool Property bNotifyDestroy = false Auto Hidden
+bool Property bNotifyColored = false Auto Hidden
+int iNotifyColorChoice = 0xFF0000
+String Property sNotifyColorChoice = "#0xFF0000" Auto Hidden
 
 ; ----------- Combat
 
@@ -49,6 +54,10 @@ String[] Property SLTags Auto Hidden
 float Property fOStimDurMin = 30.0 Auto Hidden
 float Property fOStimDurMax = 60.0 Auto Hidden
 
+; --------------------- Stripping
+
+int Property iStrips Auto Hidden
+
 ; --------------------- Menu
 
 int Function GetVersion()
@@ -56,9 +65,12 @@ int Function GetVersion()
 endFunction
 
 Event OnConfigInit()
-  Pages = new String[2]
+  Pages = new String[5]
   Pages[0] = "$YK_General"
-  Pages[1] = "$YK_Combat"
+  Pages[1] = "$YK_Defeat"
+  Pages[2] = "$YK_NSFW"
+  Pages[3] = "$YK_Stripping"
+  Pages[4] = "$YK_Debug"
 
   SLTags = new String[6]
 EndEvent
@@ -73,6 +85,12 @@ Event OnPageReset(string page)
     AddHeaderOption("$YK_Hotkeys")
     AddKeyMapOptionST("hunterpridekey", "$YK_HunterPrideKey", iHunterPrideKey)
     AddKeyMapOptionST("surrenderkey", "$YK_SurrenderKey", iSurrenderKey)
+    AddKeyMapOptionST("assaultkey", "$YK_AssaultKey", iAssaultKey)
+    AddEmptyOption()
+    AddHeaderOption("$YM_Assault")
+    AddToggleOptionST("midcmbtassault", "$YK_MidCmbtAssault", bMidCombatAssault, getFlag(FrameAny))
+    AddToggleOptionST("postcmbtassault", "$YK_PostCmbtAssault", bPostCombatAssault, getFlag(FrameAny))
+
     SetCursorPosition(1)
     AddHeaderOption("$YK_Notification")
     AddToggleOptionST("notifydefeat", "$YK_NotifyDefeat", bNotifyDefeat)
@@ -80,17 +98,52 @@ Event OnPageReset(string page)
 		AddToggleOptionST("notifycolored", "$YK_NotifyColored", bNotifyColored, getFlag(bNotifyDefeat || bNotifyDestroy))
     AddColorOptionST("notifycolorchoice", "$YK_NotifyColorChoice", iNotifyColorChoice, getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored))
 
-  ElseIf (page == "$YK_Combat")
-    AddHeaderOption("$YM_Assault")
-    AddToggleOptionST("midcmbtassault", "$YK_MidCmbtAssault", bMidCombatAssault)
-    AddToggleOptionST("postcmbtassault", "$YK_PostCmbtAssault", bPostCombatAssault)
-    AddHeaderOption("$YK_MidCombat")
-    SetCursorPosition(1)
-    AddHeaderOption("$YK_PostCombat")
+  ElseIf (page == "$YK_Defeat")
+    AddHeaderOption("$YK_Lethal")
+    AddTextOptionST("lethaldesc", "$YK_ReadMe", "")
+    AddSliderOptionST("lethalplayer", "$YK_LethalPlayer", fLethalPlayer, "{1}%")
+    AddSliderOptionST("lethalnpc", "$YK_LethalNPC", fLethalNPC, "{1}%")
+
 
   ElseIf (page == "$YK_NSFW")
+		bool SLThere = Game.GetModByName("SexLab.esm") != 255
+		bool OStimThere = Game.GetModByName("OStim.esp") != 255
+    AddHeaderOption("$YK_AdultFrames")
+    AddSliderOptionST("sexlabweight", "$YK_SexLabWeight", fSLWeight, "{1}", getFlag(SLThere))
+    AddSliderOptionST("ostimweight", "$YK_OStimWeight", fOStimWeight, "{1}", getFlag(OStimThere))
+    AddEmptyOption()
+    AddHeaderOption("$YK_Arousal")
+    AddSliderOptionST("arousalnpc", "$YK_ArousalNPC", fArousalNPC, "{1}", getFlag(SLThere || OStimThere))
+    AddSliderOptionST("arousalfollower", "$YK_ArousalFollower", fArousalFollower, "{1}", getFlag(SLThere || OStimThere))
+
+    SetCursorPosition(1)
+    AddHeaderOption("$YK_SexLab")
+    int i = 0
+    While(i < SLTags.Length)
+      AddInputOptionST("sltags_" + i, "$YK_SLTags_" + i, SLTags[i], getFlag(SLThere))
+      i += 1
+    EndWhile
+    AddEmptyOption()
+    AddHeaderOption("$YK_OStim")
+    AddSliderOptionST("ostimdurmin", "$YK_OStimDurMin", fOStimDurMin, "{0}s", getFlag(OStimThere))
+    AddSliderOptionST("ostimdurmax", "$YK_OStimDurMax", fOStimDurMax, "{0}s", getFlag(OStimThere))
+
+  ElseIf (page == "$YK_Stripping")
+    SetCursorFillMode(LEFT_TO_RIGHT)
+    int i = 0
+    While(i < 32)
+      int bit = Math.LeftShift(1, i)
+      AddToggleOptionST("strips_" + i, "$YK_Strips_" + i, Math.LogicalAnd(iStrips, bit))
+      i += 1
+    EndWhile
 
   ElseIf (page == "$YK_Debug")
+    AddHeaderOption("$YK_System")
+    AddTextOption("$YK_CrosshairNPC", GetCrosshairRefName())
+    AddTextOptionST("rescue", "$YK_Rescue", "")
+    AddTextOptionST("excludeSpell", "$YK_ExcludeSpell", "")
+    AddTextOptionST("exclude", "$YK_Exclude", "")
+    AddTextOptionST("include", "$YK_Include", "")
 
   EndIf
 EndEvent
@@ -114,14 +167,14 @@ EndEvent
 
 ; --------------------- Misc
 
-; Event OnConfigOpen()
-;   config = JValue.retain(JValue.readFromFile(filepath))
-; EndEvent
-; Event OnConfigClose()
-;   JValue.writeToFile(config, filepath)
-;   config = JValue.release(config)
-;   ReadSettings(filepath)
-; EndEvent
+String Function GetCrosshairRefName()
+  Actor ref = Game.GetCurrentCrosshairRef() as Actor
+  If (ref)
+    return ref.GetLeveledActorBase().GetName()
+  Else
+    return "---"
+  EndIf
+EndFunction
 
 int Function getFlag(bool option)
 	If(option)

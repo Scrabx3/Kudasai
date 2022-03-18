@@ -1,0 +1,15 @@
+# Those are Setting used in Flash associated mechanics
+QTE:
+  # You can set the Keys here used by Kudasais QTE Events
+  # Keycodes are taken from here: https://www.creationkit.com/index.php?title=Input_Script#DXScanCodes
+  Keycodes:
+    - 17 # W
+    - 30 # A
+    - 31 # S
+    - 32 # D
+  # The coordinates a QTE can be displayed in
+  # E.g. 1 or 0 -> QTE can be displayed on your entire Screen
+  #      0.3    -> 30% of the Edges will be trimmed; On a 1920x1080 Monitor, Icons will be displayed within:
+  #                Horizontal: Xmin = 576 || Xmax = 1344 
+  #                Vertical  : Ymin = 324 || Ymax = 756
+  Dimension: 0.3

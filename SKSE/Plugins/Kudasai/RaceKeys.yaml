@@ -1,0 +1,110 @@
+# This file maps Race FormIDs to RaceKeys
+# Similar to how SexLab's RaceKeys work, RaceKeys are used to group individual Creature Races together, so that any Wolf'ish Creature
+# is recognized as such and can use Wolf specific Animations! 
+# The list includes all Vanilla Creature Races so if you're not here to add a new Creature Race added by another mod, there is little
+# reason to touch any of this. If you want to add a new Creature, make sure it is compatible with the given RaceKey (i.e. uses the same
+# Skeleton as other Creatures of this RaceKey)
+# To add your own Creature, navigdate down to "AdditionalRaces" and write a new key with the syntax: "[FormID]->[ModName]": [RaceKey]
+# For example: 0xABCDEF->CustomCreature.esp: Wolf
+Races:
+  0x0401B658: AshHopper
+  0x000131F5: AtronachFlame
+  0x000131F6: AtronachFrost
+  0x000131F7: AtronachStorm
+  0x04027BFC: AtronachStorm
+  0x000131E8: Bear
+  0x000131E7: Bear
+  0x000131E9: Bear
+  0x04024038: Boar
+  0x000131EB: Chaurus
+  0x02015136: Chaurus
+  0x000A5601: ChaurusReapeer
+  0x020051FB: ChaurusHunter
+  0x000A919D: Chicken
+  0x0004E785: Cow
+  0x000CF89B: Deer
+  0x000131ED: Deer
+  0x0200D0B2: Deer
+  0x00012E82: Dragon
+  0x001052A3: Dragon
+  0x0403911A: DragonPriest
+  0x000131EF: DragonPriest
+  0x000EBE18: DragonPriest
+  0x0200894D: Draugr
+  0x0402A6FD: Draugr
+  0x000F71DC: Draugr
+  0x00000D53: Draugr
+  0x020023E2: Draugr
+  0x02019FD3: Draugr
+  0x0200A94B: Draugr
+  0x000B7998: Draugr
+  0x02006AFA: Draugr
+  0x0403CECB: Draugr
+  0x0401B637: Draugr
+  0x000B9FD7: Draugr
+  0x000EB872: Draugr
+  0x02015C34: DwarvenCenturion
+  0x0402B014: DwarvenBallista
+  0x000131F1: DwarvenCenturion
+  0x000131F2: DwarvenSphere
+  0x000131F3: DwarvenSpider
+  0x0201AACC: Falmer
+  0x000131F4: Falmer
+  0x000131F8: FrostbiteSpider
+  0x00053477: FrostbideSpiderLarge
+  0x0004E507: FrostbiteSpiderGiant
+  0x0200A2C6: Gargoyle
+  0x02010D00: Gargoyle
+  0x02019D86: Gargoyle
+  0x0401CAD8: Giant
+  0x04014495: Giant
+  0x000131F9: Giant
+  0x0006FC4A: Goat
+  0x000131FA: Goat
+  0x000131FB: Hagraven
+  0x0006DC99: Hare
+  0x000131FC: Horker
+  0x000131FD: Horse
+  0x0401F98F: IceWrath
+  0x04029EE7: IceWrath
+  0x000131FE: IceWrath
+  0x000131FF: Mammoth
+  0x040179CF: MountedRiekling
+  0x0401B647: Mudcrab
+  0x000BA545: Mudcrab
+  0x0401FEB8: Netch
+  0x04028580: Netch
+  0x04017F44: Riekling
+  0x0401A50A: Riekling
+  0x00013200: SabreCat
+  0x00013202: SabreCat
+  0x0401DCB9: Seeker
+  0x00013201: Skeever
+  0x000C3EDF: Skeever
+  0x00013203: Slaughterfish
+  0x02013B77: Spriggan
+  0x000F3903: Spriggan
+  0x00013204: Spriggan
+  0x0401B644: Spriggan
+  0x020117F4: Troll
+  0x02011F75: Troll
+  0x00013206: Troll
+  0x00013205: Troll
+  0x0200283A: VampireBeast # Vampire Lord
+  0x000CDD84: Werewolf
+  0x0401E17B: Werewolf
+  0x02003D01: Wolf
+  0x02018B33: Wolf
+  0x00109C7C: Wolf
+  0x0001320A: Wolf
+  0x020122B7: Wolf
+  0x02018B36: Wolf
+  0x000F1AC4: Wolf
+  0x000131EE: Wolf
+  0x000F905F: Wolf
+  0x000CD657: Wolf
+  0x02003D02: Wolf
+  0x0200C5F0: Wolf
+
+AdditionalRaces:
+  # 0xABCDEF->CustomCreature.esp: Wolf

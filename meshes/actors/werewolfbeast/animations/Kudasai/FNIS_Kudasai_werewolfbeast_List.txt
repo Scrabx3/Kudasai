@@ -1,0 +1,2 @@
+b KudasaiWerewolfStruggle_A2_Start WerewolfStruggle_A2_Start.hkx 
+b -a KudasaiWerewolfStruggle_A2_Stop WerewolfStruggle_A2_Stop.hkx
