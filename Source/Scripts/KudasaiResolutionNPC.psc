@@ -8,7 +8,7 @@ FormList[] Property Aggressors Auto
 Actor[] Victims
 
 ; Populate the Victims array & Aggressor formlists. The quest is started through cpp which will only add linked refs
-Event OnInit()
+Function Init()
   Alias[] aliases = GetAliases()
   Victims = new Actor[15]
   int i = 0
@@ -41,31 +41,34 @@ Event OnInit()
   RegisterForSingleUpdate(7)
   RegisterForModEvent("ostim_end", "PostSceneOStim")
   RegisterForModEvent("HookAnimationEnd_Kudasai_rNPC", "PostSceneSL")
-EndEvent
+EndFunction
 
 ; Start a Scene. There should be 1 Scene for every Victim
 Event OnUpdate()
   int i = 0
-  While(i < Aggressors.Length)
+  While(i < Victims.Length)
     Form[] list = Aggressors[i].ToArray()
-    Actor[] alist = TranslateToActorArray(list)
-    ; only add Victoires that arent defeated
+    int total = KudasaiAnimation.GetAllowedParticipants(list.Length + 1)
+    Actor[] positions = PapyrusUtil.ActorArray(total)
+    positions[0] = Victims[n]
+    total -= 1
     int n = 0
-    While(n < list.Length)
-      If (!list[n].HasKeyword(Defeated))
-        alist[n] = list[n] as Actor
+    While(n < list.Length && total > 1)
+      If(!list[n].HasKeyword(Defeated))
+        positions[total] = list[n] as Actor
+        total -= 1
       EndIf
       n += 1
     EndWhile
-    alist = PapyrusUtil.RemoveActor(alist, none)
+    positions = PapyrusUtil.RemoveActor(positions, none)    
     ; If there are no non-defeated Victoires for this Scene, force one of them to stand up
-    If (!alist.length)
-      alist = new Actor[1]
-      alist[0] = list[0] as Actor
-      Kudasai.RescueActor(alist[0], true)
+    If (!positions.length)
+      positions = new Actor[1]
+      positions[0] = list[0] as Actor
+      Kudasai.RescueActor(positions[0], true)
     EndIf
     ; Start a Scene for this Group
-    KudasaiAnimation.CreateAssault(Victims[i], alist, "Kudasai_rNPC")
+    KudasaiAnimation.CreateAssault(Victims[i], positions, "Kudasai_rNPC")
     i += 1
   EndWhile
 EndEvent
@@ -88,7 +91,7 @@ Function HandlePostScene(Actor[] positions)
     Debug.SendAnimationEvent(Victims[id], "bleedoutstart")
     return
   Else
-    Debug.SendAnimationEvent(Victims[id], "KudasaiKnockoutSitting")
+    Debug.SendAnimationEvent(Victims[id], "KudasaiTraumeLie")
   EndIf
   Actor[] alist = TranslateToActorArray(Aggressors[id].ToArray())
   ; Its unlikely that an Actor is still defeated, but just in case.. dont animate if they are still defeated

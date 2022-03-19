@@ -52,19 +52,81 @@ Version V1
 ' AnimEvents and Animation File names have to be unique through all mods (even for files in different folders)
 ' so it's a good idea to use mod specific abbreviations for all your names
 
-' Note: Animation with a 'b'-Prefix were created by BakaFactory
-
-' Dialogue
+' Dialogue & Misc Idles
 b -a KudasaiRefuse RefuseGesture.hkx
+b -a KudasaiSurrender Surrender.hkx
+b -a KudasaiStripSelf StrippingSelf.hkx
+
+b KudasaiTraumeLie BaboDefeatTraumaLie.hkx
+b KudasaiTraumeStand BaboDefeatTraumaStand.hkx
 
 ' Struggle
 s -a,Tn KudasaiHumanStruggleA1S1 HumanStruggleA1S1.hkx
 + KudasaiHumanStruggleA1S2 HumanStruggleA1S2.hkx
 s -a,Tn KudasaiHumanStruggleA2S1 HumanStruggleA2S1.hkx
 + KudasaiHumanStruggleA2S2 HumanStruggleA2S2.hkx
-
 b KudasaiHumanStruggleA1LieInstant HumanStruggleA1LieInstant.hkx
 b KudasaiHumanStruggleA2LieInstant HumanStruggleA2LieInstant.hkx
 
-' Surrender
-b -a KudasaiSurrender Surrender.hkx
+b KudasaiWolfStruggle_A1_Start WolfStruggle_A1_Start.hkx
+b -a KudasaiWolfStruggle_A1_Stop WolfStruggle_A1_Stop.hkx
+
+b KudasaiDraugrStruggle_A1_Start DraugrStruggle_A1_Start.hkx
+b -a KudasaiDraugrStruggle_A1_Stop DraugrStruggle_A1_Stop.hkx
+
+b KudasaiSkeeverStruggle_A1_Start SkeeverStruggle_A1_Start.hkx
+b -a KudasaiSkeeverStruggle_A1_Stop SkeeverStruggle_A1_Stop.hkx
+
+b KudasaiFalmerStruggle_A1_Start FalmerStruggle_A1_Start.hkx
+b -a KudasaiFalmerStruggle_A1_Stop FalmerStruggle_A1_Stop.hkx
+
+b KudasaiGiantStruggle_A1_Start GiantStruggle_A1_Start.hkx
+b -a KudasaiGiantStruggle_A1_Stop GiantStruggle_A1_Stop.hkx
+
+b KudasaiRieklingStruggle_A1_Start RieklingStruggle_A1_Start.hkx
+b -a KudasaiRieklingStruggle_A1_Stop RieklingStruggle_A1_Stop.hkx
+
+b KudasaiSabrecatStruggle_A1_Start SabrecatStruggle_A1_Start.hkx
+b -a KudasaiSabrecatStruggle_A1_Stop SabrecatStruggle_A1_Stop.hkx
+
+b KudasaiTrollStruggle_A1_Start TrollStruggle_A1_Start.hkx
+b -a KudasaiTrollStruggle_A1_Stop TrollStruggle_A1_Stop.hkx
+
+b KudasaiBearStruggle_A1_Start BearStruggle_A1_Start.hkx
+b -a KudasaiBearStruggle_A1_Stop BearStruggle_A1_Stop.hkx
+
+b KudasaiChaurusStruggle_A1_Start ChaurusStruggle_A1_Start.hkx
+b -a KudasaiChaurusStruggle_A1_Stop ChaurusStruggle_A1_Stop.hkx
+
+b KudasaiChaurusReaperStruggle_A1_Start ChaurusReaperStruggle_A1_Start.hkx
+b -a KudasaiChaurusReaperStruggle_A1_Stop ChaurusReaperStruggle_A1_Stop.hkx
+
+b KudasaiChaurusHunterStruggle_A1_Start ChaurusHunterStruggle_A1_Start.hkx
+b -a KudasaiChaurusHunterStruggle_A1_Stop ChaurusHunterStruggle_A1_Stop.hkx
+
+b KudasaiDwarvenSpiderStruggle_A1_Start DwarvenSpiderStruggle_A1_Start.hkx
+b -a KudasaiDwarvenSpiderStruggle_A1_Stop DwarvenSpiderStruggle_A1_Stop.hkx
+
+b KudasaiGargoyleStruggle_A1_Start GargoyleStruggle_A1_Start.hkx
+b -a KudasaiGargoyleStruggle_A1_Stop GargoyleStruggle_A1_Stop.hkx
+
+b KudasaiSpiderStruggle_A1_Start SpiderStruggle_A1_Start.hkx
+b -a KudasaiSpiderStruggle_A1_Stop SpiderStruggle_A1_Stop.hkx
+
+b KudasaiWerewolfStruggle_A1_Start WerewolfStruggle_A1_Start.hkx 
+b -a KudasaiWerewolfStruggle_A1_Stop WerewolfStruggle_A1_Stop.hkx
+
+b KudasaiDwarvenCenturionStruggle_A1_Start DwarvenCenturionStruggle_A1_Start.hkx 
+b -a KudasaiDwarvenCenturionStruggle_A1_Stop DwarvenCenturionStruggle_A1_Stop.hkx
+
+b KudasaiAshHopperStruggle_A1_Start AshHopperStruggle_A1_Start.hkx 
+b -a KudasaiAshHopperStruggle_A1_Stop AshHopperStruggle_A1_Stop.hkx
+
+b KudasaiGiantSpiderStruggle_A1_Start GiantSpiderStruggle_A1_Start.hkx 
+b -a KudasaiGiantSpiderStruggle_A1_Stop GiantSpiderStruggle_A1_Stop.hkx
+
+b KudasaiNetchStruggle_A1_Start NetchStruggle_A1_Start.hkx 
+b -a KudasaiNetchStruggle_A1_Stop NetchStruggle_A1_Stop.hkx
+
+b KudasaiBoarMountedStruggle_A1_Start BoarMountedStruggle_A1_Start.hkx 
+b -a KudasaiBoarMountedStruggle_A1_Stop BoarMountedStruggle_A1_Stop.hkx

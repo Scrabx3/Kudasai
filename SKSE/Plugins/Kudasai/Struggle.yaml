@@ -4,152 +4,152 @@ Human:
   Victim: KudasaiHumanStruggleA1S1
   Aggressor: KudasaiHumanStruggleA2S1
   # Breakfree:
-  #   Victim: 
-  #   Aggressor: 
+  #   Victim:
+  #   Aggressor:
 
 AshHopper:
-  Victim:
+  Victim: KudasaiAshHopperStruggle_A1_Start
   Aggressor: KudasaiAshHopperStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiAshHopperStruggle_A1_Stop
     Aggressor: KudasaiAshHopperStruggle_A2_Stop
 
 Bear:
-  Victim:
+  Victim: KudasaiBearStruggle_A1_Start
   Aggressor: KudasaiBearStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiBearStruggle_A1_Stop
     Aggressor: KudasaiBearStruggle_A2_Stop
 
 Chaurus:
-  Victim:
+  Victim: KudasaiChaurusStruggle_A1_Start
   Aggressor: KudasaiChaurusStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiChaurusStruggle_A1_Stop
     Aggressor: KudasaiChaurusStruggle_A2_Stop
 
 ChaurusReaper:
-  Victim:
+  Victim: KudasaiChaurusReaperStruggle_A1_Start
   Aggressor: KudasaiChaurusReaperStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiChaurusReaperStruggle_A1_Stop
     Aggressor: KudasaiChaurusReaperStruggle_A2_Stop
 
 ChaurusHunter:
-  Victim:
+  Victim: KudasaiChaurusHunterStruggle_A1_Start
   Aggressor: KudasaiChaurusHunterStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiChaurusHunterStruggle_A1_Stop
     Aggressor: KudasaiChaurusHunterStruggle_A2_Stop
 
 Draugr:
-  Victim:
+  Victim: KudasaiDraugrStruggle_A1_Start
   Aggressor: KudasaiDraugrStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiDraugrStruggle_A1_Stop
     Aggressor: KudasaiDraugrStruggle_A2_Stop
 
 DwarvenCenturion:
-  Victim:
+  Victim: KudasaiDwarvenCenturionStruggle_A1_Start
   Aggressor: KudasaiDwarvenCenturionStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiDwarvenCenturionStruggle_A1_Stop
     Aggressor: KudasaiDwarvenCenturionStruggle_A2_Stop
 
 DwarvenSpider:
-  Victim:
+  Victim: KudasaiDwarvenSpiderStruggle_A1_Start
   Aggressor: KudasaiDwarvenSpiderStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiDwarvenSpiderStruggle_A1_Stop
     Aggressor: KudasaiDwarvenSpiderStruggle_A2_Stop
 
 Falmer:
-  Victim:
+  Victim: KudasaiFalmerStruggle_A1_Start
   Aggressor: KudasaiFalmerStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiFalmerStruggle_A1_Stop
     Aggressor: KudasaiFalmerStruggle_A2_Stop
 
 FrostbiteSpider:
-  Victim:
+  Victim: KudasaiSpiderStruggle_A1_Start
   Aggressor: KudasaiSpiderStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiSpiderStruggle_A1_Stop
     Aggressor: KudasaiSpiderStruggle_A2_Stop
 
 FrostbiteSpiderGiant:
-  Victim:
+  Victim: KudasaiGiantSpiderStruggle_A1_Start
   Aggressor: KudasaiGiantSpiderStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiGiantSpiderStruggle_A1_Stop
     Aggressor: KudasaiGiantSpiderStruggle_A2_Stop
 
 Gargoyle:
-  Victim:
+  Victim: KudasaiGargoyleStruggle_A1_Start
   Aggressor: KudasaiGargoyleStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiGargoyleStruggle_A1_Stop
     Aggressor: KudasaiGargoyleStruggle_A2_Stop
 
 Giant:
-  Victim:
+  Victim: KudasaiGiantStruggle_A1_Start
   Aggressor: KudasaiGiantStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiGiantStruggle_A1_Stop
     Aggressor: KudasaiGiantStruggle_A2_Stop
 
-MountedRiekling:
-  Victim:
-  Aggressor: KudasaiBoarStruggle_A2_Start
+BoarMounted: # TODO: Name change from MountedRiekling to BoarMounted
+  Victim: KudasaiBoarMountedStruggle_A1_Start
+  Aggressor: KudasaiBoarMountedStruggle_A2_Start
   Breakfree:
-    Victim:
-    Aggressor: KudasaiBoarStruggle_A2_Stop
+    Victim: KudasaiBoarMountedStruggle_A1_Stop
+    Aggressor: KudasaiBoarMountedStruggle_A2_Stop
 
 Netch:
-  Victim:
+  Victim: KudasaiNetchStruggle_A1_Start
   Aggressor: KudasaiNetchStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiNetchStruggle_A1_Stop
     Aggressor: KudasaiNetchStruggle_A2_Stop
 
 Riekling:
-  Victim:
+  Victim: KudasaiRieklingStruggle_A1_Start
   Aggressor: KudasaiRieklingStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiRieklingStruggle_A1_Stop
     Aggressor: KudasaiRieklingStruggle_A2_Stop
 
 SabreCat:
-  Victim:
+  Victim: KudasaiSabrecatStruggle_A1_Start
   Aggressor: KudasaiSabrecatStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiSabrecatStruggle_A1_Stop
     Aggressor: KudasaiSabrecatStruggle_A2_Stop
 
 Skeever:
-  Victim:
+  Victim: KudasaiSkeeverStruggle_A1_Start
   Aggressor: KudasaiSkeeverStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiSkeeverStruggle_A1_Stop
     Aggressor: KudasaiSkeeverStruggle_A2_Stop
 
 Troll:
-  Victim:
+  Victim: KudasaiTrollStruggle_A1_Start
   Aggressor: KudasaiTrollStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiTrollStruggle_A1_Stop
     Aggressor: KudasaiTrollStruggle_A2_Stop
 
 Werewolf:
-  Victim:
+  Victim: KudasaiWerewolfStruggle_A1_Start
   Aggressor: KudasaiWerewolfStruggle_A2_Start
   Breakfree:
-    Victim:
+    Victim: KudasaiWerewolfStruggle_A1_Stop
     Aggressor: KudasaiWerewolfStruggle_A2_Stop
 
 Wolf:
-  Victim:
-  Aggressor: WolfStruggle_A2_Start
+  Victim: KudasaiWolfStruggle_A1_Start
+  Aggressor: KudasaiWolfStruggle_A2_Start
   Breakfree:
-    Victim:
-    Aggressor: WolfStruggle_A2_Stop
+    Victim: KudasaiWolfStruggle_A1_Stop
+    Aggressor: KudasaiWolfStruggle_A2_Stop

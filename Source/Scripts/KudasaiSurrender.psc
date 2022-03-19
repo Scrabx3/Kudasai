@@ -131,6 +131,8 @@ Event OnInit()
     EndIf
     i += 1
   EndWhile
+  Hostiles = PapyrusUtil.RemoveActor(Hostiles, none)
+  Creatures = PapyrusUtil.RemoveActor(Creatures, none)
   Debug.Trace("[Kudasai] Hostiles = " + Hostiles + " Creatures = " + Creatures)
   If (Hostiles[0] == none && Creatures[0] == none)
     ERRNoActors.Show()
@@ -138,12 +140,11 @@ Event OnInit()
     Stop()
     return
   EndIf
-  Debug.Trace("[Kudasai] <Surrender> Pacifying Player")
-  Kudasai.PacifyActor(PlayerRef)
 
-  Game.SetPlayerAIDriven(true)
-  Debug.SendAnimationEvent(PlayerRef, "IdleSurrender")
-  ; Debug.SendAnimationEvent(PlayerRef, "KudasaiIdleSurrender")
+  Kudasai.PacifyActor(PlayerRef)
+  ; Game.SetPlayerAIDriven(true)
+  ; Debug.SendAnimationEvent(PlayerRef, "IdleSurrender")
+  Debug.SendAnimationEvent(PlayerRef, "KudasaiSurrender")
 
   int n = 0
   While(n < Hostiles.Length)
@@ -155,11 +156,9 @@ Event OnInit()
     EndIf
     n += 1
   EndWhile
-  Hostiles = PapyrusUtil.RemoveActor(Hostiles, none)
-  Creatures = PapyrusUtil.RemoveActor(Creatures, none)
 
   Utility.Wait(0.7)
-  Game.SetPlayerAIDriven(false)
+  ; Game.SetPlayerAIDriven(false)
   
   ; At this point, there is at least 1 Valid Hostile and all Hostiles are either NPC or Creatures of the same Race
   If (!primus)
