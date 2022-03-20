@@ -10,7 +10,7 @@ int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool che
   Keyword ATNPC = Keyword.GetKeyword("ActorTypeNPC")
   int res = -1
   If(!victim.HasKeyword(ATNPC) || !partners[0].HasKeyword(ATNPC))
-    If(MCM.fSLWeight > 0)
+    If(MCM.iSLWeight > 0)
       If(checkarousal)
         KudasaiAnimationSL.FilterArousal(partners)
       EndIf
@@ -18,8 +18,8 @@ int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool che
       res = KudasaiAnimationSL.CreateAnimation(MCM, positions, victim, hook)
     EndIf
   Else
-    float frame = MCM.fSLWeight + MCM.fOStimWeight
-    If(Utility.RandomFloat(0, frame) < MCM.fSLWeight)
+    int frame = MCM.iSLWeight + MCM.iOStimWeight
+    If(Utility.RandomInt(0, frame) < MCM.iSLWeight)
       If(checkarousal)
         KudasaiAnimationSL.FilterArousal(partners)
       EndIf
@@ -69,8 +69,8 @@ int Function CreateAnimationCustom2p(KudasaiMCM MCM, Actor primus, Actor secundu
     positions[1] = secundus
     res = KudasaiAnimationSL.CreateAnimationCustom(positions, victim, tags, hook)
   Else
-    float frame = MCM.fSLWeight + MCM.fOStimWeight
-    If(Utility.RandomFloat(0, frame) < MCM.fSLWeight)
+    int frame = MCM.iSLWeight + MCM.iOStimWeight
+    If(Utility.RandomInt(0, frame) < MCM.iSLWeight)
       Actor[] positions = new Actor[2]
       positions[0] = primus
       positions[1] = secundus
@@ -123,12 +123,12 @@ int Function GetAllowedParticipants(int limit) global
 EndFunction
 
 bool Function StopAnimating(Actor subject, KudasaiMCM MCM) global
-  If (MCM.fSLWeight > 0.0)
+  If (MCM.iSLWeight > 0.0)
     If (KudasaiAnimationSL.StopAnimating(subject))
       return true
     EndIf
   EndIf
-  If (MCM.fOStimWeight > 0.0)
+  If (MCM.iOStimWeight > 0)
     If (KudasaiAnimationOStim.StopAnimating(subject))
       return true
     EndIf

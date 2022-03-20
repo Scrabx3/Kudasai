@@ -29,15 +29,11 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor[] positions, Actor victim, St
     int n
     If(positions.length == 2 && !creatures)
 	    int males = SL.MaleCount(positions)
-	    If(genders[0] == 1 && males == 1) ; Female first & Male Partner
+	    If(genders[0] == 1 && males == 1) ; F<-M
         n = 0
-	    ElseIf(males == 2)
-        n = 1
-      ElseIf(victim && SL.GetGender(victim) == 0)
-        n = 2
-      Else
-        n = 3
-	    EndIf
+      Else ; F<-F // M<-F // M<-M
+        n = 1 + males
+      EndIf
 	  Else
       If(genders[0] == 0 || victim && SL.GetGender(victim) == 0)
         n = 4
