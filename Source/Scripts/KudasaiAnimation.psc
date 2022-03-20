@@ -2,8 +2,6 @@ Scriptname KudasaiAnimation Hidden
 {Main Script for Scene Starting}
 
 ; Assume this to be called with only npc or equal races as partners, partners.length <= 4
-; On Success: return 0+ and send "KCreatureAssaultSuccess_" + Hook mod event from Victim
-; On Failure: return -1 and send "KCreatureAssaultFailure_" + Hook mod event from Victim
 int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool checkarousal = false) global
   Debug.Trace("[Kudasai] Create Assault -> Victim = " + victim + " partners = " + partners + " Hook = " + hook)
   KudasaiMCM MCM = KudasaiInternal.GetMCM()
@@ -46,8 +44,10 @@ int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool che
     EndIf
   Else
     Debug.Trace("[Kudasai] <CreateAssault> Animation = " + res, 0)
-    ; If call from .dll & OStim call, remove damage negation here (otherwise do it in the SL calls)
+    ; If call from .dll & OStim call, remove damage negation here (otherwise do it in the SL start call)
+    ; Also cache this actor for OStim end call
     If (res > 15 && StringUtil.Find(hook, "native") > -1)
+      StorageUtil.SetFormValue(MCM, "ostimNATIVE", victim)
       KudasaiInternal.SetDamageImmune(victim, false)
       int i = 0
       While(i < partners.Length)

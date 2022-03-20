@@ -174,10 +174,10 @@ Function SortActors(Actor[] subjects) global
   EndWhile
 EndFunction
 
-Actor[] Function GetActorsInScene(int tid) global
+Actor[] Function GetPositions(int tid) global
   SexLabFramework SL = SexLabUtil.GetAPI()
-  sslThreadController Controller = SL.GetController(tid)
-  return Controller.Positions
+  sslThreadController controller = SL.GetController(tid)
+  return controller.Positions
 EndFunction
 
 Actor Function GetVictimInScene(int tid) global
@@ -213,10 +213,4 @@ bool Function StopAnimating(Actor subject, int tid = -1) global
   endif
   controller.EndAnimation()
   return true
-EndFunction
-
-Actor[] Function GetPositions(int tid) global
-  SexLabFramework SL = SexLabUtil.GetAPI()
-  sslThreadController controller = SL.GetController(tid)
-  return controller.Positions
 EndFunction
