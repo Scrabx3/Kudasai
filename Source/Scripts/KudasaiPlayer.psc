@@ -6,7 +6,10 @@ KudasaiMain Property Main
   EndFunction
 EndProperty
 
+Event OnInit()
+  OnPlayerLoadGame()
+EndEvent
+
 Event OnPlayerLoadGame()
-  Debug.Trace("[Kudasai] Player Load Game")
   Main.Maintenance()
 EndEvent

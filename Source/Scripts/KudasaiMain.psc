@@ -2,12 +2,26 @@ Scriptname KudasaiMain extends Quest
 
 KudasaiMCM Property MCM Auto
 
+Perk Property InteractionPerk Auto
+
 Quest Property SurrenderQuest Auto
 Message Property SurrenderQFailure Auto
 
 Function Maintenance()
+  Game.GetPlayer().AddPerk(InteractionPerk)
   RegisterKeys()
-  ; Native Assault Calls
+
+  If(Game.GetModByName("SexLab.esm") == 255)
+    MCM.iSLWeight = 0
+  EndIf
+  If(Game.GetModByName("OStim.esp") == 255)
+    MCM.iOStimWeight = 0
+  EndIf
+  If(!MCM.FrameAny)
+    MCM.bMidCombatAssault = false
+    MCM.bPostCombatAssault = false
+  EndIf
+
   RegisterForModEvent("HookAnimationStart_YKNativeAssault", "NativeAssaultSLStart")
   RegisterForModEvent("HookAnimationEnd_YKNativeAssault", "NativeAssaultSLEnd")
   RegisterForModEvent("ostim_end", "NativeAssaultEndOStim")
@@ -21,11 +35,19 @@ Function RegisterKeys()
 EndFunction
 
 Event OnKeyDown(int keyCode)
-  If (!SurrenderQuest.Start())
-    SurrenderQFailure.Show()
+  If(keyCode == MCM.iSurrenderKey)
+    If (!SurrenderQuest.Start())
+      SurrenderQFailure.Show()
+    EndIf
+  ElseIf(keyCode == MCM.iHunterPrideKey)
+    Debug.Notification("-- TODO: --")
+  ElseIf(keyCode == MCM.iAssaultKey)
+    Debug.Notification("-- TODO: --")
   EndIf
 EndEvent
 
+
+; ===================================== 
 
 Event NativeAssaultSLStart(int tid, bool hasPlayer)
   Debug.Trace("[Kudasai] SL -> Native Assault Start")

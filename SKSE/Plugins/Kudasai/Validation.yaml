@@ -1,4 +1,4 @@
-# Genders
+# Genders TODO: rewrite
 # This list is used to validate different Gender Combinations. If a combination is not listed, the last aggressor  
 # will be removed until only 1 aggressor is left. This does NOT affect who will participate in the assault
 # If this combination is not found either, the request will be considered invalid (the aggressor(s) will be 
@@ -36,62 +36,51 @@ Combinations:
   Z<-*: false
 
 # Creatures
-# Creatures are divided & grouped based on their individual body data, rather than the race itself. This means that similar
-# Creatures will be considered equal. To customize this section, you can eiher disable the entire Racegroup or add specific 
-# Races to the Exceptions Section
-# Exceptions target individual Races, independend of their RaceGroup. An Exception can be including or excluding, they do not need
-# to be listed in a RaceGroup. This allows you to exclude individual Races from a Racegroup without disabling the entire Racegroup
-# (e.g. Wolves & Foxes share 1 Racegroup, you can use Exception to exclude Foxes specifically) or add custom Races from other mods
-# Adding an Exception:
-#   Open the mod containing the race you want to exclude in the Creation Kit (or xEdit) and search for the race's EditorID. Add
-#   this ID to the exceptions list (Note: Exceptions use partial matching, thus a unique substring will suffice). Then state if
-#   the Exception is including or excluding, by adding either ": true" (including) or ": false" (excluding) behind the ID
-Exceptions:
-  DLC2BoarRace: true # Boars use the default (human) race group, thus aren't listed below
-  dlc2AshGuardianRace: true
-  Skeleton: true
-  FoxRace: false
-  WolfRace: true
-  DeathHound: true
-RaceGroup:
-  0x0800691C: true # Flame Atronach
-  0x0500B2E9: true # Frost Atronach
-  0x0600B7c9: true # Storm Atronach
-  0x080068FC: true # Bears
-  0x04028537: true # DLC2 Lurker
-  0x00059060: true # Chaurs (+ Reaper)
-  0x02005205: true # Chaurus Hunter
-  0x000A919E: true # Chicken
-  0x0004E782: true # Cow
-  0x00076B30: true # Deer
-  0x0401BC4A: true # Dragon
-  0x0401DCBC: true # DLC2 Seeker
-  0x0401FEB9: true # DLC2 Netch
-  0x04017F53: true # DLC2 Riekling
-  0x0401E2A3: true # DLC2 Riekling (Mounted)
-  0x04019AD2: true # DLC2 Ash Hopper
-  0x0004FBF5: true # Dog, Husky, Death Hound, Wolf, Fox
-  0x00043592: true # Dragon Priest
-  0x00048C13: true # Draugr, Skeletons, Ash Guardians, DLC1 Keeper
-  0x0402B018: true # DLC2 Dwarven Ballista
-  0x0007874D: true # Dwarven Sphere
-  0x00081C7A: true # Dwarven Spider
-  0x000800EC: true # Dwarven Centurion
-  0x0005DDA2: true # Falmer
-  0x00017929: true # Frostbite Spider (Common, Large, Giant)
-  0x0200A2C7: true # DLC1 Gargoyle
-  0x000517AB: true # Giant, Frost Giant
-  0x0006F276: true # Goat
-  0x00097242: true # Hagraven
-  0x0006DC9C: true # Hare
-  0x0008CA6B: true # Horker
-  0x00060716: true # Horse
-  0x000538F9: true # Ice Wrath, Magic Anomaly (Winterhold College), DLC2 Spectral Dragon (Wyverns)
-  0x00059255: true # Mammoth
-  0x000BA549: true # Mudcrab
-  0x00020E26: true # Sabrecat
-  0x000264EF: true # Skeever
-  0x00040C6A: true # Slaughterfish
-  0x000A0420: true # Spriggan
-  0x00092C93: true # Troll
-  0x000CDD85: true # Werewolf, Werebear
+# Creatures are grouped together based on a unique Identifier called "RaceKey". Similar to SexLab, similar Creatures will use
+# the same RaceKey. If you don't want a certain Creature Race to be part of Animations, simply disable them here.
+RaceKeys:
+  AshHopper: true
+  AtronachFlame: true
+  AtronachFrost: true
+  AtronachStorm: true
+  Bear: true
+  Chaurus: true
+  ChaurusReapeer: true
+  ChaurusHunter: true
+  Chicken: true
+  Cow: true
+  Deer: true
+  Dragon: true
+  DragonPriest: true
+  Draugr: true
+  DwarvenCenturion: true
+  DwarvenBallista: true
+  DwarvenCenturion: true
+  DwarvenSphere: true
+  DwarvenSpider: true
+  Falmer: true
+  FrostbiteSpider: true
+  FrostbideSpiderLarge: true
+  FrostbiteSpiderGiant: true
+  Gargoyle: true
+  Giant: true
+  Goat: true
+  Hagraven: true
+  Hare: true
+  Horker: true
+  Horse: true
+  IceWrath: true
+  Mammoth: true
+  MountedRiekling: true
+  Mudcrab: true
+  Netch: true
+  Riekling: true
+  SabreCat: true
+  Seeker: true
+  Skeever: true
+  Slaughterfish: true
+  Spriggan: true
+  Troll: true
+  VampireBeast: true
+  Werewolf: true
+  Wolf: true

@@ -17,7 +17,7 @@ bool Property bNotifyDefeat = false Auto Hidden
 bool Property bNotifyDestroy = false Auto Hidden ; TODO: implement this when doing the destruction stuff
 bool Property bNotifyColored = false Auto Hidden
 int iNotifyColorChoice = 0xFF0000
-String Property sNotifyColorChoice = "#0xFF0000" Auto Hidden
+String Property sNotifyColorChoice = "#FF0000" Auto Hidden
 
 ; ----------- Combat
 
@@ -149,13 +149,12 @@ Event OnPageReset(string page)
     EndWhile
 
   ElseIf (page == "$YK_Debug")
-    AddHeaderOption("$YK_System")
-    AddTextOption("$YK_CrosshairNPC", GetCrosshairRefName())
-    AddTextOptionST("rescue", "$YK_Rescue", "")
-    AddTextOptionST("excludeSpell", "$YK_ExcludeSpell", "")
-    AddTextOptionST("exclude", "$YK_Exclude", "")
-    AddTextOptionST("include", "$YK_Include", "")
-
+    AddHeaderOption("$YK_Defeat")
+    bool pldefeated = Kudasai.IsDefeated(Game.GetPlayer())
+    AddTextOptionST("rescuedebug_0", "$YK_Rescue_0", "", getFlag(pldefeated))
+    AddTextOptionST("undopacify_0", "$YK_UndoPacify_0", "", getFlag(Kudasai.IsPacified(Game.GetPlayer()) && !pldefeated))
+    AddTextOptionST("rescuedebug_1", "$YK_Rescue_1", "", getFlag(IsCrosshairRefDefeated()))
+    AddTextOptionST("undopacify_1", "$YK_UndoPacify_1", "", getFlag(IsCrosshairRefPacified()))
   EndIf
 EndEvent
 
@@ -207,6 +206,42 @@ Event OnSelectST()
     int bit = Math.LeftShift(1, i)
     iStrips = Math.LogicalXor(iStrips, bit)
     SetToggleOptionValueST(Math.LogicalAnd(iStrips, bit))
+
+  ; --------------- Stripping
+  ElseIf(s[0] == "rescuedebug")
+    int i = s[1] as int
+    Actor rescue
+    If(i == 0)
+      If(!ShowMessage("$YK_RescueBleedoutMsg"))
+        return
+      EndIf
+      rescue = Game.GetPlayer()
+    ElseIf(i == 1)
+      Actor ref = Game.GetCurrentCrosshairRef() as Actor
+      String name = ref.GetLeveledActorBase().GetName()
+      If(!ShowMessage("$YK_RescueBleedoutMsg{" + name + "}"))
+        return
+      EndIf
+      rescue = ref
+    EndIf
+    Kudasai.RescueActor(rescue, true)
+  ElseIf(s[0] == "undopacify")
+    int i = s[1] as int
+    Actor rescue
+    If(i == 0)
+      If(!ShowMessage("$YK_UndoPacifyMsg"))
+        return
+      EndIf
+      rescue = Game.GetPlayer()
+    ElseIf(i == 1)
+      Actor ref = Game.GetCurrentCrosshairRef() as Actor
+      String name = ref.GetLeveledActorBase().GetName()
+      If(!ShowMessage("$YK_UndoPacifyMsg{" + name + "}"))
+        return
+      EndIf
+      rescue = ref
+    EndIf
+    Kudasai.UndoPacify(rescue)
   EndIf
 EndEvent
 
@@ -383,22 +418,63 @@ Event OnHighlightST()
     int i = s[1] as int
     int bit = Math.LeftShift(1, i)
     Form worn = Game.GetPlayer().GetWornForm(bit)
-    String name = worn.GetName()
-    If(name == "" || name == " ")
+    String name
+    If(!worn)
       name = "---"
+    Else
+       name = worn.GetName()
+      If(name == "" || name == " ")
+        name = "---"
+      EndIf
     EndIf
     SetInfoText("$YK_StripsHighlight{" + name + "}")
   EndIf
 EndEvent
 
+; --------------------- Default State
+State notifycolorchoice
+	Event OnColorOpenST()
+		SetColorDialogStartColor(iNotifyColorChoice)
+		SetColorDialogDefaultColor(0xFF0000)
+	EndEvent
+	Event OnColorAcceptST(int color)
+		iNotifyColorChoice = color
+		SetColorOptionValueST(iNotifyColorChoice)
+    ; Convert the color code into a hex string for display in notifications
+    String hex = ""
+    While(color != 0)
+      int c = color % 16
+      If(c < 10)
+        hex = c + hex
+      Else
+        hex = StringUtil.AsChar(55 + c) + hex
+      EndIf
+      color /= 16
+    EndWhile
+    While(StringUtil.GetLength(hex) < 6)
+      hex = "0" + hex
+    EndWhile
+    sNotifyColorChoice = "#" + hex
+	EndEvent
+EndState
+
 ; --------------------- Misc
 
-String Function GetCrosshairRefName()
+bool Function IsCrosshairRefDefeated()
   Actor ref = Game.GetCurrentCrosshairRef() as Actor
-  If (ref)
-    return ref.GetLeveledActorBase().GetName()
+  If(!ref)
+    return false
   Else
-    return "---"
+    return Kudasai.IsDefeated(ref)
+  EndIf
+EndFunction
+
+bool Function IsCrosshairRefPacified()
+  Actor ref = Game.GetCurrentCrosshairRef() as Actor
+  If(!ref)
+    return false
+  Else
+    return Kudasai.IsPacified(ref) && !Kudasai.IsDefeated(ref)
   EndIf
 EndFunction
 

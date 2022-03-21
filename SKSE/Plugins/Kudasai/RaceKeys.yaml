@@ -1,11 +1,8 @@
 # This file maps Race FormIDs to RaceKeys
-# Similar to how SexLab's RaceKeys work, RaceKeys are used to group individual Creature Races together, so that any Wolf'ish Creature
-# is recognized as such and can use Wolf specific Animations! 
-# The list includes all Vanilla Creature Races so if you're not here to add a new Creature Race added by another mod, there is little
-# reason to touch any of this. If you want to add a new Creature, make sure it is compatible with the given RaceKey (i.e. uses the same
-# Skeleton as other Creatures of this RaceKey)
-# To add your own Creature, navigdate down to "AdditionalRaces" and write a new key with the syntax: "[FormID]->[ModName]": [RaceKey]
+# The list covers all relevant Vanilla Races, unless you want to include a Race added by another mod, there is no reason for your to be here
+# To add a new, custom Race, navigdate down to "AdditionalRaces" and write a new key with the syntax: "[FormID]->[ModName]: [RaceKey]"
 # For example: 0xABCDEF->CustomCreature.esp: Wolf
+# You cannot add new RaceKey defintions.
 Races:
   0x0401B658: AshHopper
   0x000131F5: AtronachFlame
