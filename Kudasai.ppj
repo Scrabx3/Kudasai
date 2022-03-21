@@ -4,7 +4,7 @@
     Output="Scripts" 
     Optimize="true" 
     Anonymize="true" 
-    Zip="false">
+    Zip="true">
     <Variables>
         <Variable Name="ModName" Value="Kudasai"/>
         <Variable Name="ThisProject" Value="."/>
@@ -34,4 +34,15 @@
     <Folders>
         <Folder>.\Source\Scripts</Folder>
     </Folders>
+    <ZipFiles Output="@Rel">
+        <ZipFile Name="@ModName - @Ver" RootDir="@ThisProject" Compression="deflate">
+        	<Include>YKudasai.esp</Include>
+            <Include>Interface</Include>
+            <Include>meshes</Include>
+            <Include>Scripts</Include>
+            <Include>Seq</Include>
+            <Include>SKSE</Include>
+            <Include>Source</Include>
+        </ZipFile>
+    </ZipFiles>
 </PapyrusProject>
