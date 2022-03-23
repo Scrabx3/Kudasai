@@ -43,3 +43,27 @@ Function FinalizeRescue(Actor subject) global
   ActorUtil.RemovePackageOverride(subject, p)
   subject.EvaluatePackage()
 EndFunction
+
+; Called by the .dll
+Function FinalizeAnimationStart(Actor subject) global
+  ; Cleanup Actor State
+  subject.StopCombat()
+  subject.SheatheWeapon()
+  If(subject.IsSneaking())
+    subject.StartSneaking()
+  EndIf
+  ; Apply Package
+  If(subject != Game.GetPlayer())
+    Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package
+    ActorUtil.AddPackageOverride(subject, p)
+    subject.EvaluatePackage()
+  EndIf
+EndFunction
+
+Function FinalizeAnimationEnd(Actor subject) global
+  If(subject != Game.GetPlayer())
+    Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package
+    ActorUtil.RemovePackageOverride(subject, p)
+    subject.EvaluatePackage()
+  EndIf
+EndFunction

@@ -343,17 +343,16 @@ Event OnKeyMapChangeST(int newKeyCode, string conflictControl, string conflictNa
 		EndIf
   EndIf
   If(s[0] == "surrenderkey")
-      iSurrenderKey = newKeyCode
-      SetKeyMapOptionValueST(iSurrenderKey)
-    ElseIf(s[0] == "hunterpridekey")
-      iHunterPrideKey = newKeyCode
-      SetKeyMapOptionValueST(iHunterPrideKey)
-    ElseIf(s[0] == "assaultkey")
-      iAssaultKey = newKeyCode
-      SetKeyMapOptionValueST(iAssaultKey)
-    EndIf
-    ; TODO: main.updatekeys()
-    return
+    iSurrenderKey = newKeyCode
+    SetKeyMapOptionValueST(iSurrenderKey)
+  ElseIf(s[0] == "hunterpridekey")
+    iHunterPrideKey = newKeyCode
+    SetKeyMapOptionValueST(iHunterPrideKey)
+  ElseIf(s[0] == "assaultkey")
+    iAssaultKey = newKeyCode
+    SetKeyMapOptionValueST(iAssaultKey)
+  EndIf
+  ((Self as Quest) as KudasaiMain).RegisterKeys()
 EndEvent
 
 Event OnInputOpenST()
