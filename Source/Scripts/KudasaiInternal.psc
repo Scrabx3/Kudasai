@@ -47,8 +47,6 @@ EndFunction
 ; Called by the .dll
 Function FinalizeAnimationStart(Actor subject) global
   ; Cleanup Actor State
-  subject.StopCombat()
-  subject.SheatheWeapon()
   If(subject.IsSneaking())
     subject.StartSneaking()
   EndIf

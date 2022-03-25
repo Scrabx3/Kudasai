@@ -57,8 +57,11 @@ b -a KudasaiRefuse RefuseGesture.hkx
 b -a KudasaiSurrender Surrender.hkx
 b -a KudasaiStripSelf StrippingSelf.hkx
 
+b -a KudasaiSearchBleedout SearchBleedout.hkx
+
 b KudasaiTraumeLie BaboDefeatTraumaLie.hkx
 b KudasaiTraumeStand BaboDefeatTraumaStand.hkx
+
 
 ' Struggle
 s -a,Tn KudasaiHumanStruggleA1S1 HumanStruggleA1S1.hkx
