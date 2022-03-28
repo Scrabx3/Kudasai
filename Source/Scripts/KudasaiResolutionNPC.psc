@@ -86,6 +86,7 @@ EndEvent
 Function HandlePostScene(Actor[] positions)
   int id = GetLoopID(positions)
   ; IDEA: alternate algorithm to remove victoires, considering only the actors in positions[] rather than everyone in the group
+  ; Prbly dont want this cause.. well.. its NPC. Player shouldnt care too much about this
   If(GetStage() < 10 || CheckoutAggressors(id) == 0)
     ; I never take Victims out of their Defeat Status, only thing to do here is to set their animation again
     Debug.SendAnimationEvent(Victims[id], "bleedoutstart")

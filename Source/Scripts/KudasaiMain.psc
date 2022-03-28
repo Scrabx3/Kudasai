@@ -65,7 +65,7 @@ Event NativeAssaultSLEnd(int tid, bool hasPlayer)
   Debug.Trace("[Kudasai] SL -> Native Assault End")
   ; For now, the end of an assault simply resets this Actor
   Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
-  Actor victim = KudasaiAnimationSL.GetVictimInScene(tid)
+  Actor victim = KudasaiAnimationSL.GetVictim(tid)
   Kudasai.DefeatActor(victim)
   int i = 0
   While(i < positions.Length)

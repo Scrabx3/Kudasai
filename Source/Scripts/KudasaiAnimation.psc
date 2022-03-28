@@ -2,6 +2,7 @@ Scriptname KudasaiAnimation Hidden
 {Main Script for Scene Starting}
 
 ; Assume this to be called with only npc or equal races as partners, partners.length <= 4
+; Return -1 on failure
 int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool checkarousal = false) global
   Debug.Trace("[Kudasai] Create Assault -> Victim = " + victim + " partners = " + partners + " Hook = " + hook)
   KudasaiMCM MCM = KudasaiInternal.GetMCM()

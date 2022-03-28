@@ -180,7 +180,7 @@ Actor[] Function GetPositions(int tid) global
   return controller.Positions
 EndFunction
 
-Actor Function GetVictimInScene(int tid) global
+Actor Function GetVictim(int tid) global
   SexLabFramework SL = SexLabUtil.GetAPI()
   sslThreadController Controller = SL.GetController(tid)
   return Controller.VictimRef

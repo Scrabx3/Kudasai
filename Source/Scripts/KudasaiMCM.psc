@@ -22,7 +22,15 @@ String Property sNotifyColorChoice = "#FF0000" Auto Hidden
 ; ----------- Combat
 
 bool Property bMidCombatAssault = true Auto Hidden
+float Property fMidCombatBlackout = 10.0 Auto Hidden
+
 bool Property bPostCombatAssault = true Auto Hidden
+
+bool Property bStealArmor = true Auto Hidden
+
+int Property iMaxAssaults = 6 Auto Hidden
+bool Property bOnlyRapistsQuit = false Auto Hidden
+float Property fRapistQuits = 15.0 Auto Hidden
 
 ; ----------- Defeat
 bool Property bLethalEssential = true Auto Hidden
@@ -97,9 +105,18 @@ Event OnPageReset(string page)
     AddColorOptionST("notifycolorchoice", "$YK_NotifyColorChoice", iNotifyColorChoice, getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored))
 
   ElseIf (page == "$YK_Defeat")
-    AddHeaderOption("$YM_Assault")
+    AddHeaderOption("$YM_MidCombat")
     AddToggleOptionST("midcmbtassault", "$YK_MidCmbtAssault", bMidCombatAssault, getFlag(FrameAny))
+    AddSliderOptionST("midcmbtblackout", "$YK_MidCmbtBlackout", fMidCombatBlackout, "{1}%")
+
+    AddHeaderOption("$YK_PostCombat")
     AddToggleOptionST("postcmbtassault", "$YK_PostCmbtAssault", bPostCombatAssault, getFlag(FrameAny))
+    AddEmptyOption()
+    AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
+    AddEmptyOption()
+    AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}", getFlag(FrameAny))
+    AddToggleOptionST("postcmbtrapistquit", "$YK_OnlyRapistsQuit", bOnlyRapistsQuit, getFlag(FrameAny))
+    AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%", getFlag(FrameAny))
 
     SetCursorPosition(1)
     AddHeaderOption("$YK_Lethal")
@@ -188,6 +205,12 @@ Event OnSelectST()
   ElseIf(s[0] == "lethalessential")
     bLethalEssential = !bLethalEssential
     SetToggleOptionValueST(bLethalEssential)
+  ElseIf(s[0] == "postcmbtkeeparmor")
+    bStealArmor = !bStealArmor
+    SetToggleOptionValueST(bStealArmor)
+  ElseIf(s[0] == "postcmbtrapistquit")
+    bOnlyRapistsQuit = !bOnlyRapistsQuit
+    SetToggleOptionValueST(bOnlyRapistsQuit)
 
   ; --------------- NSFW
   ElseIf(s[0] == "sltagsreadme")
@@ -258,6 +281,21 @@ Event OnSliderOpenST()
 		SetSliderDialogDefaultValue(30)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.5)
+	ElseIf(s[0] == "midcmbtblackout")
+		SetSliderDialogStartValue(fMidCombatBlackout)
+		SetSliderDialogDefaultValue(30)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.5)
+	ElseIf(s[0] == "postcmbtmaxassaults")
+		SetSliderDialogStartValue(iMaxAssaults)
+		SetSliderDialogDefaultValue(4)
+		SetSliderDialogRange(0, 25)
+		SetSliderDialogInterval(1)
+	ElseIf(s[0] == "postcmbtrapiststays")
+		SetSliderDialogStartValue(fRapistQuits)
+		SetSliderDialogDefaultValue(30)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.5)
 
   ; --------------- NSFW
 	ElseIf(s[0] == "sexlabweight")
@@ -302,6 +340,15 @@ Event OnSliderAcceptST(float value)
 	ElseIf(s[0] == "lethalnpc")
 		fLethalNPC = value
 		SetSliderOptionValueST(fLethalNPC, "{1}%")
+	ElseIf(s[0] == "midcmbtblackout")
+		fMidCombatBlackout = value
+		SetSliderOptionValueST(fMidCombatBlackout, "{1}%")
+	ElseIf(s[0] == "postcmbtmaxassaults")
+		iMaxAssaults = value as int
+		SetSliderOptionValueST(iMaxAssaults, "{0}")
+	ElseIf(s[0] == "postcmbtrapiststays")
+		fRapistQuits = value
+		SetSliderOptionValueST(fRapistQuits, "{1}%")
 
   ; --------------- NSFW
 	ElseIf(s[0] == "sexlabweight")
@@ -397,6 +444,16 @@ Event OnHighlightST()
     SetInfoText("$YK_LethalPlayerHighlight")
   ElseIf(s[0] == "lethalnpc")
     SetInfoText("$YK_LethalNPCHighlight")
+  ElseIf(s[0] == "midcmbtblackout")
+    SetInfoText("$YK_MidCmbtBlackoutHighlight")
+  ElseIf(s[0] == "postcmbtkeeparmor")
+    SetInfoText("$YK_StealArmorHighlight")
+  ElseIf(s[0] == "postcmbtrapistquit")
+    SetInfoText("$YK_OnlyRapistsQuitHighlight")
+  ElseIf(s[0] == "postcmbtmaxassaults")
+    SetInfoText("$YK_MaxAssaultsHighlight")
+  ElseIf(s[0] == "postcmbtrapiststays")
+    SetInfoText("$YK_RapistQuitsHighlight")
 
   ; --------------- NSFW
   ElseIf(s[0] == "sexlabweight")
