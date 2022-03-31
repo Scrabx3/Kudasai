@@ -6,29 +6,31 @@ Scriptname KudasaiAnimation Hidden
 int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool checkarousal = false) global
   Debug.Trace("[Kudasai] Create Assault -> Victim = " + victim + " partners = " + partners + " Hook = " + hook)
   KudasaiMCM MCM = KudasaiInternal.GetMCM()
-  Keyword ATNPC = Keyword.GetKeyword("ActorTypeNPC")
   int res = -1
-  If(!victim.HasKeyword(ATNPC) || !partners[0].HasKeyword(ATNPC))
-    If(MCM.iSLWeight > 0)
-      If(checkarousal)
-        KudasaiAnimationSL.FilterArousal(partners)
+  If(MCM.FrameAny)
+    Keyword ATNPC = Keyword.GetKeyword("ActorTypeNPC")
+    If(!victim.HasKeyword(ATNPC) || !partners[0].HasKeyword(ATNPC))
+      If(MCM.FrameCreature)
+        If(checkarousal)
+          KudasaiAnimationSL.FilterArousal(partners)
+        EndIf
+        Actor[] positions = PapyrusUtil.PushActor(partners, victim)
+        res = KudasaiAnimationSL.CreateAnimation(MCM, positions, victim, hook)
       EndIf
-      Actor[] positions = PapyrusUtil.PushActor(partners, victim)
-      res = KudasaiAnimationSL.CreateAnimation(MCM, positions, victim, hook)
-    EndIf
-  Else
-    int frame = MCM.iSLWeight + MCM.iOStimWeight
-    If(Utility.RandomInt(0, frame) < MCM.iSLWeight)
-      If(checkarousal)
-        KudasaiAnimationSL.FilterArousal(partners)
-      EndIf
-      Actor[] positions = PapyrusUtil.PushActor(partners, victim)
-      res = KudasaiAnimationSL.CreateAnimation(MCM, positions, victim, hook)
     Else
-      If(checkarousal)
-        KudasaiAnimationOStim.FilterArousal(partners)
+      int frame = MCM.iSLWeight + MCM.iOStimWeight
+      If(Utility.RandomInt(0, frame) < MCM.iSLWeight)
+        If(checkarousal)
+          KudasaiAnimationSL.FilterArousal(partners)
+        EndIf
+        Actor[] positions = PapyrusUtil.PushActor(partners, victim)
+        res = KudasaiAnimationSL.CreateAnimation(MCM, positions, victim, hook)
+      Else
+        If(checkarousal)
+          KudasaiAnimationOStim.FilterArousal(partners)
+        EndIf
+        res = KudasaiAnimationOStim.CreateAnimation(MCM, victim, partners, partners[0])
       EndIf
-      res = KudasaiAnimationOStim.CreateAnimation(MCM, victim, partners, partners[0])
     EndIf
   EndIf
   If (res == -1)
@@ -62,28 +64,32 @@ EndFunction
 
 int Function CreateAnimationCustom2p(KudasaiMCM MCM, Actor primus, Actor secundus, Actor victim, String tags, String hook) global
   Debug.Trace("[Kudasai] Custom 2p -> primus = " + primus + " partners = " + secundus + " Hook = " + hook)
-  Keyword ATNPC = Keyword.GetKeyword("ActorTypeNPC")
-  int res
-  If(!primus.HasKeyword(ATNPC) || !secundus.HasKeyword(ATNPC))
-    Actor[] positions = new Actor[2]
-    positions[0] = primus
-    positions[1] = secundus
-    res = KudasaiAnimationSL.CreateAnimationCustom(positions, victim, tags, hook)
-  Else
-    int frame = MCM.iSLWeight + MCM.iOStimWeight
-    If(Utility.RandomInt(0, frame) < MCM.iSLWeight)
-      Actor[] positions = new Actor[2]
-      positions[0] = primus
-      positions[1] = secundus
-      res = KudasaiAnimationSL.CreateAnimationCustom(positions, victim, tags, hook)
-    Else
-      Actor[] partners = new Actor[1]
-      partners[0] = secundus
-      Actor aggressor = none
-      If (victim)
-        aggressor = secundus
+  int res = -1
+  If(MCM.FrameAny)
+    Keyword ATNPC = Keyword.GetKeyword("ActorTypeNPC")
+    If(!primus.HasKeyword(ATNPC) || !secundus.HasKeyword(ATNPC))
+      If(MCM.FrameCreature)
+        Actor[] positions = new Actor[2]
+        positions[0] = primus
+        positions[1] = secundus
+        res = KudasaiAnimationSL.CreateAnimationCustom(positions, victim, tags, hook)
       EndIf
-      res = KudasaiAnimationOStim.CreateAnimation(MCM, primus, partners, aggressor)
+    Else
+      int frame = MCM.iSLWeight + MCM.iOStimWeight
+      If(Utility.RandomInt(0, frame) < MCM.iSLWeight)
+        Actor[] positions = new Actor[2]
+        positions[0] = primus
+        positions[1] = secundus
+        res = KudasaiAnimationSL.CreateAnimationCustom(positions, victim, tags, hook)
+      Else
+        Actor[] partners = new Actor[1]
+        partners[0] = secundus
+        Actor aggressor = none
+        If (victim)
+          aggressor = secundus
+        EndIf
+        res = KudasaiAnimationOStim.CreateAnimation(MCM, primus, partners, aggressor)
+      EndIf
     EndIf
   EndIf
   int handle

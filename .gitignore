@@ -1,2 +1,5 @@
 .vscode
 .release
+*.lib
+*.pdb
+*.exp

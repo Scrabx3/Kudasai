@@ -8,12 +8,15 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor[] positions, Actor victim, St
     Debug.Trace("[Kudasai] Not enough Actors", 1)
     return -1
   EndIf
+  SexLabFramework SL = SexLabUtil.GetAPI()
+  If(!SL.Enabled)
+    return -1
+  EndIf
   int v = ValidateArray(positions)
   If(v > -1)
     Debug.Trace("[Kudasai] Actor at " + v + "(" + positions[v] + ") is invalid, aborting", 2)
     return -1
   EndIf
-  SexLabFramework SL = SexLabUtil.GetAPI()
   SortActors(positions)
   int vpos = positions.find(victim)
   int[] genders = Utility.CreateIntArray(positions.length)
