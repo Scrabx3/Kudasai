@@ -50,7 +50,7 @@ int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool che
     ; If call from .dll & OStim call, remove damage negation here (otherwise do it in the SL start call)
     ; Also cache this actor for OStim end call
     If (res > 15 && StringUtil.Find(hook, "native") > -1)
-      StorageUtil.SetFormValue(MCM, "ostimNATIVE", victim)
+      StorageUtil.FormListAdd(MCM, "ostimNATIVE", victim)
       KudasaiInternal.SetDamageImmune(victim, false)
       int i = 0
       While(i < partners.Length)
@@ -129,8 +129,15 @@ int Function GetAllowedParticipants(int limit) global
   return limit
 EndFunction
 
+bool Function IsAnimating(Actor subject, KudasaiMCM MCM) global
+  If (MCM.iSLWeight > 0 && KudasaiAnimationSL.IsAnimating(subject))
+    return true
+  EndIf
+  return MCM.iOStimWeight > 0 && KudasaiAnimationOStim.StopAnimating(subject)
+EndFunction
+
 bool Function StopAnimating(Actor subject, KudasaiMCM MCM) global
-  If (MCM.iSLWeight > 0.0)
+  If (MCM.iSLWeight > 0)
     If (KudasaiAnimationSL.StopAnimating(subject))
       return true
     EndIf
@@ -141,4 +148,21 @@ bool Function StopAnimating(Actor subject, KudasaiMCM MCM) global
     EndIf
   EndIf
   return false
+EndFunction
+
+; Return -1 if the Victim is not animating
+; Return 0 if the Victim is animating but a Snatch is not permitted (= the Animation isnt called by Kudasai or the Animation is an OStim one)
+; Return 1 if the Victim is animating and a Snatch was successful
+int Function HookIfAnimating(Actor subject, KudasaiMCM MCM, String hook) global
+  Debug.Trace("[Kudasai] Snatching Animation from " + subject + " with new Hook = " + hook)
+  If (MCM.iSLWeight > 0)
+    int status = KudasaiAnimationSL.HookIfAnimating(subject, hook)
+    If(status > -1)
+      return status
+    EndIf
+  EndIf
+  If (MCM.iOStimWeight > 0 && KudasaiAnimationOStim.IsAnimating(subject))
+    return 0
+  EndIf
+  return -1
 EndFunction

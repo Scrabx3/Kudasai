@@ -200,6 +200,11 @@ bool Function IsLesserGender(int prim, int sec) global
   EndIf
 EndFunction
 
+bool Function IsAnimating(Actor subject) global
+  SexLabFramework SL = SexLabUtil.GetAPI()
+  return SL.FindActorController(subject) > -1
+EndFunction
+
 bool Function StopAnimating(Actor subject, int tid = -1) global
   SexLabFramework SL = SexLabUtil.GetAPI()
   if (tid == -1)
@@ -216,4 +221,25 @@ bool Function StopAnimating(Actor subject, int tid = -1) global
   endif
   controller.EndAnimation()
   return true
+EndFunction
+
+int Function HookIfAnimating(Actor subject, String hook) global
+  SexLabFramework SL = SexLabUtil.GetAPI()
+  int tid = SL.FindActorController(subject)
+  If(tid == -1)
+    Debug.Trace("[Kudasai] Actor = " + subject + " is not part of any SL Animation.")
+    return -1
+  EndIf
+  sslThreadController controller = SL.GetController(tid)
+  String[] hooks = controller.GetHooks()
+  Debug.Trace("[Kudasai] Actor is animating; hooks = " + hooks)
+  int i = 0
+  While(i < hooks.Length)
+    If(StringUtil.Find(hooks[i], "Kudasai_") > -1)
+      controller.SetHook(hook)
+      return 1
+    EndIf
+    i += 1
+  EndWhile
+  return 0
 EndFunction

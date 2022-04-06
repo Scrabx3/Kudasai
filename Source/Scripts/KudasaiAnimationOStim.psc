@@ -107,3 +107,8 @@ Actor[] Function GetPositions(int id) global
   EndIf
   return PapyrusUtil.ActorArray(0)
 EndFunction
+
+bool Function IsAnimating(Actor subject) global
+  OSexIntegrationMain OStim = OUtils.GetOStim()
+  return OStim.IsActorActive(subject)
+EndFunction

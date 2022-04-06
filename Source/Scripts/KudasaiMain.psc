@@ -22,8 +22,8 @@ Function Maintenance()
     MCM.bPostCombatAssault = false
   EndIf
 
-  RegisterForModEvent("HookAnimationStart_YKNativeAssault", "NativeAssaultSLStart")
-  RegisterForModEvent("HookAnimationEnd_YKNativeAssault", "NativeAssaultSLEnd")
+  RegisterForModEvent("HookAnimationStart_Kudasai_NativeAssault", "NativeAssaultSLStart")
+  RegisterForModEvent("HookAnimationEnd_Kudasai_NativeAssault", "NativeAssaultSLEnd")
   RegisterForModEvent("ostim_end", "NativeAssaultEndOStim")
 EndFunction
 
@@ -35,6 +35,9 @@ Function RegisterKeys()
 EndFunction
 
 Event OnKeyDown(int keyCode)
+  If(Utility.IsInMenuMode() || !Game.IsLookingControlsEnabled() || !Game.IsMovementControlsEnabled() || UI.IsMenuOpen("Dialogue Menu"))
+		return
+	EndIf
   If(keyCode == MCM.iSurrenderKey)
     If (!SurrenderQuest.Start())
       SurrenderQFailure.Show()
@@ -63,13 +66,12 @@ EndEvent
 
 Event NativeAssaultSLEnd(int tid, bool hasPlayer)
   Debug.Trace("[Kudasai] SL -> Native Assault End")
-  ; For now, the end of an assault simply resets this Actor
   Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
   Actor victim = KudasaiAnimationSL.GetVictim(tid)
   Kudasai.DefeatActor(victim)
   int i = 0
   While(i < positions.Length)
-    If (positions[i] != victim)
+    If(positions[i] != victim)
       Kudasai.UndoPacify(positions[i])
     EndIf
     i += 1
@@ -78,16 +80,21 @@ EndEvent
 
 Event NativeAssaultEndOStim(string asEventName, string asStringArg, float afNumArg, form akSender)
   Actor[] positions = KudasaiAnimationOStim.GetPositions(afNumArg as int)
-  Actor victim = StorageUtil.GetFormValue(MCM, "ostimNATIVE") as Actor
-  If (!victim || positions.find(victim) == -1)
+  int where = -1
+  int n = 0
+  While(n < positions.Length && where == -1)
+    where = StorageUtil.FormListFind(MCM, "ostimNATIVE", positions[n])
+  EndWhile
+  Actor victim = StorageUtil.FormListPluck(MCM, "ostimNATIVE", where, none) as Actor
+  If (victim == none)
     return
   EndIf
   Debug.Trace("[Kudasai] OStim -> Native Assault End")
-  StorageUtil.SetFormValue(MCM, "ostimNATIVE", none)
-  Kudasai.DefeatActor(victim)
   int i = 0
   While(i < positions.Length)
-    If (positions[i] != victim)
+    If(positions[i] == victim)
+      Kudasai.DefeatActor(positions[i])
+    Else
       Kudasai.UndoPacify(positions[i])
     EndIf
     i += 1
