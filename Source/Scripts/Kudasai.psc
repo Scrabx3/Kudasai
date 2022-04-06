@@ -18,12 +18,12 @@ bool Function IsPacified(Actor subject) native global
 ; ================================ ObjectReference
 ; Setting 'target' to 'none' unsets the Link
 Function SetLinkedRef(ObjectReference object, ObjectReference target, Keyword link = none) native global
+; Similar to ObjectRef.RemoveAll but will always skip quest items & can be set to ignore worn armor or items below a certain value
+; if 'to' is 'none', the items will be deleted
+Function RemoveAllItems(ObjectReference from, ObjectReference to, bool excludeworn = true, int minvalue = 0) native global
 
 ; ================================ Actor
-; Similar to ObjectRef.RemoveAll but will always skip quest items & can be set to ignore worn armor or items below a certain value
-; if 'to' is 'none', the items will be deleted instead of transfered
-Function RemoveAllItems(Actor from, ObjectReference to, bool excludeworn = true, int minvalue = 0) native global
-Armor[] Function GetWornArmor(Actor subject, bool ignoreconfig) native global
+Armor[] Function GetWornArmor(Actor subject, bool ignore_config) native global
 
 ; ================================ Config
 ; Checks for the subjects RaceKey. Always returns true for NPC
