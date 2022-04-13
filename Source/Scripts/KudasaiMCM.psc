@@ -1,5 +1,7 @@
 Scriptname KudasaiMCM extends SKI_ConfigBase
 
+Function UpdateWeights() native
+
 ; --------------------- Properties
 
 String red = "<font color = '#c70700'>"
@@ -21,7 +23,7 @@ String Property sNotifyColorChoice = "#FF0000" Auto Hidden
 
 ; ----------- Combat
 
-bool Property bMidCombatAssault = true Auto Hidden
+; bool Property bMidCombatAssault = true Auto Hidden
 float Property fMidCombatBlackout = 10.0 Auto Hidden
 
 bool Property bPostCombatAssault = true Auto Hidden
@@ -29,10 +31,10 @@ bool Property bPostCombatAssault = true Auto Hidden
 bool Property bStealArmor = true Auto Hidden
 
 int Property iMaxAssaults = 6 Auto Hidden
-bool Property bOnlyRapistsQuit = false Auto Hidden
 float Property fRapistQuits = 15.0 Auto Hidden
 
 ; ----------- Defeat
+
 bool Property bLethalEssential = true Auto Hidden
 float Property fLethalPlayer = 100.0 Auto Hidden
 float Property fLethalNPC = 100.0 Auto Hidden
@@ -67,6 +69,11 @@ float Property fOStimDurMax = 60.0 Auto Hidden
 
 int Property iStrips = 1066390941 Auto Hidden
 
+; ----------- Consequences
+
+String[] Property ConTitle Auto Hidden
+Int[] Property ConWeight Auto Hidden
+
 ; --------------------- Menu
 
 int Function GetVersion()
@@ -74,15 +81,20 @@ int Function GetVersion()
 endFunction
 
 Event OnConfigInit()
-  Pages = new String[5]
+  Pages = new String[6]
   Pages[0] = "$YK_General"
   Pages[1] = "$YK_Defeat"
   Pages[2] = "$YK_NSFW"
   Pages[3] = "$YK_Stripping"
-  Pages[4] = "$YK_Debug"
+  Pages[4] = "$YK_Consequences"
+  Pages[5] = "$YK_Debug"
 
   SLTags = new String[6]
   SLTags[2] = "femdom"
+EndEvent
+
+Event OnConfigClose()
+  UpdateWeights()
 EndEvent
 
 Event OnPageReset(string page)
@@ -106,7 +118,7 @@ Event OnPageReset(string page)
 
   ElseIf (page == "$YK_Defeat")
     AddHeaderOption("$YM_MidCombat")
-    AddToggleOptionST("midcmbtassault", "$YK_MidCmbtAssault", bMidCombatAssault, getFlag(FrameAny))
+    ; AddToggleOptionST("midcmbtassault", "$YK_MidCmbtAssault", bMidCombatAssault, getFlag(FrameAny))
     AddSliderOptionST("midcmbtblackout", "$YK_MidCmbtBlackout", fMidCombatBlackout, "{1}%")
 
     AddHeaderOption("$YK_PostCombat")
@@ -115,7 +127,6 @@ Event OnPageReset(string page)
     AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
     AddEmptyOption()
     AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}", getFlag(FrameAny))
-    AddToggleOptionST("postcmbtrapistquit", "$YK_OnlyRapistsQuit", bOnlyRapistsQuit, getFlag(FrameAny))
     AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%", getFlag(FrameAny))
 
     SetCursorPosition(1)
@@ -165,6 +176,18 @@ Event OnPageReset(string page)
       i += 1
     EndWhile
 
+  ElseIf(page == "$YK_Consequences")
+    SetCursorFillMode(LEFT_TO_RIGHT)
+    int i = 0
+    While(i < ConTitle.Length)
+      int val = ConWeight[i]
+      If(val == -1)
+        val = 0
+      EndIf
+      AddSliderOptionST("Con_" + i, ConTitle[i], val, "{0}", getFlag(ConWeight[i] > -1))
+      i += 1
+    EndWhile
+
   ElseIf (page == "$YK_Debug")
     AddHeaderOption("$YK_Defeat")
     bool pldefeated = Kudasai.IsDefeated(Game.GetPlayer())
@@ -196,9 +219,9 @@ Event OnSelectST()
     SetOptionFlagsST(getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored), false, "notifycolorchoice")
 
   ; --------------- Defeat
-  ElseIf(s[0] == "midcmbtassault")
-    bMidCombatAssault = !bMidCombatAssault
-    SetToggleOptionValueST(bMidCombatAssault)
+  ; ElseIf(s[0] == "midcmbtassault")
+  ;   bMidCombatAssault = !bMidCombatAssault
+  ;   SetToggleOptionValueST(bMidCombatAssault)
   ElseIf(s[0] == "postcmbtassault")
     bPostCombatAssault = !bPostCombatAssault
     SetToggleOptionValueST(bPostCombatAssault)
@@ -208,9 +231,6 @@ Event OnSelectST()
   ElseIf(s[0] == "postcmbtkeeparmor")
     bStealArmor = !bStealArmor
     SetToggleOptionValueST(bStealArmor)
-  ElseIf(s[0] == "postcmbtrapistquit")
-    bOnlyRapistsQuit = !bOnlyRapistsQuit
-    SetToggleOptionValueST(bOnlyRapistsQuit)
 
   ; --------------- NSFW
   ElseIf(s[0] == "sltagsreadme")
@@ -328,6 +348,14 @@ Event OnSliderOpenST()
 		SetSliderDialogDefaultValue(60)
 		SetSliderDialogRange(fOStimDurMin, 600)
 		SetSliderDialogInterval(0.5)
+
+  ; --------------- Consequence
+  ElseIf(s[0] == "Con")
+    int i = s[1] as int
+		SetSliderDialogStartValue(ConWeight[i])
+		SetSliderDialogDefaultValue(50)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
   EndIf
 EndEvent
 
@@ -369,6 +397,12 @@ Event OnSliderAcceptST(float value)
 	ElseIf(s[0] == "ostimdurmax")
 		fOStimDurMax = value
 		SetSliderOptionValueST(fOStimDurMax, "{1}s")
+    
+  ; --------------- Consequence
+  ElseIf(s[0] == "Con")
+    int i = s[1] as int
+		ConWeight[i] = value as int
+		SetSliderOptionValueST(ConWeight[i], "{0}")
   EndIf
 EndEvent
 
@@ -448,8 +482,6 @@ Event OnHighlightST()
     SetInfoText("$YK_MidCmbtBlackoutHighlight")
   ElseIf(s[0] == "postcmbtkeeparmor")
     SetInfoText("$YK_StealArmorHighlight")
-  ElseIf(s[0] == "postcmbtrapistquit")
-    SetInfoText("$YK_OnlyRapistsQuitHighlight")
   ElseIf(s[0] == "postcmbtmaxassaults")
     SetInfoText("$YK_MaxAssaultsHighlight")
   ElseIf(s[0] == "postcmbtrapiststays")
@@ -532,6 +564,18 @@ bool Function IsCrosshairRefPacified()
   Else
     return Kudasai.IsPacified(ref) && !Kudasai.IsDefeated(ref)
   EndIf
+EndFunction
+
+String Function GetCustomControl(int keyCode)
+	If(keyCode == iSurrenderKey)
+		return "Kudasai: Surrender"
+  ElseIf(keyCode == iHunterPrideKey)
+    return "Kudasai: Hunter's Pride"
+  ElseIf(keyCode == iAssaultKey)
+    return "Kudasai: Assault"
+  Else
+		return ""
+	EndIf
 EndFunction
 
 int Function getFlag(bool option)

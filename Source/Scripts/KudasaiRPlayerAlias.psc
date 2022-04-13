@@ -8,6 +8,7 @@ State Exhausted
   ; This State acts as a buffer to leave the Player non hostile towards Victoires. This State will last
   ; 15 seconds and is canceled early if the player does potentially "provoking"
 	Event OnBeginState()
+		Kudasai.RescueActor(Game.GetPlayer(), false)
     ; IDEA: Add an "exhausted" movement Idle here
 
 		RegisterForActorAction(8) ; Drawing Weapon
@@ -23,8 +24,7 @@ State Exhausted
 	EndEvent
 
 	Event OnEndState()
-		; Removes pacification..
-    GetOwningQuest().SetStage(499)
+    GetOwningQuest().Stop()
 	EndEvent
 EndState
 

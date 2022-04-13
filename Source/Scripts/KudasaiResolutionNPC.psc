@@ -193,7 +193,7 @@ int Function CheckoutAggressors(int id)
   int i = 0
   While(i < potentials.Length)
     If(Utility.RandomInt(0, 99) < 45)
-      Debug.Trace("[Kudasai] Checking out " + potentials[i] + " at " + i)
+      Debug.Trace("[Kudasai] Checking out " + potentials[i])
       Actor that = potentials[i] as Actor
       Aggressors[id].RemoveAddedForm(that)
       Kudasai.SetLinkedRef(that, none, rNPC[id])
@@ -232,9 +232,12 @@ Function ClearAlias(ObjectReference what)
 EndFunction
 
 Function ClearGroup(int id)
-  If(Victims.Length < id || Victims[id] == none)
+  Debug.Trace("Cleargroup in ID = " + id + " Victims.Length = " + Victims.Length)
+  If(Victims.Length <= id || Victims[id] == none)
     return
   EndIf
+  Debug.Trace("Clearing Group " + id + " with Victim = " + Victims[id])
+  Kudasai.SetLinkedRef(victims[id], none, rNPC[id])
   Victims[id].RemoveFromFaction(TmpFriends)
   Victims[id] = none
   Actor[] partners = TranslateToActorArray(Aggressors[id].ToArray())
