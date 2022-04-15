@@ -19,7 +19,6 @@ bool Function IsPacified(Actor subject) native global
 ; Setting 'target' to 'none' unsets the Link
 Function SetLinkedRef(ObjectReference object, ObjectReference target, Keyword link = none) native global
 ; Similar to ObjectRef.RemoveAll but will always skip quest items & can be set to ignore worn armor or items below a certain value
-; if 'to' is 'none', the items will be deleted
 Function RemoveAllItems(ObjectReference from, ObjectReference to, bool excludeworn = true, int minvalue = 0) native global
 
 ; ================================ Actor
@@ -28,7 +27,8 @@ Armor[] Function GetWornArmor(Actor subject, bool ignore_config) native global
 ; ================================ Config
 ; Checks for the subjects RaceKey. Always returns true for NPC
 bool Function ValidRace(Actor subject) native global
-bool Function IsInterrested(Actor subject, Actor[] partners) native global
+; Check if Actor is valid based on their 'sexuality'. If 'partner' is interested in 'subject'. Subject preference is ignored
+bool Function IsInterested(Actor subject, Actor partner) native global
 
 ; ================================ Utility
 Function ExcludeActor(Actor subject) native global
