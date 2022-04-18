@@ -322,6 +322,13 @@ Event KudasaiStruggle_KudasaiStruggle_0(Actor[] positions, bool VictimWon)
     anims[0] = "BleedoutStart"
     anims[1] = "IdleForceDefaultState"
     Kudasai.PlayBreakfreeCustom(positions, anims)
+    ; Derived from SLF
+    Debug.SendAnimationEvent(positions[1], "ReturnDefaultState") ; for chicken, hare and slaughterfish before the "ReturnToDefault"
+		Debug.SendAnimationEvent(positions[1], "ReturnToDefault") ; the rest creature-animal
+		Debug.SendAnimationEvent(positions[1], "FNISDefault") ; for dwarvenspider and chaurus
+		Debug.SendAnimationEvent(positions[1], "IdleReturnToDefault") ; for Werewolves and VampirwLords
+		Debug.SendAnimationEvent(positions[1], "ForceFurnExit") ; for Trolls afther the "ReturnToDefault" and draugr, daedras and all dwarven exept spiders
+		Debug.SendAnimationEvent(positions[1], "Reset") ; for Hagravens afther the "ReturnToDefault" and Dragons
     CreateCycle(0)
   EndIf
 EndEvent
@@ -338,6 +345,13 @@ Function PostStruggleFollower(Actor[] positions, int ID)
   anims[0] = "BleedoutStart"
   anims[1] = "IdleForceDefaultState"
   Kudasai.PlayBreakfreeCustom(positions, anims)
+  ; Derived from SLF
+  Debug.SendAnimationEvent(positions[1], "ReturnDefaultState") ; for chicken, hare and slaughterfish before the "ReturnToDefault"
+  Debug.SendAnimationEvent(positions[1], "ReturnToDefault") ; the rest creature-animal
+  Debug.SendAnimationEvent(positions[1], "FNISDefault") ; for dwarvenspider and chaurus
+  Debug.SendAnimationEvent(positions[1], "IdleReturnToDefault") ; for Werewolves and VampirwLords
+  Debug.SendAnimationEvent(positions[1], "ForceFurnExit") ; for Trolls afther the "ReturnToDefault" and draugr, daedras and all dwarven exept spiders
+  Debug.SendAnimationEvent(positions[1], "Reset") ; for Hagravens afther the "ReturnToDefault" and Dragons
   If(GetState() != "Breakfree")
     CreateCycle(ID)
   EndIf

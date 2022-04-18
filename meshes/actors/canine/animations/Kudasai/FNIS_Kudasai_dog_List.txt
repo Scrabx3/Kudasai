@@ -1,2 +1,2 @@
-b KudasaiWolfStruggle_A2_Start WolfStruggle_A2_Start.hkx 
-b -a KudasaiWolfStruggle_A2_Stop WolfStruggle_A2_Stop.hkx 
+b KudasaiWolfStruggle_A2_Start WolfStruggle_A2_Start.hkx
+b -a KudasaiWolfStruggle_A2_Stop WolfStruggle_A2_Stop.hkx

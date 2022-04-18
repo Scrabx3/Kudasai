@@ -2,4 +2,4 @@ Name: Default
 Data:
   ESP_Name: YKudasai.esp
   FormID: 0x808E86
-Blackout: fals
+Blackout: false
