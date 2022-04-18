@@ -1,7 +1,5 @@
 Scriptname KudasaiMCM extends SKI_ConfigBase
 
-Function UpdateWeights() native
-
 ; --------------------- Properties
 
 String red = "<font color = '#c70700'>"
@@ -94,7 +92,7 @@ Event OnConfigInit()
 EndEvent
 
 Event OnConfigClose()
-  UpdateWeights()
+  KudasaiInternal.UpdateWeights()
 EndEvent
 
 Event OnPageReset(string page)

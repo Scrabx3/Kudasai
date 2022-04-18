@@ -1,9 +1,5 @@
 Scriptname KudasaiRPlayerAlias extends ReferenceAlias  
 
-Event OnUpdate() ; Called by rPlayer Quest at Stage 100
-  GoToState("Exhausted")
-EndEvent
-
 State Exhausted
   ; This State acts as a buffer to leave the Player non hostile towards Victoires. This State will last
   ; 15 seconds and is canceled early if the player does potentially "provoking"

@@ -1,6 +1,7 @@
 Scriptname KudasaiInternal Hidden
 
-Function SetDamageImmune(Actor subject, bool immune) global native
+; Update the Weights in MCM Script
+Function UpdateWeights() native global
 
 KudasaiMCM Function GetMCM() global
   return Game.GetFormFromFile(0x7853F1, "YKudasai.esp") as KudasaiMCM

@@ -116,7 +116,7 @@ Event OnInit()
       Else ; Creature
         If (Creatures[0] == none)
           Debug.Trace("[Kudasai] First Creature")
-          If (Kudasai.ValidCreature(enemy))
+          If (Kudasai.ValidRace(enemy))
             Debug.Trace("[Kudasai] Race is valid, adding")
             Creatures[ci] = enemy
             ci += 1
@@ -273,7 +273,7 @@ Function Imprison(Faction crimefaction)
 EndFunction
 
 Function StripAndHandOver(Actor tostrip, Actor handover)
-  Armor[] wornz = Kudasai.GetWornArmor(tostrip)
+  Armor[] wornz = Kudasai.GetWornArmor(tostrip, false)
   Debug.Trace("<StripAndHandOver> Subject = " + tostrip + " Worn Armor = " + wornz)
   ; No need to check for DD, they use SLNoStrip
   Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
@@ -295,7 +295,7 @@ Function StripAndHandOverAll(Actor handover)
   int n = Followers.Length
   While(true)
     If (target)
-      Armor[] wornz = Kudasai.GetWornArmor(target)
+      Armor[] wornz = Kudasai.GetWornArmor(target, false)
       Debug.Trace("<StripAndHandOver> Subject = " + target + " Worn Armor = " + wornz)
       int i = 0
       While (i < wornz.length)

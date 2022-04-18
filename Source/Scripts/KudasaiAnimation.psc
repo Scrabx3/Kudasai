@@ -3,7 +3,7 @@ Scriptname KudasaiAnimation Hidden
 
 ; Assume this to be called with only npc or equal races as partners, partners.length <= 4
 ; Return -1 on failure
-int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool checkarousal = false) global
+int Function CreateAssault(Actor victim, Actor[] partners, String hook) global
   Debug.Trace("[Kudasai] Create Assault -> Victim = " + victim + " partners = " + partners + " Hook = " + hook)
   KudasaiMCM MCM = KudasaiInternal.GetMCM()
   int res = -1
@@ -11,54 +11,20 @@ int Function CreateAssault(Actor victim, Actor[] partners, String hook, bool che
     Keyword ATNPC = Keyword.GetKeyword("ActorTypeNPC")
     If(!victim.HasKeyword(ATNPC) || !partners[0].HasKeyword(ATNPC))
       If(MCM.FrameCreature)
-        If(checkarousal)
-          KudasaiAnimationSL.FilterArousal(partners)
-        EndIf
         Actor[] positions = PapyrusUtil.PushActor(partners, victim)
         res = KudasaiAnimationSL.CreateAnimation(MCM, positions, victim, hook)
       EndIf
     Else
       int frame = MCM.iSLWeight + MCM.iOStimWeight
       If(Utility.RandomInt(0, frame) < MCM.iSLWeight)
-        If(checkarousal)
-          KudasaiAnimationSL.FilterArousal(partners)
-        EndIf
         Actor[] positions = PapyrusUtil.PushActor(partners, victim)
         res = KudasaiAnimationSL.CreateAnimation(MCM, positions, victim, hook)
       Else
-        If(checkarousal)
-          KudasaiAnimationOStim.FilterArousal(partners)
-        EndIf
         res = KudasaiAnimationOStim.CreateAnimation(MCM, victim, partners, partners[0])
       EndIf
     EndIf
   EndIf
-  If (res == -1)
-    Debug.Trace("[Kudasai] <CreateAssault> Animation = -1", 1)
-    ; If call from .dll failed, force the victim into Bleedout & unpacify the aggressors
-    If (StringUtil.Find(hook, "native") > -1)
-      Kudasai.DefeatActor(victim)
-      int i = 0
-      While(i < partners.Length)
-        KudasaiInternal.SetDamageImmune(partners[i], false)
-        Kudasai.UndoPacify(partners[i])
-        i += 1
-      EndWhile
-    EndIf
-  Else
-    Debug.Trace("[Kudasai] <CreateAssault> Animation = " + res, 0)
-    ; If call from .dll & OStim call, remove damage negation here (otherwise do it in the SL start call)
-    ; Also cache this actor for OStim end call
-    If (res > 15 && StringUtil.Find(hook, "native") > -1)
-      StorageUtil.FormListAdd(MCM, "ostimNATIVE", victim)
-      KudasaiInternal.SetDamageImmune(victim, false)
-      int i = 0
-      While(i < partners.Length)
-        KudasaiInternal.SetDamageImmune(partners[i], false)
-        i += 1
-      EndWhile
-    EndIf
-  EndIf
+  Debug.Trace("[Kudasai] <CreateAssault> Animation = " + res, (res == -1) as int)
   return res
 EndFunction
 
