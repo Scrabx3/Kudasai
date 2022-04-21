@@ -33,11 +33,12 @@ bool Function IsInterested(Actor subject, Actor partner) native global
 
 ; ================================ Struggling
 ; Create a Struggle Animation with the given Actors. Animations are taken from "Struggle.yaml"
-; 'difficulty': NPC: Chance for the Victim to succeed // Player: Time to react (2.4 = Default, 1.5 = Hard, <= 1 = (Almost) Impossible)
-; 'callback': An Event Name to invoke when Struggle ends (see below)
+; 'difficulty': - NPC: Chance for the Victim to succeed
+;               - Player: Range from 0 ~ 3: Easy/Normal/Hard/Legendary
+; 'callback': A Form to send the below Event to. You do not need to register for this Event
 ; return true if the Struggle started successfully, false otherwise. See YameteKudasai.log or Console for failure reason
-bool Function CreateStruggle(Actor victim, Actor aggressor, float difficulty, String callback) native global
-Event KudasaiStruggle_callback(Actor[] positions, bool VictimWon) ; Replace "callback" with the passed in callback name
+bool Function CreateStruggle(Actor victim, Actor aggressor, int difficulty, Form callback) native global
+Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
 EndEvent
 ; Those are callback functions which will cleanup the struggle. A Struggle (incl its Animation) will continue even after the Callback until a Breakfree is called
 ; It is your responsibility to clean up the Struggle by calling one of these. Not doing so results in participating Actors becomming soft locked
