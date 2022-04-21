@@ -21,7 +21,6 @@ String Property sNotifyColorChoice = "#FF0000" Auto Hidden
 
 ; ----------- Combat
 
-; bool Property bMidCombatAssault = true Auto Hidden
 float Property fMidCombatBlackout = 10.0 Auto Hidden
 
 bool Property bPostCombatAssault = true Auto Hidden
@@ -57,6 +56,8 @@ int Property iOStimWeight = 0 Auto Hidden
 float Property fArousalNPC = 0.0 Auto Hidden
 float Property fArousalFollower = 0.0 Auto Hidden
 
+int[] Property iSceneTypeWeight Auto Hidden
+
 String[] Property SLTags Auto Hidden
 {F<-M // M<-M // M<-F // F<-F // M<-* // F<-*}
 
@@ -89,6 +90,12 @@ Event OnConfigInit()
 
   SLTags = new String[6]
   SLTags[2] = "femdom"
+
+  iSceneTypeWeight = new int[4]
+  iSceneTypeWeight[0] = 75 
+  iSceneTypeWeight[1] = 60
+  iSceneTypeWeight[2] = 35
+  iSceneTypeWeight[3] = 20
 EndEvent
 
 Event OnConfigClose()
@@ -116,7 +123,6 @@ Event OnPageReset(string page)
 
   ElseIf (page == "$YK_Defeat")
     AddHeaderOption("$YM_MidCombat")
-    ; AddToggleOptionST("midcmbtassault", "$YK_MidCmbtAssault", bMidCombatAssault, getFlag(FrameAny))
     AddSliderOptionST("midcmbtblackout", "$YK_MidCmbtBlackout", fMidCombatBlackout, "{1}%")
 
     AddHeaderOption("$YK_PostCombat")
@@ -143,6 +149,12 @@ Event OnPageReset(string page)
     AddHeaderOption("$YK_Arousal")
     AddSliderOptionST("arousalnpc", "$YK_ArousalNPC", fArousalNPC, "{1}", getFlag(SLThere || OStimThere))
     AddSliderOptionST("arousalfollower", "$YK_ArousalFollower", fArousalFollower, "{1}", getFlag(SLThere || OStimThere))
+    AddHeaderOption("$YK_SceneTypes")
+    int n = 0
+    While(n < iSceneTypeWeight.Length)
+      AddSliderOptionST("scenetype_" + n, "$YK_SceneType_" + n, iSceneTypeWeight[n], "{0}", getFlag(SLThere || OStimThere))
+      n += 1
+    EndWhile
 
     SetCursorPosition(1)
     AddHeaderOption("$YK_SexLab")
@@ -201,7 +213,10 @@ EndEvent
 Event OnSelectST()
   String[] s = StringUtil.Split(GetState(), "_")
   ; --------------- General
-  If(s[0] == "notifydefeat")
+  If(s[0] == "enabled")
+    bEnabled = !bEnabled
+    SetToggleOptionValueST(bEnabled)
+  ElseIf(s[0] == "notifydefeat")
     bNotifyDefeat = !bNotifyDefeat
     SetToggleOptionValueST(bNotifyDefeat, true)
     SetOptionFlagsST(getFlag(bNotifyDefeat || bNotifyDestroy), true, "notifycolored")
@@ -217,9 +232,6 @@ Event OnSelectST()
     SetOptionFlagsST(getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored), false, "notifycolorchoice")
 
   ; --------------- Defeat
-  ; ElseIf(s[0] == "midcmbtassault")
-  ;   bMidCombatAssault = !bMidCombatAssault
-  ;   SetToggleOptionValueST(bMidCombatAssault)
   ElseIf(s[0] == "postcmbtassault")
     bPostCombatAssault = !bPostCombatAssault
     SetToggleOptionValueST(bPostCombatAssault)
@@ -336,6 +348,12 @@ Event OnSliderOpenST()
 		SetSliderDialogDefaultValue(60)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.5)
+	ElseIf(s[0] == "scenetype")
+    int i = s[1] as int
+		SetSliderDialogStartValue(iSceneTypeWeight[i])
+		SetSliderDialogDefaultValue(50)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)    
 	ElseIf(s[0] == "ostimdurmin")
 		SetSliderDialogStartValue(fOStimDurMin)
 		SetSliderDialogDefaultValue(20)
@@ -389,6 +407,10 @@ Event OnSliderAcceptST(float value)
 	ElseIf(s[0] == "arousalfollower")
 		fArousalFollower = value
 		SetSliderOptionValueST(fArousalFollower, "{1}")
+	ElseIf(s[0] == "scenetype")
+    int i = s[1] as int
+		iSceneTypeWeight[i] = value as int
+		SetSliderOptionValueST(iSceneTypeWeight[i], "{1}")
 	ElseIf(s[0] == "ostimdurmin")
 		fOStimDurMin = value
 		SetSliderOptionValueST(fOStimDurMin, "{1}s")
@@ -494,6 +516,9 @@ Event OnHighlightST()
     SetInfoText("$YK_ArousalNPCHighlight")
   ElseIf(s[0] == "arousalfollower")
     SetInfoText("$YK_ArousalFollowerHighlight")
+  ElseIf(s[0] == "scenetype")
+    int i = s[1] as int
+    SetInfoText("$YK_SceneTypeHighlight_" + i)    
   ElseIf(s[0] == "ostimdurmin")
     SetInfoText("$YK_OStimDurMinHighlight")
   ElseIf(s[0] == "ostimdurmax")
