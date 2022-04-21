@@ -81,7 +81,6 @@ EndFunction
   If adult content is allowed, this will create a chain assault. NPC will gain some exclusive Dialogue
 /;
 Event OnUpdate()
-  Debug.Trace("[Kudasai] rPlayer Start")
   Actor pl = Game.GetPlayer()
   If(PlayerWerewolfQuest.IsRunning())
     IsWerewolf = 1 + ((pl.GetRace() == WerebearRace) as int)
@@ -113,9 +112,6 @@ bool Function CreateAssaultGroups()
   PrimGroup = PapyrusUtil.ActorArray(fp)
   SecGroup = PapyrusUtil.ActorArray(f)
   TerGroup = PapyrusUtil.ActorArray(f)
-  Debug.Trace("[Kudasai] Pre Loop: Prim.Length = " + PrimGroup.Length)
-  Debug.Trace("[Kudasai] Pre Loop: Sec.Length = " + SecGroup.Length)
-  Debug.Trace("[Kudasai] Pre Loop: Ter.Length = " + TerGroup.Length)
   ; Populate Refs
   Actor PlayerRef = Game.GetPlayer()
   Actor fol0 = Followers[0].GetReference() as Actor
@@ -173,13 +169,13 @@ bool Function CreateAssaultGroups()
   ; Start the individual Scenes now & create the shut down Condition
   If(!PrimGroup.Length)
     return false
-  ElseIf(ValidateEnemyNPC())
+  ElseIf(ValidateEnemyNPC() != none)
     ; No point to set this if there is no NPC in this Group
     Remembers = false
     float dayspassed = GameDaysPassed.Value
     int j = 0
     While(j < PrimGroup.Length)
-      If(StorageUtil.GetFloatValue(PrimGroup[j], "Kudasai_LastDefeat", -1.0) + 14.0 < dayspassed)
+      If(StorageUtil.GetFloatValue(PrimGroup[j], "Kudasai_LastDefeat", dayspassed) + 14.0 < dayspassed)
         Remembers = true
       EndIf
       StorageUtil.SetFloatValue(PrimGroup[j], "Kudasai_LastDefeat", dayspassed)
@@ -218,12 +214,10 @@ float Function GetNumFollowers()
   int i = 0
   While(i < Followers.Length)
     If(Followers[i].GetReference() == none)
-      Debug.Trace("[Kudasai] Counted Followers = " + i)
       return i
     EndIf
     i += 1
   EndWhile
-  Debug.Trace("[Kudasai] Counted Followers = " + i)
   return i
 EndFunction
 
@@ -234,7 +228,6 @@ float Function GetNumHostiles()
   While(i < Enemies.Length)
     Actor that = Enemies[i].GetReference() as Actor
     If(!that)
-      Debug.Trace("[Kudasai] Counted Hostiles = " + ret)
       return ret
     EndIf
     If(that.HasKeyword(ActorTypeNPC) || (MCM.FrameCreature && Kudasai.ValidRace(that)))
@@ -244,7 +237,6 @@ float Function GetNumHostiles()
     EndIf
     i += 1
   EndWhile
-  Debug.Trace("[Kudasai] Counted Hostiles = " + ret)
   return ret
 EndFunction
 
@@ -279,23 +271,20 @@ Actor Function ValidateEnemyNPC()
   EndIf
 EndFunction
 
-Function DoFollower(int ID)
-  ; This is only called for adult Scenes, for followers always use Struggle Scenes, Iguess
-  ; Should bring some more 'live' into this interaction since theres no Dialogue or so for followers
-  CreateStruggle(ID)
-EndFunction
-
 ; ============= STRUGGLE CYCLE
-; Assume this is only called for pure Creature Encounters
+; For Followers, all Assaults link into this first
+; For player, this is called for pure Creature encounters
 Function CreateStruggle(int ID)
-  Actor[] positions
+  Actor aggressor = none
   Actor victim
-  float difficulty
+  int difficulty
   If(ID == 0)
-    positions = PrimGroup
+    ; For the Player, this is only called for pure creature encounters
+    aggressor = PrimGroup[0]
     victim = Game.GetPlayer()
-    difficulty = 2.4 - (positions.Length * 0.2) - (0.26 / (victim.GetActorValuePercentage("Health") + 0.3) - 0.2)
+    difficulty = 1 + ((PrimGroup.Length > 3) as int) + ((victim.GetActorValuePercentage("Health") < 0.5) as int)
   Else
+    Actor[] positions
     If(ID == 1)
       positions = SecGroup
       victim = Followers[0].GetReference() as Actor
@@ -303,44 +292,44 @@ Function CreateStruggle(int ID)
       positions = TerGroup
       victim = Followers[1].GetReference() as Actor
     EndIf
+    ; Check if there are NPC in this Group, if not use Creatures
+    int i = 0
+    While(i < positions.Length)
+      If(positions[i].HasKeyword(ActorTypeNPC))
+        aggressor = positions[i]
+        i = positions.Length
+      Else
+        i += 1
+      EndIf
+    EndWhile
+    If(!aggressor)
+      aggressor = positions[0]
+    EndIf
     ; Make Followers always lose the struggle zz
     difficulty = 0
   EndIf
 
-  Kudasai.CreateStruggle(victim, positions[0], difficulty, "KudasaiStruggle_" + ID)
+  Kudasai.CreateStruggle(victim, aggressor, difficulty, self)
 EndFunction
 
-Event KudasaiStruggle_KudasaiStruggle_0(Actor[] positions, bool VictimWon)
-  Debug.Trace("[Kudasai] rPlayer -> Struggle Event hit for ID = 0")
+Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
+  Debug.Trace("[Kudasai] rPlayer -> Struggle End (Callback)")
+  int ID
   Actor PlayerRef = Game.GetPlayer()
-  If(VictimWon)
-    Kudasai.PlayBreakfree(positions)
-    Kudasai.RescueActor(PlayerRef, false)
-    GoToState("Breakfree")
+  If(positions.find(PlayerRef) > -1)
+    If(VictimWon)
+      Kudasai.PlayBreakfree(positions)
+      Kudasai.RescueActor(PlayerRef, false)
+      GoToState("Breakfree")
+      return
+    EndIf
+    ID = 0
+  ElseIf(positions.find(Followers[0].GetReference() as Actor) > -1)
+    ; Followers cant win the Struggle
+    ID = 1
   Else
-    String[] anims = new String[2]
-    anims[0] = "BleedoutStart"
-    anims[1] = "IdleForceDefaultState"
-    Kudasai.PlayBreakfreeCustom(positions, anims)
-    ; Derived from SLF
-    Debug.SendAnimationEvent(positions[1], "ReturnDefaultState") ; for chicken, hare and slaughterfish before the "ReturnToDefault"
-		Debug.SendAnimationEvent(positions[1], "ReturnToDefault") ; the rest creature-animal
-		Debug.SendAnimationEvent(positions[1], "FNISDefault") ; for dwarvenspider and chaurus
-		Debug.SendAnimationEvent(positions[1], "IdleReturnToDefault") ; for Werewolves and VampirwLords
-		Debug.SendAnimationEvent(positions[1], "ForceFurnExit") ; for Trolls afther the "ReturnToDefault" and draugr, daedras and all dwarven exept spiders
-		Debug.SendAnimationEvent(positions[1], "Reset") ; for Hagravens afther the "ReturnToDefault" and Dragons
-    CreateCycle(0)
+    ID = 2
   EndIf
-EndEvent
-Event KudasaiStruggle_KudasaiStruggle_1(Actor[] positions, bool VictimWon)
-  Debug.Trace("[Kudasai] rPlayer -> Struggle Event hit for ID = 1")
-  PostStruggleFollower(positions, 1)
-EndEvent
-Event KudasaiStruggle_KudasaiStruggle_2(Actor[] positions, bool VictimWon)
-  Debug.Trace("[Kudasai] rPlayer -> Struggle Event hit for ID = 2")
-  PostStruggleFollower(positions, 2)
-EndEvent
-Function PostStruggleFollower(Actor[] positions, int ID)
   String[] anims = new String[2]
   anims[0] = "BleedoutStart"
   anims[1] = "IdleForceDefaultState"
@@ -355,8 +344,7 @@ Function PostStruggleFollower(Actor[] positions, int ID)
   If(GetState() != "Breakfree")
     CreateCycle(ID)
   EndIf
-EndFunction
-
+EndEvent
 State Breakfree
   Event OnBeginState()
     RegisterForSingleUpdate(5)
@@ -398,19 +386,16 @@ Function CreateCycle(int ID)
 EndFunction
 
 Event PostAssaultSL_0(int tid, bool hasPlayer)
-  Debug.Trace("[Kudasai] SL End -> rPlayer ;; ID = 0")
   Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
   Actor victim = KudasaiAnimationSL.GetVictim(tid)
   CreateNewCycle(0, victim, positions)
 EndEvent
 Event PostAssaultSL_1(int tid, bool hasPlayer)
-  Debug.Trace("[Kudasai] SL End -> rPlayer ;; ID = 1")
   Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
   Actor victim = KudasaiAnimationSL.GetVictim(tid)
   CreateNewCycle(1, victim, positions)
 EndEvent
 Event PostAssaultSL_2(int tid, bool hasPlayer)
-  Debug.Trace("[Kudasai] SL End -> rPlayer ;; ID = 2")
   Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
   Actor victim = KudasaiAnimationSL.GetVictim(tid)
   CreateNewCycle(2, victim, positions)
@@ -432,12 +417,10 @@ Event PostAssaultOStim(string asEventName, string asStringArg, float afNumArg, f
   If(victim == none)
     return
   EndIf
-  Debug.Trace("[Kudasai] OStimEnd -> rPlayer ;; Victim = " + victim)
 
   CreateNewCycle(ID, victim, positions)
 EndEvent
 
-; Take the 
 Function CreateNewCycle(int ID, Actor victim, Actor[] oldpositions, bool firstcycle = false)
   Debug.Trace("[Kudasai] Creating new Cycle for ID = " + ID + " With Victim = " + Victim + " old positions = " + oldpositions)
   ; If player is too far away or a Shutdown Stage is set, dont start a new Scene
@@ -568,11 +551,6 @@ Function ClearGroup(ReferenceAlias[] group)
     group[i].TryToClear()
     i += 1
   EndWhile
-EndFunction
-
-Function CompleteCycle()
-  totalscenes -= 1
-  Debug.Trace("[Kudasai] Completing Cycle, remaining Cycles = " + totalscenes)
 EndFunction
 
 Function ForceStopScenes()

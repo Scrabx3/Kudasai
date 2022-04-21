@@ -82,11 +82,7 @@ int Function GetAllowedParticipants(int limit) global
   If(limit <= 2)
     return limit
   EndIf
-  int[] odds = new int[4]
-  odds[0] = 50 ; 2p
-  odds[1] = 85 ; 3p
-  odds[2] = 35 ; 4p
-  odds[3] = 20 ; 5p
+  int[] odds = KudasaiInternal.GetMCM().iSceneTypeWeight
   int res = KudasaiInternal.GetFromWeight(odds) + 1
   Debug.Trace("[Kudasai] <GetAllowedParticipants> res = " + res)
   If(res <= limit)
