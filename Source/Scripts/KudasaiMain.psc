@@ -99,10 +99,8 @@ Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
     Kudasai.PlayBreakfree(positions)
     positions[0].SendAssaultAlarm()
 
-    If(positions[1].GetActorValuePercentage("Health") > 0.2)
-      float dmg = positions[1].GetActorValueMax("Health") * 0.2
-      positions[1].DamageActorValue("Health", dmg)
-    EndIf
+    float dmg = positions[1].GetActorValue("Health") * 0.5
+    positions[1].DamageActorValue("Health", dmg)
   Else
     String[] anims = new String[2]
     anims[0] = "IdleForceDefaultState"

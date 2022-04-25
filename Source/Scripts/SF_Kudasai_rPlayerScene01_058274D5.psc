@@ -1,12 +1,11 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
-;NEXT FRAGMENT INDEX 11
+;NEXT FRAGMENT INDEX 12
 Scriptname SF_Kudasai_rPlayerScene01_058274D5 Extends Scene Hidden
 
-;BEGIN FRAGMENT Fragment_9
-Function Fragment_9()
+;BEGIN FRAGMENT Fragment_11
+Function Fragment_11()
 ;BEGIN CODE
-; Post Rob Dialogue, moved this into pre Rob Dialogue to have the NPC say his line 'while' robbing
-; (GetOwningQuest() as KudasaiRPlayer).RobVictim(Game.GetPlayer(), EnemyNPC.GetReference() as Actor)
+(GetOwningQuest() as KudasaiRPlayer).CreateStruggle(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -19,20 +18,21 @@ Function Fragment_10()
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_8
-Function Fragment_8()
-;BEGIN CODE
-(GetOwningQuest() as KudasaiRPlayer).CreateStruggle(0)
-;END CODE
-EndFunction
-;END FRAGMENT
-
 ;BEGIN FRAGMENT Fragment_4
 Function Fragment_4()
 ;BEGIN CODE
 KudasaiRPlayer q = GetOwningQuest() as KudasaiRPlayer
 q.QuitCycle(0)
 Stop()
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_9
+Function Fragment_9()
+;BEGIN CODE
+; Post Rob Dialogue, moved this into pre Rob Dialogue to have the NPC say his line 'while' robbing
+; (GetOwningQuest() as KudasaiRPlayer).RobVictim(Game.GetPlayer(), EnemyNPC.GetReference() as Actor)
 ;END CODE
 EndFunction
 ;END FRAGMENT

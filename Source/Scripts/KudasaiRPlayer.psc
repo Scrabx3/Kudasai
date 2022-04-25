@@ -308,8 +308,13 @@ Function CreateStruggle(int ID)
     ; Make Followers always lose the struggle zz
     difficulty = 0
   EndIf
+  Debug.Trace("Beginning Struggle for ID = " + ID + " (" + Victim + "), Aggressor = " + aggressor + " ;; Difficulty = " + difficulty)
 
-  Kudasai.CreateStruggle(victim, aggressor, difficulty, self)
+  If(!Kudasai.CreateStruggle(victim, aggressor, difficulty, self))
+    Debug.Trace("Failed to begin Struggle")
+    ToMapEdge.Start()
+    Stop()
+  EndIf
 EndFunction
 
 Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
@@ -455,9 +460,9 @@ Function CreateNewCycle(int ID, Actor victim, Actor[] oldpositions, bool firstcy
     EndIf
     Debug.Trace("[Kudasai] Removing Actors; Pre Removal = " + potentials)
     ; Checkout Aggressors
-    int i = 1 ; i = 0 is Victim, dont wanna checkout that
+    int i = 0
     While(i < oldpositions.Length)
-      If(Utility.RandomFloat(0, 99.5) < MCM.fRapistQuits)
+      If(oldpositions[i] != victim && (Utility.RandomFloat(0, 99.5) < MCM.fRapistQuits))
         int where = potentials.find(oldpositions[i])
         potentials[where] = none
       EndIf
