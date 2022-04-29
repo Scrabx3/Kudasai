@@ -22,8 +22,11 @@ Function SetLinkedRef(ObjectReference source, ObjectReference target, Keyword li
 Function RemoveAllItems(ObjectReference from, ObjectReference to, bool excludeworn = true) native global
 
 ; ================================ Actor
-; ignore_config: if Kudasais MCM settings should be ignored, i.e. true respects user preference, false returns all worn armor
+; ignore_config: true returns all worn armor, false respects user preference (MCM)
 Armor[] Function GetWornArmor(Actor subject, bool ignore_config) native global
+; Get the most efficien Potion (= the Potion which gets the Hp closest to max) for this subject from the given container
+; The function recognizes all Potions in the Players inventory which are pure and beneficial. Temporary effects are not recognized
+Potion Function GetMostEfficientPotion(Actor subject, ObjectReference container) native global
 
 ; ================================ Config
 ; Checks for the subjects RaceKey. Always returns true for NPC

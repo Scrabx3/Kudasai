@@ -3,6 +3,9 @@ Scriptname KudasaiInternal Hidden
 ; Update the Weights in MCM Script
 Function UpdateWeights() native global
 
+; Have copycat mimic models 3D
+ActorBase Function GetTemplateBase(Actor akActor) native global
+
 KudasaiMCM Function GetMCM() global
   return Game.GetFormFromFile(0x7853F1, "YKudasai.esp") as KudasaiMCM
 EndFunction

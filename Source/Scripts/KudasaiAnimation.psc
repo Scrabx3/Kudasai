@@ -4,7 +4,7 @@ Scriptname KudasaiAnimation Hidden
 ; Assume this to be called with only npc or equal races as partners, partners.length <= 4
 ; Return -1 on failure
 int Function CreateAssault(Actor victim, Actor[] partners, String hook) global
-  Debug.Trace("[Kudasai] Create Assault -> Victim = " + victim + " partners = " + partners + " Hook = " + hook)
+  Debug.Trace("[Kudasai] CreateAssault -> Victim = " + victim + " partners = " + partners + " Hook = " + hook)
   KudasaiMCM MCM = KudasaiInternal.GetMCM()
   int res = -1
   If(MCM.FrameAny)
@@ -24,12 +24,12 @@ int Function CreateAssault(Actor victim, Actor[] partners, String hook) global
       EndIf
     EndIf
   EndIf
-  Debug.Trace("[Kudasai] <CreateAssault> Animation = " + res, (res == -1) as int)
+  Debug.Trace("[Kudasai] CreateAssault Result = " + res, (res == -1) as int)
   return res
 EndFunction
 
 int Function CreateAnimationCustom2p(KudasaiMCM MCM, Actor primus, Actor secundus, Actor victim, String tags, String hook) global
-  Debug.Trace("[Kudasai] Custom 2p -> primus = " + primus + " partners = " + secundus + " Hook = " + hook)
+  Debug.Trace("[Kudasai] CreateAnimationCustom 2p -> primus = " + primus + " partners = " + secundus + " Hook = " + hook)
   int res = -1
   If(MCM.FrameAny)
     Keyword ATNPC = Keyword.GetKeyword("ActorTypeNPC")
@@ -58,22 +58,7 @@ int Function CreateAnimationCustom2p(KudasaiMCM MCM, Actor primus, Actor secundu
       EndIf
     EndIf
   EndIf
-  int handle
-  If (res == -1)
-    Debug.Trace("[Kudasai] <CreateAssault> Animation = -1", 1)
-    handle = ModEvent.Create("KCreatureAssaultFailure_" + hook)
-  Else
-    Debug.Trace("[Kudasai] <CreateAssault> Animation = " + res, 0)
-    handle = ModEvent.Create("KCreatureAssaultSuccess_" + hook)
-  EndIf
-  ModEvent.PushForm(handle, primus)
-  ModEvent.PushForm(handle, secundus)
-  int i = 0
-  While(i < 3)
-    ModEvent.PushForm(handle, none)
-    i += 1
-  EndWhile
-  ModEvent.Send(handle)
+  Debug.Trace("[Kudasai] CreateAnimationCustom Result = " + res, (res == -1) as int)
   return res
 EndFunction
 
