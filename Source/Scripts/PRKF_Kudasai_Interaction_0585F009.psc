@@ -9,24 +9,7 @@ Actor v = akTargetRef as Actor
 If(!v)
   return
 EndIf
-int choice = MenuTEMP.Show()
-If(choice == 1)
-  Capture(v)
-ElseIf(choice == 2)
-  Execute(v)
-ElseIf(choice == 3)
-  Feed(v)
-ElseIf(choice == 4)
-  Assault(v)
-ElseIf(choice == 5)
-  Rob(v)
-ElseIf(choice == 6)
-  Strip(v)
-ElseIf(choice == 7)
-  TieUp(v)
-ElseIf(choice == 8)
-  Rescue(v)
-EndIf
+OpenMenu(v)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -35,58 +18,94 @@ EndFunction
 
 Message Property MenuTEMP Auto
 
-;/
-- Capture
-- Execute
-- Feed (Kill Drain) (Vampire only)
-- Assault
-- Rob
-- Strip
-- Tie Up
-- Rescue
-/;
-
-; Capturing should lock a Victim away from the World map and store them somewhere
-; Goal of this Function will be to properly despawn and force an actor to stay persistent until released
-Function Capture(Actor Victim)
-  ; TODO: Check for Ring
-  Captures.Store(Victim)
-EndFunction
-
-; TODO: Add animation
-Function Execute(Actor Victim)
-  If(!CheckEssential(Victim))
-    return
+Function OpenMenu(Actor victim)
+  Actor PlayerRef = Game.GetPlayer()
+  ; Validate Worn Items
+  Armor[] worn = Kudasai.GetWornArmor(Victim, true)
+  Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
+  If(SexLabNoStrip)
+    Kudasai.RemoveArmorByKeyword(worn, SexLabNoStrip)
   EndIf
-  Victim.Kill(Game.GetPlayer())
+  Keyword ToysToy = Keyword.GetKeyword("ToysToy")
+  If(ToysToy)
+    Kudasai.RemoveArmorByKeyword(worn, ToysToy)
+  EndIf
+  Debug.Trace("[Kudasai] Robbing, Worn Armor = " + worn)
+  Potion healthpotion = Kudasai.GetMostEfficientPotion(victim, PlayerRef)
+  Debug.Trace("[Kudasai] Rescue, Potion = " + healthpotion)
+  ;/
+  - Capture
+  - Execute
+  - Feed (Kill Drain) (Vampire only)
+  - Assault
+  - Rob
+  - Strip
+  - Tie Up
+  - Rescue
+  /;
+  If(PlayerRef.GetItemCount(HunterSeal) > 0) ; Capture
+  EndIf
+  If(PlayerRef.HasKeyword(Vampire)) ; Vampire
+  EndIf
+  If(MCM.FrameAny) ; Assault
+  EndIf
+  If(worn.Length) ; Strip
+  EndIf
+  If(healthpotion) ; Rescue
+  EndIf
+  ; TODO: Replace with .swf Menu call
+  int result = MenuTEMP.Show()
+  Utility.Wait(0.5)
+
+  If(result == 1) ; Capture
+    Captures.Store(Victim)
+  ElseIf(result == 2) ; Execute
+    If(IsEssential(Victim))
+      return
+    EndIf
+    ; TODO: Add Animation
+    Victim.Kill(Game.GetPlayer())
+  ElseIf(result == 3) ; Feed
+    If(IsEssential(Victim))
+      return
+    EndIf
+    Game.GetPlayer().StartVampireFeed(Victim)
+    PlayerVampireQuest.VampireFeed()
+    Victim.Kill(Game.GetPlayer())
+  ElseIf(result == 4) ; Assault
+    Actor[] positions = new Actor[1]
+    positions[0] = Game.GetPlayer()
+    If(KudasaiAnimation.CreateAssault(Victim, positions, "KudasaiHunterAssault") == -1)
+      Debug.Notification("Failed to create Scene")
+      return
+    EndIf
+    Victim.SendAssaultAlarm()
+    RegisterForModEvent("ostim_end", "PostSceneOStim")
+    RegisterForModEvent("HookAnimationEnd_KudasaiHunterAssault", "PostSceneSL")
+  ElseIf(result == 5) ; Rob
+    Victim.OpenInventory(true)
+    Victim.SendAssaultAlarm()
+  ElseIf(result == 6) ; Strip
+    int i = 0
+    While (i < worn.length)
+      victim.UnequipItem(worn[i])
+      i += 1
+    EndWhile
+  ElseIf(result == 7) ; Tie Up
+    Debug.Notification("--- TODO: ---")
+  ElseIf(result == 8) ; Rescue
+    PlayerRef.RemoveItem(healthpotion, 1, true, Victim)
+    Victim.EquipItem(healthpotion, false, true)
+  EndIf
 EndFunction
 
-; Vampire Feed. This will always kill the Victim cause well.. theyre weak and stuff
-Function Feed(Actor Victim)
-  If(!CheckEssential(Victim))
-    return
-  EndIf
-  Game.GetPlayer().StartVampireFeed(Victim)
-  PlayerVampireQuest.VampireFeed()
-  Victim.Kill(Game.GetPlayer())
-EndFunction
-
-Function Assault(Actor Victim)
-  Actor[] positions = new Actor[1]
-  positions[0] = Game.GetPlayer()
-  If(KudasaiAnimation.CreateAssault(Victim, positions, "KudasaiHunterAssault") == -1)
-    Debug.Notification("Failed to create Scene")
-  EndIf
-  RegisterForModEvent("ostim_end", "PostSceneOStim")
-  RegisterForModEvent("HookAnimationEnd_KudasaiHunterAssault", "PostSceneSL")
-EndFunction
 Event PostSceneSL(int tid, bool hasPlayer)
   Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
   HandlePostScene(positions)
 EndEvent
 Event PostSceneOStim(string eventName, string strArg, float numArg, Form sender)
   Actor[] positions = KudasaiAnimationOStim.GetPositions(numArg as int)
-  If(numArg > -2 && positions.Find(Game.GetPlayer()) > -1)
+  If(positions.Find(Game.GetPlayer()) > -1)
     HandlePostScene(positions)
   EndIf
 EndEvent
@@ -101,50 +120,23 @@ Function HandlePostScene(Actor[] positions)
   EndWhile
 EndFunction
 
-Function Rob(Actor Victim)
-  Victim.OpenInventory(true)
-EndFunction
-
-Function Strip(Actor Victim)
-  Armor[] worn = Kudasai.GetWornArmor(Victim, true)
-  Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
-  Keyword ToysToy = Keyword.GetKeyword("ToysToy")
-  int i = 0
-  While (i < worn.length)
-    If ((!SexLabNoStrip || !worn[i].HasKeyword(SexLabNoStrip)) && (!ToysToy || !worn[i].HasKeyword(ToysToy)))
-      Victim.UnequipItem(worn[i], abSilent = true)
-    EndIf
-    i += 1
-  EndWhile
-EndFunction
-
-Function TieUp(Actor Victim)
-  Debug.Notification("--- TODO: ---")
-EndFunction
-
-Function Rescue(Actor Victim)
-  Actor Player = Game.GetPlayer()
-  Potion p = Kudasai.GetMostEfficientPotion(Victim, Player)
-  Debug.Trace("[Kudasai] HunterRescue -> Found Potion = " + p)
-  If(!p)
-    NoPotionMsg.Show()
-    return
-  EndIf
-  Player.RemoveItem(p, 1, true, Victim)
-  Victim.EquipItem(p, false, true)
-EndFunction
-
-bool Function CheckEssential(Actor Victim)
+bool Function IsEssential(Actor Victim)
   ActorBase base = Victim.GetLeveledActorBase()
   If(!base.IsEssential())
-    return true
+    return false
   EndIf
   If(EssentialConformation.Show() == 1)
     base.SetEssential(false)
-    return true
+    return false
   EndIf
-  return false
+  return true
 EndFunction
+
+Armor Property HunterSeal Auto
+
+Keyword Property Vampire Auto
+
+KudasaiMCM Property MCM Auto
 
 PlayerVampireQuestScript Property PlayerVampireQuest  Auto  
 

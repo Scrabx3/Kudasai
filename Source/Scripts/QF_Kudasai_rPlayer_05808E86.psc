@@ -2,14 +2,19 @@
 ;NEXT FRAGMENT INDEX 7
 Scriptname QF_Kudasai_rPlayer_05808E86 Extends Quest Hidden
 
-;BEGIN ALIAS PROPERTY Sec01
+;BEGIN ALIAS PROPERTY Ter02
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec01 Auto
+ReferenceAlias Property Alias_Ter02 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY EnemyAny
+;BEGIN ALIAS PROPERTY Enemy13
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_EnemyAny Auto
+ReferenceAlias Property Alias_Enemy13 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy01
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy01 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Enemy04
@@ -17,44 +22,14 @@ ReferenceAlias Property Alias_EnemyAny Auto
 ReferenceAlias Property Alias_Enemy04 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy18
+;BEGIN ALIAS PROPERTY Enemy12
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy18 Auto
+ReferenceAlias Property Alias_Enemy12 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Follower01
+;BEGIN ALIAS PROPERTY Enemy02
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Follower01 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Ter01
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ter01 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy14
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy14 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy19
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy19 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Ter05
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ter05 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Follower02
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Follower02 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy10
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy10 Auto
+ReferenceAlias Property Alias_Enemy02 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Enemy06
@@ -62,44 +37,14 @@ ReferenceAlias Property Alias_Enemy10 Auto
 ReferenceAlias Property Alias_Enemy06 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy17
+;BEGIN ALIAS PROPERTY Sec03
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy17 Auto
+ReferenceAlias Property Alias_Sec03 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Ter04
+;BEGIN ALIAS PROPERTY Sec01
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ter04 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy08
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy08 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy03
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy03 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Sec06
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec06 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy15
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy15 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy05
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy05 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy09
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy09 Auto
+ReferenceAlias Property Alias_Sec01 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY EnemyNPC
@@ -112,9 +57,9 @@ ReferenceAlias Property Alias_EnemyNPC Auto
 ReferenceAlias Property Alias_Enemy11 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Ter03
+;BEGIN ALIAS PROPERTY Enemy16
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ter03 Auto
+ReferenceAlias Property Alias_Enemy16 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Player
@@ -122,54 +67,34 @@ ReferenceAlias Property Alias_Ter03 Auto
 ReferenceAlias Property Alias_Player Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Sec04
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec04 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Ter02
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ter02 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Sec05
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec05 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy13
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy13 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Sec02
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec02 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy16
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy16 Auto
-;END ALIAS PROPERTY
-
 ;BEGIN ALIAS PROPERTY Enemy20
 ;ALIAS PROPERTY TYPE ReferenceAlias
 ReferenceAlias Property Alias_Enemy20 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy12
+;BEGIN ALIAS PROPERTY Enemy05
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy12 Auto
+ReferenceAlias Property Alias_Enemy05 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Ter06
+;BEGIN ALIAS PROPERTY Follower01
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ter06 Auto
+ReferenceAlias Property Alias_Follower01 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Sec03
+;BEGIN ALIAS PROPERTY Enemy03
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec03 Auto
+ReferenceAlias Property Alias_Enemy03 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy08
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy08 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Sec04
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec04 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Enemy07
@@ -177,14 +102,106 @@ ReferenceAlias Property Alias_Sec03 Auto
 ReferenceAlias Property Alias_Enemy07 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN FRAGMENT Fragment_5
-Function Fragment_5()
+;BEGIN ALIAS PROPERTY Ter06
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Ter06 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy10
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy10 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy15
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy15 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Sec06
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec06 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy17
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy17 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Follower02
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Follower02 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Ter03
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Ter03 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy19
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy19 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy18
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy18 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Sec02
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec02 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Sec05
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec05 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy09
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy09 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Ter01
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Ter01 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Ter04
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Ter04 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy14
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy14 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Ter05
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Ter05 Auto
+;END ALIAS PROPERTY
+
+;BEGIN FRAGMENT Fragment_4
+Function Fragment_4()
 ;BEGIN AUTOCAST TYPE KudasaiRPlayer
 Quest __temp = self as Quest
 KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
 ;END AUTOCAST
 ;BEGIN CODE
-; Loop end 2
+; First Loop Complete
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_6
+Function Fragment_6()
+;BEGIN AUTOCAST TYPE KudasaiRPlayer
+Quest __temp = self as Quest
+KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
+;END AUTOCAST
+;BEGIN CODE
+; Loop end 3
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -221,26 +238,14 @@ RegisterForSingleUpdate(1)
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_6
-Function Fragment_6()
+;BEGIN FRAGMENT Fragment_5
+Function Fragment_5()
 ;BEGIN AUTOCAST TYPE KudasaiRPlayer
 Quest __temp = self as Quest
 KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
 ;END AUTOCAST
 ;BEGIN CODE
-; Loop end 3
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_4
-Function Fragment_4()
-;BEGIN AUTOCAST TYPE KudasaiRPlayer
-Quest __temp = self as Quest
-KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
-;END AUTOCAST
-;BEGIN CODE
-; First Loop Complete
+; Loop end 2
 ;END CODE
 EndFunction
 ;END FRAGMENT

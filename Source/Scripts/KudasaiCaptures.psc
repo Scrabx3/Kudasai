@@ -26,32 +26,60 @@ bool Function Store(Actor subject)
   ; The reason why SLDefeat has issues is that it tries to capture the actor object itself in its holding cell, which clashes with the games actor cleanup
   ; Kudasai avoids that by making a copy of the exact actor instead. This also has the benefit that the captured npc will respawn normally after a cell 
   ; reset, supporting the idea that the bandits in the dungeon arent the same bandits you slaughtered the last time \o/
-  ActorBase vicbase = KudasaiInternal.GetTemplateBase(subject)
-  Actor victim
+  ActorBase vicbase = Kudasai.GetTemplateBase(subject)
   ; Before we do any NPC moving magic fade the screen out and beg that 0.15 seconds are enough for all of the things happenin here
   FadeToBlackAndBackFast.Apply()
   Utility.Wait(0.6)
   If(!vicbase)
-    victim = subject
+    subject.MoveTo(HoldingCellMarker)
     ; Can only be called on a defeated actor..
     Kudasai.RescueActor(subject, true)
+    empty.ForceRefTo(subject)
   Else
-    victim = subject.PlaceAtMe(vicbase, 1, false, true) as Actor
+    ObjectReference victim = subject.PlaceAtMe(vicbase)
+    victim.MoveTo(HoldingCellMarker)
+    empty.ForceRefTo(victim)
+    subject.DisableNoWait()
   EndIf
-  subject.DisableNoWait()
-  empty.ForceRefTo(victim)
-  victim.MoveTo(HoldingCellMarker)
-  victim.EnableNoWait()
   size += 1
 EndFunction
 
-bool Function Retrieve(Actor subject)
-
+bool Function Retrieve(Actor subject, ObjectReference place = none)
+  Alias[] aliases = GetAliases()
+  int i = 0
+  While(i < aliases.Length)
+    KudasaiCapturesAlias captured = aliases[i] as KudasaiCapturesAlias
+    If(captured.GetReference() as Actor == subject)
+      If(place)
+        subject.MoveTo(place)
+        Kudasai.DefeatActor(subject)
+      Else
+        subject.KillEssential(Game.GetPlayer())
+      EndIf
+      captured.Clear()
+      size -= 1
+      return true
+    EndIf
+    i += 1
+  EndWhile
+  return false
 EndFunction
 
-Actor[] Function GetAll()
+Actor[] Function GetAllCaptured()
+  Actor[] captures = PapyrusUtil.ActorArray(size)
+  Alias[] aliases = GetAliases()
+  int i = 0
+  int ii = 0
+  While(i < aliases.Length)
+    Actor captured = (aliases[i] as ReferenceAlias).GetReference() as Actor
+    If(captured != none)
+      captures[ii] = captured
+      ii += 1
+    EndIf
+    i += 1
+  EndWhile
+  return captures
 EndFunction
-
 
 ReferenceAlias Function GetFreeAlias()
   Alias[] aliases = GetAliases()

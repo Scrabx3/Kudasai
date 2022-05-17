@@ -63,6 +63,19 @@ Function ForceRef(ReferenceAlias[] list, ObjectReference object)
   EndWhile
 EndFunction
 
+; Sort _new into an empty Alias, or the one _old is occupying
+Function SwapRef(ReferenceAlias[] list, ObjectReference _new, ObjectReference _old)
+  int n = 0
+  While(n < list.Length)
+    ObjectReference ref = list[n].GetReference()
+    If(!ref || ref == _old)
+      list[n].ForceRefTo(_new)
+      return
+    EndIf
+    n += 1
+  EndWhile
+EndFunction
+
 Function ClearAliasByRef(ReferenceAlias[] list, ObjectReference ref)
   int i = 0
   While(i < list.Length)
@@ -81,9 +94,9 @@ EndFunction
   If adult content is allowed, this will create a chain assault. NPC will gain some exclusive Dialogue
 /;
 Event OnUpdate()
-  Actor pl = Game.GetPlayer()
+  Debug.Trace("[Kudasai] rPLayer -> START")
   If(PlayerWerewolfQuest.IsRunning())
-    IsWerewolf = 1 + ((pl.GetRace() == WerebearRace) as int)
+    IsWerewolf = 1 + ((Game.GetPlayer().GetRace() == WerebearRace) as int)
     PlayerWerewolfQuest.SetStage(100)
   Else
     IsWerewolf = 0
@@ -100,61 +113,39 @@ EndEvent
 
 ; Split the <= 20 collected Aliases into up to 3 groups, 1 Player + 2 Follower
 bool Function CreateAssaultGroups()
-  float numfollower = GetNumFollowers()
-  float hostiles = GetNumHostiles()
-  If(hostiles == 0.0)
+  Actor PlayerRef = Game.GetPlayer()
+  Actor[] fols = GetActors(Followers)
+  Actor[] hostiles = GetActors(Enemies)
+  int numfols = fols.Length - PapyrusUtil.CountActor(fols, none)
+  int numhostile = hostiles.Length - PapyrusUtil.CountActor(hostiles, none)
+  If(numhostile == 0)
     return false
   EndIf
-  ; At this point, the Quest contains only Aliases which are of valid Race (ie allowed to animate)
-  int f = Math.Floor(hostiles * 0.3) ; with <= 20 Aliases -> { f <= 6 }
-  int fp = Math.Floor(hostiles - f * numfollower)
-  int[] ff = Utility.CreateIntArray(2, f)
-  PrimGroup = PapyrusUtil.ActorArray(fp)
-  SecGroup = PapyrusUtil.ActorArray(f)
-  TerGroup = PapyrusUtil.ActorArray(f)
+  ; Create Arrays
+  int folsize = Math.floor((numhostile as float) / 3)
+  int playersize = hostiles.Length - folsize * numfols
+  Debug.Trace("folsize = " + folsize + " playersize = " + playersize)
+  PrimGroup = PapyrusUtil.ActorArray(playersize)
+  SecGroup = PapyrusUtil.ActorArray(folsize)
+  TerGroup = PapyrusUtil.ActorArray(folsize)
   ; Populate Refs
-  Actor PlayerRef = Game.GetPlayer()
-  Actor fol0 = Followers[0].GetReference() as Actor
-  Actor fol1 = Followers[1].GetReference() as Actor
   int i = 0
-  ; First Ref would be EnemyNPC. If possible, try to keep them in the Players List
-  Actor a1 = Enemies[0].GetReference() as Actor
-  If(a1 && Kudasai.IsInterested(PlayerRef, a1))
-    i = 1
-    fp -= 1
-    PrimGroup[fp] = a1
-    If(Kudasai.IsDefeated(a1))
-      Enemies[i].RegisterForSingleUpdate(Utility.RandomInt(2, 6))
-    EndIf
-  EndIf
-  While(i < Enemies.Length)
-    Actor e = Enemies[i].GetReference() as Actor
-    If(e)
-      int r = Utility.RandomInt(0, 99)
-      If(fol0 && ff[0] > -1 && r < 20 && Kudasai.IsInterested(fol0, e))
-        ff[0] = ff[0] - 1
-        ForceRef(TerRefs, e)
-        TerGroup[ff[0]] = e
-        If(Kudasai.IsDefeated(e))
-          Kudasai.RescueActor(e, true)
-        EndIf
+  While(i < hostiles.Length)
+    If(hostiles[i])
+      If(Kudasai.IsDefeated(hostiles[i]))
+        Kudasai.RescueActor(hostiles[i], true)
+      EndIf
+      int rand = Utility.RandomInt(0, 99)
+      If(fols[1] && rand < 20 && SecGroup.find(none) > -1 && Kudasai.IsInterested(fols[1], hostiles[i]))
+        ForceRef(TerRefs, hostiles[i])
+        TerGroup[TerGroup.find(none)] = hostiles[i]
         Enemies[i].Clear()
-      ElseIf(fol1 && ff[1] > -1 && r < 40 && Kudasai.IsInterested(fol1, e))
-        ff[1] = ff[1] - 1
-        ForceRef(SecRefs, e)
-        SecGroup[ff[1]] = e
-        If(Kudasai.IsDefeated(e))
-          Kudasai.RescueActor(e, true)
-        EndIf
+      ElseIf(fols[0] && rand < 40 && TerGroup.find(none) > -1 && Kudasai.IsInterested(fols[0], hostiles[i]))
+        ForceRef(SecRefs, hostiles[i])
+        SecGroup[SecGroup.find(none)] = hostiles[i]
         Enemies[i].Clear()
-      ElseIF(fp > -1 && Kudasai.IsInterested(PlayerRef, e))
-        fp -= 1
-        PrimGroup[fp] = e
-        If(Kudasai.IsDefeated(e))
-          Enemies[i].RegisterForSingleUpdate(Utility.RandomInt(2, 6))
-        EndIf
-      Else
-        Enemies[i].Clear()
+      ElseIf(PrimGroup.Find(none) > -1 && Kudasai.IsInterested(PlayerRef, hostiles[i]))
+        PrimGroup[PrimGroup.find(none)] = hostiles[i]
       EndIf
     EndIf
     i += 1
@@ -165,31 +156,54 @@ bool Function CreateAssaultGroups()
   Debug.Trace("[Kudasai] Prim = " + PrimGroup)
   Debug.Trace("[Kudasai] Sec = " + SecGroup)
   Debug.Trace("[Kudasai] Ter = " + TerGroup)
-  ; All Aliases should be either cleared or divided into up to 3 Groups of interst
-  ; Start the individual Scenes now & create the shut down Condition
+  ; From here, all Aliases are sorted into the 3 Groups. Leftovers will simply "spectate" the Player
   If(!PrimGroup.Length)
     return false
-  ElseIf(ValidateEnemyNPC() != none)
-    ; No point to set this if there is no NPC in this Group
-    Remembers = false
-    float dayspassed = GameDaysPassed.Value
-    int j = 0
-    While(j < PrimGroup.Length)
-      If(StorageUtil.GetFloatValue(PrimGroup[j], "Kudasai_LastDefeat", dayspassed) + 14.0 < dayspassed)
-        Remembers = true
+  EndIf
+  ; Look for the closest Actor in the PrimGroup
+  bool creature = MCM.FrameCreature
+  Actor prim
+  float d = 9999999.9
+  int n = 0
+  While(n < PrimGroup.Length)
+    If(PrimGroup[n].HasKeyword(ActorTypeNPC))
+      float d2 = PrimGroup[n].GetDistance(PlayerRef)
+      If(d2 < d)
+        prim = PrimGroup[n]
+        d = d2
       EndIf
-      StorageUtil.SetFloatValue(PrimGroup[j], "Kudasai_LastDefeat", dayspassed)
-      j += 1
-    EndWhile
-  ElseIf(!DoAdult)
-    ; If there are no NPC and Adult Content isnt permitted, cancel the Quest & throw the Player to entrance
-    ; I got no SFW Content for Creatures here
+      creature = false
+    ElseIf(creature)
+      float d2 = PrimGroup[n].GetDistance(PlayerRef)
+      If(d2 < d)
+        prim = PrimGroup[n]
+        d = d2
+      EndIf
+    EndIf
+    n += 1
+  EndWhile
+  If(prim != none)
+    EnemyNPC.ForceRefTo(prim)
+    ; Dont waste time if thats no NPC
+    If(!creature)
+      Remembers = false
+      float dayspassed = GameDaysPassed.Value
+      int j = 0
+      While(j < PrimGroup.Length)
+        If(StorageUtil.GetFloatValue(PrimGroup[j], "Kudasai_LastDefeat", dayspassed) + 14.0 < dayspassed)
+          Remembers = true
+        EndIf
+        StorageUtil.SetFloatValue(PrimGroup[j], "Kudasai_LastDefeat", dayspassed)
+        j += 1
+      EndWhile
+    EndIf
+  Else
     return false
   EndIf
-  ; Scene 0 will properly divide between the 3 remaining cases:
-  ; NPC + No Adult will play a quick Robbing Scene & report back into QuitCycle
-  ; NPC + Adult will call CreateCycle, starting a Rape Loop
-  ; Creature + Adult will create a Struggle Scene
+  ; Scene 0 will divide between 3 cases:
+  ; 1. NPC + No Adult will play a quick Robbing Scene & report back into QuitCycle
+  ; 2. NPC + Adult will call CreateCycle, starting a Rape Loop
+  ; 3. Creature + Adult will create a Struggle Scene
   Scenes[0].Start()
   If(!Scenes[0].IsPlaying())
     return false
@@ -206,69 +220,24 @@ bool Function CreateAssaultGroups()
       EndIf
     EndIf
   EndIf
-
   return true
 EndFunction
 
-float Function GetNumFollowers()
+Actor[] Function GetActors(ReferenceAlias[] reflist)
+  Actor[] ret = PapyrusUtil.ActorArray(reflist.Length)
   int i = 0
-  While(i < Followers.Length)
-    If(Followers[i].GetReference() == none)
-      return i
-    EndIf
-    i += 1
-  EndWhile
-  return i
-EndFunction
-
-; Count the Number of Hostile Actors that are allowed to animate and clear all Aliases that arent allowed to animate
-float Function GetNumHostiles()
-  float ret = ((Enemies[0].GetReference() as Actor) != none) as int
-  int i = 1
-  While(i < Enemies.Length)
-    Actor that = Enemies[i].GetReference() as Actor
-    If(!that)
-      return ret
-    EndIf
-    If(that.HasKeyword(ActorTypeNPC) || (MCM.FrameCreature && Kudasai.ValidRace(that)))
-      ret += 1.0
-    Else
-      Enemies[i].Clear()
+  While(i < reflist.Length)
+    Actor subject = reflist[i].GetReference() as Actor
+    If(subject)
+      If(subject.HasKeyword(ActorTypeNPC) || MCM.FrameCreature && Kudasai.ValidRace(subject))
+        ret[i] = subject
+      Else
+        reflist[i].Clear()
+      EndIf
     EndIf
     i += 1
   EndWhile
   return ret
-EndFunction
-
-Actor Function ValidateEnemyNPC()
-  Actor a0 = Enemies[0].GetReference() as Actor
-  If(!a0)
-    Actor PlayerRef = Game.GetPlayer()
-    float d = 9999999.9
-    If(PrimGroup[0].Haskeyword(ActorTypeNPC))
-      d = PrimGroup[0].GetDistance(PlayerRef)
-    EndIf
-    int n = 1
-    int nn = -1
-    While(n < PrimGroup.Length)
-      If(PrimGroup[n].HasKeyword(ActorTypeNPC))
-        float d2 = PrimGroup[n].GetDistance(PlayerRef)
-        If(d2 < d)
-          nn = n
-          d = d2
-        EndIf
-      EndIf
-      n += 1
-    EndWhile
-    If(nn > -1)
-      Enemies[0].ForceRefTo(PrimGroup[nn])
-      return PrimGroup[nn]
-    Else
-      return none
-    EndIf
-  Else
-    return a0
-  EndIf
 EndFunction
 
 ; ============= STRUGGLE CYCLE
@@ -323,7 +292,6 @@ Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
   Actor PlayerRef = Game.GetPlayer()
   If(positions.find(PlayerRef) > -1)
     If(VictimWon)
-      Kudasai.PlayBreakfree(positions)
       Kudasai.RescueActor(PlayerRef, false)
       GoToState("Breakfree")
       return
@@ -335,21 +303,11 @@ Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
   Else
     ID = 2
   EndIf
-  String[] anims = new String[2]
-  anims[0] = "BleedoutStart"
-  anims[1] = "IdleForceDefaultState"
-  Kudasai.PlayBreakfreeCustom(positions, anims)
-  ; Derived from SLF
-  Debug.SendAnimationEvent(positions[1], "ReturnDefaultState") ; for chicken, hare and slaughterfish before the "ReturnToDefault"
-  Debug.SendAnimationEvent(positions[1], "ReturnToDefault") ; the rest creature-animal
-  Debug.SendAnimationEvent(positions[1], "FNISDefault") ; for dwarvenspider and chaurus
-  Debug.SendAnimationEvent(positions[1], "IdleReturnToDefault") ; for Werewolves and VampirwLords
-  Debug.SendAnimationEvent(positions[1], "ForceFurnExit") ; for Trolls afther the "ReturnToDefault" and draugr, daedras and all dwarven exept spiders
-  Debug.SendAnimationEvent(positions[1], "Reset") ; for Hagravens afther the "ReturnToDefault" and Dragons
   If(GetState() != "Breakfree")
     CreateCycle(ID)
   EndIf
 EndEvent
+
 State Breakfree
   Event OnBeginState()
     RegisterForSingleUpdate(5)

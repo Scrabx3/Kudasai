@@ -8,3 +8,11 @@ Event OnUpdate()
     Clear()
   EndIf
 EndEvent
+
+Event OnDeath(Actor akKiller)
+  GetOwningQuest().Stop()
+EndEvent
+
+Event OnUnload()
+  GetOwningQuest().Stop()
+EndEvent

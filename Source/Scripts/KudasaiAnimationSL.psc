@@ -133,34 +133,6 @@ int Function GetActorType(Actor subject) global
   return sex
 EndFunction
 
-float Function GetArousal(Actor subject) global
-  return (Quest.GetQuest("sla_Framework") as slaFrameworkScr).GetActorArousal(subject)
-EndFunction
-
-; if filter = true, remove the actors from the array
-Function FilterArousal(Actor[] subjects) global
-  Debug.Trace("[Kudasai] <SL FilterArousal> Filtering Actors = " + subjects)
-  KudasaiMCM MCM = KudasaiInternal.GetMCM()
-  int i = 0
-  While(i < subjects.Length)
-    float arousal = GetArousal(subjects[i])
-    Debug.Trace("[Kudasai] <SL FilterArousal> Arousal = " + arousal)
-    If (arousal < 0)
-      arousal = 0
-    EndIf
-    If(subjects[i].IsPlayerTeammate())
-      If (arousal < MCM.fArousalFollower)
-        Debug.Trace("[Kudasai] <SL FilterArousal> Removing Actor = " + subjects[i])
-        subjects = PapyrusUtil.RemoveActor(subjects, subjects[i])
-      EndIf
-    ElseIf(arousal < MCM.fArousalNPC)
-      Debug.Trace("[Kudasai] <SL FilterArousal> Removing Actor = " + subjects[i])
-      subjects = PapyrusUtil.RemoveActor(subjects, subjects[i])
-    EndIf
-    i += 1
-  EndWhile
-EndFunction
-
 Function SortActors(Actor[] subjects) global
   SexLabFramework SL = SexLabUtil.GetAPI()
   int i = 1

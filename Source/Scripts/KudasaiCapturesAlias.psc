@@ -7,5 +7,7 @@ KudasaiCaptures Property Captures
 EndProperty
 
 Event OnDeath(Actor akKiller)
-  ; Clear()
+  Clear()
 EndEvent
+
+

@@ -3,9 +3,6 @@ Scriptname KudasaiInternal Hidden
 ; Update the Weights in MCM Script
 Function UpdateWeights() native global
 
-; Have copycat mimic models 3D
-ActorBase Function GetTemplateBase(Actor akActor) native global
-
 KudasaiMCM Function GetMCM() global
   return Game.GetFormFromFile(0x7853F1, "YKudasai.esp") as KudasaiMCM
 EndFunction
@@ -37,13 +34,13 @@ EndFunction
 
 ; Called by the .dll, never called for subject == Player
 Function FinalizeDefeat(Actor subject) global
-  Package p = Game.GetFormFromFile(0x7802E8, "YKudasai.esp") as Package
+  Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package
   ActorUtil.AddPackageOverride(subject, p, 100)
   subject.EvaluatePackage()
 EndFunction
 
 Function FinalizeRescue(Actor subject) global
-  Package p = Game.GetFormFromFile(0x7802E8, "YKudasai.esp") as Package
+  Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package
   ActorUtil.RemovePackageOverride(subject, p)
   subject.EvaluatePackage()
 EndFunction

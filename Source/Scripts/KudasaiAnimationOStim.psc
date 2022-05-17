@@ -43,28 +43,6 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor prim, Actor[] secundi, Actor 
   return -1
 EndFunction
 
-float Function GetArousal(Actor subject) global
-  OArousedScript Aroused = OArousedScript.GetOAroused()
-  return Aroused.getArousal(subject)
-EndFunction
-
-; if filter = true, remove the actors from the array
-Function FilterArousal(Actor[] subjects) global
-  KudasaiMCM MCM = KudasaiInternal.GetMCM()
-  int i = 0
-  While(i < subjects.Length)
-    float arousal = GetArousal(subjects[i])
-    If(subjects[i].IsPlayerTeammate())
-      If (arousal < MCM.fArousalFollower)
-        subjects = PapyrusUtil.RemoveActor(subjects, subjects[i])
-      EndIf
-    ElseIf(arousal < MCM.fArousalNPC)
-      subjects = PapyrusUtil.RemoveActor(subjects, subjects[i])
-    EndIf
-    i += 1
-  EndWhile
-EndFunction
-
 OStimSubthread Function GetSubthreadFromActor(Actor subject) global
   OSexIntegrationMain OStim = OUtils.GetOStim()
   Quest sq = OStim.subthreadquest

@@ -53,9 +53,6 @@ EndProperty
 int Property iSLWeight = 100 Auto Hidden
 int Property iOStimWeight = 0 Auto Hidden
 
-float Property fArousalNPC = 0.0 Auto Hidden
-float Property fArousalFollower = 0.0 Auto Hidden
-
 int[] Property iSceneTypeWeight Auto Hidden
 
 String[] Property SLTags Auto Hidden
@@ -146,9 +143,6 @@ Event OnPageReset(string page)
     AddSliderOptionST("sexlabweight", "$YK_SexLabWeight", iSLWeight, "{0}", getFlag(SLThere))
     AddSliderOptionST("ostimweight", "$YK_OStimWeight", iOStimWeight, "{0}", getFlag(OStimThere))
     AddEmptyOption()
-    AddHeaderOption("$YK_Arousal")
-    AddSliderOptionST("arousalnpc", "$YK_ArousalNPC", fArousalNPC, "{1}", getFlag(SLThere || OStimThere))
-    AddSliderOptionST("arousalfollower", "$YK_ArousalFollower", fArousalFollower, "{1}", getFlag(SLThere || OStimThere))
     AddHeaderOption("$YK_SceneTypes")
     int n = 0
     While(n < iSceneTypeWeight.Length)
@@ -338,16 +332,6 @@ Event OnSliderOpenST()
 		SetSliderDialogDefaultValue(100)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
-	ElseIf(s[0] == "arousalnpc")
-		SetSliderDialogStartValue(fArousalNPC)
-		SetSliderDialogDefaultValue(30)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(0.5)
-	ElseIf(s[0] == "arousalfollower")
-		SetSliderDialogStartValue(fArousalFollower)
-		SetSliderDialogDefaultValue(60)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(0.5)
 	ElseIf(s[0] == "scenetype")
     int i = s[1] as int
 		SetSliderDialogStartValue(iSceneTypeWeight[i])
@@ -401,12 +385,6 @@ Event OnSliderAcceptST(float value)
 	ElseIf(s[0] == "ostimweight")
 		iOStimWeight = value as int
 		SetSliderOptionValueST(iOStimWeight, "{0}")
-	ElseIf(s[0] == "arousalnpc")
-		fArousalNPC = value
-		SetSliderOptionValueST(fArousalNPC, "{1}")
-	ElseIf(s[0] == "arousalfollower")
-		fArousalFollower = value
-		SetSliderOptionValueST(fArousalFollower, "{1}")
 	ElseIf(s[0] == "scenetype")
     int i = s[1] as int
 		iSceneTypeWeight[i] = value as int
@@ -512,10 +490,6 @@ Event OnHighlightST()
     SetInfoText("$YK_SexLabWeighthighlightHighlight")
   ElseIf(s[0] == "ostimweight")
     SetInfoText("$YK_OStimWeighhighlightHighlight")
-  ElseIf(s[0] == "arousalnpc")
-    SetInfoText("$YK_ArousalNPCHighlight")
-  ElseIf(s[0] == "arousalfollower")
-    SetInfoText("$YK_ArousalFollowerHighlight")
   ElseIf(s[0] == "scenetype")
     int i = s[1] as int
     SetInfoText("$YK_SceneTypeHighlight_" + i)    
