@@ -244,56 +244,61 @@ EndFunction
 ; For Followers, all Assaults link into this first
 ; For player, this is called for pure Creature encounters
 Function CreateStruggle(int ID)
-  Actor aggressor = none
-  Actor victim
+  Actor[] positions = new Actor[2]
   int difficulty
   If(ID == 0)
     ; For the Player, this is only called for pure creature encounters
-    aggressor = PrimGroup[0]
-    victim = Game.GetPlayer()
-    difficulty = 1 + ((PrimGroup.Length > 3) as int) + ((victim.GetActorValuePercentage("Health") < 0.5) as int)
+    positions[0] = Game.GetPlayer()
+    positions[1] = PrimGroup[0]
+    difficulty = (100 - (positions[0].GetActorValuePercentage("Health") * 100) - PrimGroup.Length + 10) as int
   Else
-    Actor[] positions
+    Actor[] tmp
     If(ID == 1)
-      positions = SecGroup
-      victim = Followers[0].GetReference() as Actor
+      tmp = SecGroup
+      positions[0] = Followers[0].GetReference() as Actor
     Else
-      positions = TerGroup
-      victim = Followers[1].GetReference() as Actor
+      tmp = TerGroup
+      positions[0] = Followers[1].GetReference() as Actor
     EndIf
     ; Check if there are NPC in this Group, if not use Creatures
     int i = 0
-    While(i < positions.Length)
-      If(positions[i].HasKeyword(ActorTypeNPC))
-        aggressor = positions[i]
-        i = positions.Length
+    While(i < tmp.Length)
+      If(tmp[i].HasKeyword(ActorTypeNPC))
+        positions[1] = tmp[i]
+        i = tmp.Length
       Else
         i += 1
       EndIf
     EndWhile
-    If(!aggressor)
-      aggressor = positions[0]
+    If(!positions[1])
+      positions[1] = tmp[0]
     EndIf
     ; Make Followers always lose the struggle zz
     difficulty = 0
   EndIf
-  Debug.Trace("Beginning Struggle for ID = " + ID + " (" + Victim + "), Aggressor = " + aggressor + " ;; Difficulty = " + difficulty)
+  Debug.Trace("Beginning Struggle for ID = " + ID + " ( " + positions + " ) Difficulty = " + difficulty)
+  String hook = "YKrPlayer" + ID
 
-  If(!Kudasai.CreateStruggle(victim, aggressor, difficulty, self))
+  If(!KudasaiStruggle.CreateStruggle(positions, difficulty, self))
     Debug.Trace("Failed to begin Struggle")
-    ToMapEdge.Start()
-    Stop()
+    If(ID == 0)
+      ToMapEdge.Start()
+      Stop()
+    EndIf
   EndIf
 EndFunction
 
-Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
+Event OnFuture_c(Actor[] positions, int victory, String argStr)
   Debug.Trace("[Kudasai] rPlayer -> Struggle End (Callback)")
   int ID
   Actor PlayerRef = Game.GetPlayer()
   If(positions.find(PlayerRef) > -1)
-    If(VictimWon)
-      Kudasai.RescueActor(PlayerRef, false)
+    If(victory)
+      KudasaiStruggle.EndStruggle(positions, victory)
+      Kudasai.RescueActor(PlayerRef, false, true)
       GoToState("Breakfree")
+      Utility.Wait(5)
+      Stop()
       return
     EndIf
     ID = 0
@@ -303,26 +308,23 @@ Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
   Else
     ID = 2
   EndIf
+  String[] anims = new String[2]
+  anims[0] = "BleedoutStart"
+  anims[1] = "IdleForceDefaultState"
+  KudasaiStruggle.EndStruggleCustom(positions, anims)
+  ; Derived from SLF
+  Debug.SendAnimationEvent(positions[1], "ReturnDefaultState") ; for chicken, hare and slaughterfish before the "ReturnToDefault"
+  Debug.SendAnimationEvent(positions[1], "ReturnToDefault") ; the rest creature-animal
+  Debug.SendAnimationEvent(positions[1], "FNISDefault") ; for dwarvenspider and chaurus
+  Debug.SendAnimationEvent(positions[1], "IdleReturnToDefault") ; for Werewolves and VampirwLords
+  Debug.SendAnimationEvent(positions[1], "ForceFurnExit") ; for Trolls afther the "ReturnToDefault" and draugr, daedras and all dwarven exept spiders
+  Debug.SendAnimationEvent(positions[1], "Reset") ; for Hagravens afther the "ReturnToDefault" and Dragons
   If(GetState() != "Breakfree")
     CreateCycle(ID)
   EndIf
 EndEvent
 
-State Breakfree
-  Event OnBeginState()
-    RegisterForSingleUpdate(5)
-  EndEvent
-  Event OnUpdate()
-    Actor fol0 = Followers[0].GetReference() as Actor
-    If(fol0 && Kudasai.IsStruggling(fol0))
-      Kudasai.StopStruggle(fol0)
-    EndIf
-    Actor fol1 = Followers[1].GetReference() as Actor
-    If(fol1 && Kudasai.IsStruggling(fol1))
-      Kudasai.StopStruggle(fol1)
-    EndIf
-    Stop()
-  EndEvent
+State Breakfree  
 EndState
 
 ; ============= ASSAULT CYCLE

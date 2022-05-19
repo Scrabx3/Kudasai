@@ -7,8 +7,8 @@ Scriptname Kudasai Hidden
 ; A pacified Actor is ignoring & ignored by Combat
 ; All defeated Actors carry the "Kudasai_Defeated" Keyword
 ; All pacified Actors carry the "Kudasai_Pacified" Keyword
-Function DefeatActor(Actor subject) native global
-Function RescueActor(Actor subject, bool undo_pacify) native global
+Function DefeatActor(Actor subject, bool skip_animation = false) native global
+Function RescueActor(Actor subject, bool undo_pacify, bool skip_animation = false) native global
 Function PacifyActor(Actor subject) native global
 Function UndoPacify(Actor subject) native global
 bool Function IsDefeated(Actor subject) native global
@@ -35,26 +35,14 @@ bool Function ValidRace(Actor subject) native global
 ; Check if Actor is valid based on their 'sexuality', ie if 'partner' is interested in 'subject'. Subject preference is ignored
 bool Function IsInterested(Actor subject, Actor partner) native global
 
-; ================================ Struggling
-; Create a Struggle Animation with the given Actors. Animations are taken from "Struggle.yaml"
-; 'difficulty': - NPC: Chance for the Victim to succeed
-;               - Player: Range from 0 ~ 3: Easy/Normal/Hard/Legendary
-; 'callback': A Form to send the below Event to. You do not need to register for this Event
-; return true if the Struggle started successfully, false otherwise. See YameteKudasai.log or Console for failure reason
-bool Function CreateStruggle(Actor victim, Actor aggressor, int difficulty, Form callback = none) native global
-Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
-EndEvent
-
-; return true if the actor is in an active struggle, false otherwise. A struggle which had its callback invoked before is considered inactive
-bool Function IsStruggling(Actor subject) native global
-; Forcefully end the Struggle early (Manually invoking the callback)
-; return true on success or when the struggle is already completed, false if the passed actor isnt struggling
-bool Function StopStruggle(Actor victoire) native global
-bool Function StopStruggleReverse(Actor defeated) native global
-
 ; ================================ Utility
 ; Remove all Entries in the Array which have the specified Keyword. Array positions may contain none
 Function RemoveArmorByKeyword(Armor[] array, Keyword filter) native global
+; Create a Future object which sends the passed in value to the callback Form after <duration> seconds have passed
+; Use "OnFuture_c" to receive the passed values. You do not need to register for this Event
+Function CreateFuture(float duration, Form callback, Actor[] argActor, int argNum = 0, string argStr = "") native global
+Event OnFuture_c(Actor[] argActor, int argNum, string argStr)  
+EndEvent
 
 Function ExcludeActor(Actor subject) native global
 Function IncludeActor(Actor subject) native global

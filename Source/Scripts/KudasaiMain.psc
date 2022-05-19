@@ -36,11 +36,11 @@ Function RegisterKeys()
 EndFunction
 
 Event OnKeyDown(int keyCode)
-  If(Utility.IsInMenuMode() || !Game.IsLookingControlsEnabled() || !Game.IsMovementControlsEnabled() || UI.IsMenuOpen("Dialogue Menu"))
+  If(Utility.IsInMenuMode() || !Game.IsLookingControlsEnabled() || !Game.IsMovementControlsEnabled() || UI.IsMenuOpen("Dialogue Menu") || UI.IsMenuOpen("KudasaiQTE"))
 		return
   Else
     Actor Player = Game.GetPlayer()
-    If(Kudasai.IsDefeated(Player) || Kudasai.IsStruggling(Player) || Player.IsDead())
+    If(Kudasai.IsDefeated(Player) || Player.IsDead())
       return
     EndIf
 	EndIf
@@ -86,19 +86,27 @@ Function CreateAssault()
   If(Kudasai.IsDefeated(ref))
     AssaultDefeated.Show()
     return
-  ElseIf(ref.IsInCombat() || ref.IsDead() || Kudasai.IsStruggling(ref))
+  ElseIf(ref.IsInCombat() || ref.IsDead())
     return
   EndIf
 
-  Kudasai.CreateStruggle(ref, Player, 0, self)
+  Actor[] positions = new Actor[2]
+  positions[0] = ref
+  positions[1] = Player
+  KudasaiStruggle.CreateStruggle(positions, 70, self)
   ref.SendAssaultAlarm()
 EndFunction
 
-Event OnStruggleEnd_c(Actor[] positions, bool VictimWon)
-  If(VictimWon)
+Event OnFuture_c(Actor[] positions, int victory, String argStr)
+  If(victory)
+    KudasaiStruggle.EndStruggle(positions, true)
     float dmg = positions[1].GetActorValue("Health") * 0.5
     positions[1].DamageActorValue("Health", dmg)
   Else
+    String[] anims = new String[2]
+    anims[0] = "IdleForceDefaultState"
+    anims[1] = "IdleForceDefaultState"
+    KudasaiStruggle.EndStruggleCustom(positions, anims)
     Kudasai.DefeatActor(positions[0])
   EndIf
 EndEvent

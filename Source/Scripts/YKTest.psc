@@ -5,7 +5,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Debug.Trace("Target is none")
     return
   EndIf
-  ActorBase myTemplate = KudasaiInternal.GetTemplateBase(akTarget)
+  ActorBase myTemplate = Kudasai.GetTemplateBase(akTarget)
   If(myTemplate)
     Debug.Trace("myTemplate = " + myTemplate)
     akCaster.PlaceAtMe(myTemplate)

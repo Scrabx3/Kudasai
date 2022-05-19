@@ -2,6 +2,7 @@
 QTE:
   # The Keys used by Kudasais QTE Events, can set or delete new Keys. Only Keyboard/Controller Keys are allowed
   # Further, the following Keys are natively filtered & will not be processed: 'Esc'(K), 'Enter'(K), 'Tab'(K), 'Pause'(C), 'Home'(C)
+  # The Following Keys have side effects and should be avoided: PoV-Switch (F)
   # Keycodes are taken from here: https://www.creationkit.com/index.php?title=Input_Script#DXScanCodes
   Keycodes:
     - 16 # Q
@@ -11,7 +12,6 @@ QTE:
     - 30 # A
     - 31 # S
     - 32 # D
-    - 33 # F
   # The dimensions a QTE can be displayed in, by default they are set to the center 60% of a 1920x1080 Monitor; values are in pixel
   Dimensions:
     min_X: 384
