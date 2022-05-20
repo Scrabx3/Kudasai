@@ -1,0 +1,8 @@
+Name: Robbed
+Data:
+  ESP_Name: YKudasai.esp
+  FormID: 0x966FEA
+Blackout: true
+Requirements:
+  RaceKey:
+    - Human

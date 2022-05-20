@@ -32,6 +32,12 @@ int Function GetFromWeight(int[] weights) global
   return n
 EndFunction
 
+
+bool Function IsRadiant(Actor subject) global
+  int formID = subject.GetFormID()
+  return formID <= -16777216
+EndFunction
+
 ; Called by the .dll, never called for subject == Player
 Function FinalizeDefeat(Actor subject) global
   Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package

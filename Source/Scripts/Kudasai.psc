@@ -14,8 +14,29 @@ Function UndoPacify(Actor subject) native global
 bool Function IsDefeated(Actor subject) native global
 bool Function IsPacified(Actor subject) native global
 
+; Invoked whenever an Actor is defeated
+Function RegisterForActorDefeated(Form akForm) native global
+Function UnregisterForActorDefeated(Form akForm) native global
+Function RegisterForActorDefeated_Alias(ActiveMagicEffect akEffect) native global
+Function UnregisterForActorDefeated_Alias(ActiveMagicEffect akEffect) native global
+Function RegisterForActorDefeated_MgEff(ReferenceAlias akAlias) native global
+Function UnregisterForActorDefeated_MgEff(ReferenceAlias akAlias) native global
+Event OnActorDefeated(Actor akVictim)
+EndEvent
+
+; Invoked whenever an Actor is rescued
+Function RegisterForActorRescued(Form akForm) native global
+Function UnregisterForActorRescued(Form akForm) native global
+Function RegisterForActorRescued_Alias(ActiveMagicEffect akEffect) native global
+Function UnregisterForActorRescued_Alias(ActiveMagicEffect akEffect) native global
+Function RegisterForActorRescued_MgEff(ReferenceAlias akAlias) native global
+Function UnregisterForActorRescued_MgEff(ReferenceAlias akAlias) native global
+Event OnActorRescued(Actor akVictim)
+EndEvent
+
 ; ================================ ObjectReference
-; Setting 'target' to 'none' unsets the Link
+; Link source to target, using the specified Keyword as Link condition. Setting 'target' to 'none' unsets the Link
+; Post Call: (source.GetLinkedRef(link) == target) = true
 Function SetLinkedRef(ObjectReference source, ObjectReference target, Keyword link = none) native global
 ; Similar to ObjectRef.RemoveAll but will always skip quest items & can be set to ignore worn armor
 Function RemoveAllItems(ObjectReference from, ObjectReference to, bool excludeworn = true) native global
