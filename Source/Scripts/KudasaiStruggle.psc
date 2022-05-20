@@ -1,56 +1,78 @@
 Scriptname KudasaiStruggle extends Quest
+{API & Implementation for Struggle Animations
+!IMPORTANT By the time of writing this, only 2p Struggles are supported}
 
-String[] Function LookupStruggleAnimations(Actor[] positions) native global
-String[] Function LookupBreakfreeAnimations(Actor[] positions) native global
-String[] Function LookupKnockoutAnimations(Actor[] positions) native global
-
-Function SetPositions(Actor[] positions) native global
-Function ClearPositions(Actor[] positions) native global
-
-bool Function OpenQTEMenu(int difficulty, Form callback) native global
-
-Package Property BlankPackage Auto
-
-; -- Only used for Player QTE
-Actor[] _positions
-Form _callback
-
-bool Function CreateStruggle(Actor[] positions, int difficulty, Form callback) global
+; ---------------------------------------------------------------------------
+; Create a new Struggle between the passed in positions.
+; NOTE: This function will only start the struggle and invoke a callback. It will not end the animation
+;       Use EndStruggle or EndStruggleCustom to properly stop the Animation
+; --- Parameters:
+; positions: The Actors to create the Struggle with. position[0] will be Victim, all others aggressors
+; difficulty: A number between 0 and 100 to describe the difficulty of the Struggle. The higher this is, the easier the struggle
+;             - For NPC: This is equal the chance the Victim will succeed in struggling out
+;             - For Player: Described the average time the Player has to react -> Avg.Time = Sqrt(Difficulty)/4
+;                           The actual time is randomized and will go up or down by 30% with each individual event
+;                           A balanced difficulty would be 60~70, below 30 becomes impossibly difficult
+; callback: A form to send the Callback to, the Callback Event is a Future_c Event, see Kudasai.psc for more Info
+;           argActor = positions, argNum = if the victim won the struggle, argStr = empty
+; duration: The time the struggle should last before the callback is invoked. Default 8 for values <= 0
+;           If the player is part of the encounter and this is any other value greater than 0, the flash game will not be started
+; --- return:
+; true if the Struggle succeeded, false otherwise. See Console and Kudasai.log in Docs/SKSE for failure reason
+; If the flashgame fails to start, the Struggle will be treated as if duration = 8
+bool Function CreateStruggle(Actor[] positions, int difficulty, Form callback, int duration = 0) global
   KudasaiStruggle struggle = Quest.GetQuest("Kudasai_Struggles") as KudasaiStruggle
-  return struggle.CreateStruggleAnimation(positions, difficulty, callback)
+  return struggle.CreateStruggleAnimation(positions, difficulty, callback, duration)
 EndFunction
 
+; ---------------------------------------------------------------------------
+; Stop the Struggle with default animations (if they exist)
+; !IMPORTANT Knockout Animations dont exist. This is a placeholder "in case"
+;            Thus, victory = false will always play: [StaggerStart, StaggerStart]
+; --- Parameters:
+; positions: The Actors to stop struggling. Should be identical to the array used in "CreateStruggle"
+; victory: If the victim should escape or has been defeated in this struggle
 Function EndStruggle(Actor[] positions, bool victory) global
-  String[] animations
   If(victory)
-    animations = LookupBreakfreeAnimations(positions)
+    EndStruggleCustom(positions, LookupBreakfreeAnimations(positions))
   Else
-    animations = LookupKnockoutAnimations(positions)
+    EndStruggleCustom(positions, LookupKnockoutAnimations(positions))
   EndIf
-  EndStruggleCustom(positions, animations)
 EndFunction
 
+; ---------------------------------------------------------------------------
+; Stop the Struggle with the given animations. This is useful, and recommended, if you want to use
+; a custom follow up animation as consequence of the struggle. E.g. a bleedout animation
+; --- Parameters:
+; positions: The Actors to stop struggling. Should be identical to the array used in "CreateStruggle"
+; animations: The animations to use to stop the struggle
 Function EndStruggleCustom(Actor[] positions, String[] animations) global
   KudasaiStruggle struggle = Quest.GetQuest("Kudasai_Struggles") as KudasaiStruggle
   return struggle.EndStruggleAnimation(positions, animations)
 EndFunction
 
-Function EndStruggleAnimation(Actor[] positions, String[] animations)
-  Debug.Trace("Struggle End -> Positions = " + positions + "Animations = " + animations)
-  int n = 0
-  While(n < positions.Length)
-    Debug.SendAnimationEvent(positions[n], animations[n])
-    If(positions[n] != Game.GetPlayer())
-      ActorUtil.RemovePackageOverride(positions[n], BlankPackage)
-      positions[n].EvaluatePackage()
-    EndIf
-    n += 1
-  EndWhile
-  Utility.Wait(2.3)
-  ClearPositions(positions)
-EndFunction
 
-bool Function CreateStruggleAnimation(Actor[] positions, int difficulty, Form callback)
+
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; ---------------------------- IMPLEMENTATION -------------------------------
+; ---------------------------------------------------------------------------
+; ===========================================================================
+
+String[] Function LookupStruggleAnimations(Actor[] positions) native global
+String[] Function LookupBreakfreeAnimations(Actor[] positions) native global
+String[] Function LookupKnockoutAnimations(Actor[] positions) native global
+Function SetPositions(Actor[] positions) native global
+Function ClearPositions(Actor[] positions) native global
+
+bool Function OpenQTEMenu(int difficulty, Form callback) native global
+bool Function HideQTEMenu(bool force) native global
+
+Package Property BlankPackage Auto
+Actor[] _positions
+Form _callback
+
+bool Function CreateStruggleAnimation(Actor[] positions, int difficulty, Form callback, int duration)
   Actor PlayerRef = Game.GetPlayer()
   bool hasplayer = positions.Find(PlayerRef) > -1
   If(hasplayer && UI.IsMenuOpen("KudasaiQTE"))
@@ -88,7 +110,7 @@ bool Function CreateStruggleAnimation(Actor[] positions, int difficulty, Form ca
     n += 1
   EndWhile
   ; Play QTE
-  If(hasplayer)
+  If(hasplayer && duration <= 0)
     Utility.Wait(2)
     If(OpenQTEMenu(difficulty, self))
       _callback = callback
@@ -98,8 +120,23 @@ bool Function CreateStruggleAnimation(Actor[] positions, int difficulty, Form ca
     EndIf
   EndIf
   bool victory = Utility.RandomInt(0, 99) < difficulty
-  Kudasai.CreateFuture(8, callback, positions, victory as int)
+  Kudasai.CreateFuture(duration, callback, positions, victory as int)
   return true
+EndFunction
+
+Function EndStruggleAnimation(Actor[] positions, String[] animations)
+  Debug.Trace("Struggle End -> Positions = " + positions + "Animations = " + animations)
+  int n = 0
+  While(n < positions.Length)
+    Debug.SendAnimationEvent(positions[n], animations[n])
+    If(positions[n] != Game.GetPlayer())
+      ActorUtil.RemovePackageOverride(positions[n], BlankPackage)
+      positions[n].EvaluatePackage()
+    EndIf
+    n += 1
+  EndWhile
+  Utility.Wait(2.3)
+  ClearPositions(positions)
 EndFunction
 
 Event OnQTEEnd_c(bool victory)
