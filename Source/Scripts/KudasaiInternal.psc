@@ -4,7 +4,7 @@ Scriptname KudasaiInternal Hidden
 Function UpdateWeights() native global
 
 KudasaiMCM Function GetMCM() global
-  return Game.GetFormFromFile(0x7853F1, "YKudasai.esp") as KudasaiMCM
+  return Game.GetFormFromFile(0x7853F1, "YameteKudasai.esp") as KudasaiMCM
 EndFunction
 
 bool Function HasSchlong(Actor subject) global
@@ -32,43 +32,32 @@ int Function GetFromWeight(int[] weights) global
   return n
 EndFunction
 
-
 bool Function IsRadiant(Actor subject) global
   int formID = subject.GetFormID()
   return formID <= -16777216
 EndFunction
 
+Function RobActor(Actor victim, Actor robber) global
+  Debug.Trace("[Kudasai] Robbing Victim = " + victim + "; Robber = " + robber)
+  If(victim.GetDistance(robber) > 128)
+    robber.MoveTo(victim, 60 * Math.cos(victim.Z), 60 * Math.sin(victim.Z), 0.0, false)
+    robber.SetAngle(victim.GetAngleX(), victim.GetAngleY(), (victim.GetAngleZ() + victim.GetHeadingAngle(robber) - 180))
+  EndIf
+  Debug.SendAnimationEvent(robber, "KudasaiSearchBleedout")
+  Utility.Wait(1.5)
+
+  Kudasai.RemoveAllItems(victim, robber, !GetMCM().bStealArmor)
+EndFunction
+
 ; Called by the .dll, never called for subject == Player
 Function FinalizeDefeat(Actor subject) global
-  Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package
+  Package p = Game.GetFormFromFile(0x88782C, "YameteKudasai.esp") as Package
   ActorUtil.AddPackageOverride(subject, p, 100)
   subject.EvaluatePackage()
 EndFunction
 
 Function FinalizeRescue(Actor subject) global
-  Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package
+  Package p = Game.GetFormFromFile(0x88782C, "YameteKudasai.esp") as Package
   ActorUtil.RemovePackageOverride(subject, p)
   subject.EvaluatePackage()
-EndFunction
-
-; Called by the .dll
-Function FinalizeAnimationStart(Actor subject) global
-  ; Cleanup Actor State
-  If(subject.IsSneaking())
-    subject.StartSneaking()
-  EndIf
-  ; Apply Package
-  If(subject != Game.GetPlayer())
-    Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package
-    ActorUtil.AddPackageOverride(subject, p)
-    subject.EvaluatePackage()
-  EndIf
-EndFunction
-
-Function FinalizeAnimationEnd(Actor subject) global
-  If(subject != Game.GetPlayer())
-    Package p = Game.GetFormFromFile(0x88782C, "YKudasai.esp") as Package
-    ActorUtil.RemovePackageOverride(subject, p)
-    subject.EvaluatePackage()
-  EndIf
 EndFunction

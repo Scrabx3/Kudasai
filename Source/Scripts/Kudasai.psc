@@ -7,12 +7,12 @@ Scriptname Kudasai Hidden
 ; A pacified Actor is ignoring & ignored by Combat
 ; All defeated Actors carry the "Kudasai_Defeated" Keyword
 ; All pacified Actors carry the "Kudasai_Pacified" Keyword
-Function DefeatActor(Actor subject, bool skip_animation = false) native global
-Function RescueActor(Actor subject, bool undo_pacify, bool skip_animation = false) native global
-Function PacifyActor(Actor subject) native global
-Function UndoPacify(Actor subject) native global
-bool Function IsDefeated(Actor subject) native global
-bool Function IsPacified(Actor subject) native global
+Function DefeatActor(Actor akActor, bool skip_animation = false) native global
+Function RescueActor(Actor akActor, bool undo_pacify, bool skip_animation = false) native global
+Function PacifyActor(Actor akActor) native global
+Function UndoPacify(Actor akActor) native global
+bool Function IsDefeated(Actor akActor) native global
+bool Function IsPacified(Actor akActor) native global
 
 ; Invoked whenever an Actor is defeated
 Function RegisterForActorDefeated(Form akForm) native global
@@ -42,22 +42,24 @@ Function SetLinkedRef(ObjectReference source, ObjectReference target, Keyword li
 Function RemoveAllItems(ObjectReference from, ObjectReference to, bool excludeworn = true) native global
 
 ; ================================ Actor
-; ignore_config: true returns all worn armor, false respects user preference (MCM)
-Armor[] Function GetWornArmor(Actor subject, bool ignore_config) native global
+; ignore_config: true returns all worn armor, false excludes the slots the player doesn't want to be stripped
+Armor[] Function GetWornArmor(Actor akActor, bool ignore_config = true) native global
 ; Get the most efficien Potion (= the Potion which gets the Hp closest to max) for this subject from the given container
 ; The function recognizes all Healing Potions in the container inventory which are pure beneficial
-Potion Function GetMostEfficientPotion(Actor subject, ObjectReference container) native global
+Potion Function GetMostEfficientPotion(Actor akActor, ObjectReference akContainer) native global
 ; Get the Template ActorBase of this Actor
 ActorBase Function GetTemplateBase(Actor akActor) native global
+; Return the actors RaceKey
+String Function GetRaceKey(Actor akActor) native global
 
 ; ================================ Config
-; Checks for the subjects RaceKey. Always returns true for NPC
-bool Function ValidRace(Actor subject) native global
+; Checks for the actors RaceKey. Always returns true for NPC
+bool Function ValidRace(Actor akActor) native global
 ; Check if Actor is valid based on their 'sexuality', ie if 'partner' is interested in 'subject'. Subject preference is ignored
-bool Function IsInterested(Actor subject, Actor partner) native global
+bool Function IsInterested(Actor akActor, Actor akPartner) native global
 
 ; ================================ Utility
-; Remove all Entries in the Array which have the specified Keyword. Array positions may contain none
+; Remove all Entries in the Array which have the specified Keyword
 Function RemoveArmorByKeyword(Armor[] array, Keyword filter) native global
 ; Create a Future object which sends the passed in value to the callback Form after <duration> seconds have passed
 ; Use "OnFuture_c" to receive the passed values. You do not need to register for this Event
@@ -65,7 +67,7 @@ Function CreateFuture(float duration, Form callback, Actor[] argActor, int argNu
 Event OnFuture_c(Actor[] argActor, int argNum, string argStr)  
 EndEvent
 
-Function ExcludeActor(Actor subject) native global
-Function IncludeActor(Actor subject) native global
-bool Function IsExcluded(Actor subject) native global
+Function ExcludeActor(Actor akActor) native global
+Function IncludeActor(Actor akActor) native global
+bool Function IsExcluded(Actor akActor) native global
 

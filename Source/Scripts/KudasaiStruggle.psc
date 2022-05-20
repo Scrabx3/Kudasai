@@ -33,11 +33,7 @@ EndFunction
 ; positions: The Actors to stop struggling. Should be identical to the array used in "CreateStruggle"
 ; victory: If the victim should escape or has been defeated in this struggle
 Function EndStruggle(Actor[] positions, bool victory) global
-  If(victory)
-    EndStruggleCustom(positions, LookupBreakfreeAnimations(positions))
-  Else
-    EndStruggleCustom(positions, LookupKnockoutAnimations(positions))
-  EndIf
+  return EndStruggleImpl(positions, victory)
 EndFunction
 
 ; ---------------------------------------------------------------------------
@@ -66,7 +62,7 @@ Function SetPositions(Actor[] positions) native global
 Function ClearPositions(Actor[] positions) native global
 
 bool Function OpenQTEMenu(int difficulty, Form callback) native global
-bool Function HideQTEMenu(bool force) native global
+bool Function CloseQTEMenu() native global
 
 Package Property BlankPackage Auto
 Actor[] _positions
@@ -126,6 +122,9 @@ EndFunction
 
 Function EndStruggleAnimation(Actor[] positions, String[] animations)
   Debug.Trace("Struggle End -> Positions = " + positions + "Animations = " + animations)
+  If(UI.IsMenuOpen("KudasaiQTE") && positions.Find(Game.GetPlayer()) > -1)
+    CloseQTEMenu()
+  EndIf
   int n = 0
   While(n < positions.Length)
     Debug.SendAnimationEvent(positions[n], animations[n])
@@ -147,3 +146,25 @@ Event OnQTEEnd_c(bool victory)
   EndIf
   Kudasai.CreateFuture(0.1, _callback, _positions, victory as int)
 EndEvent
+
+Function EndStruggleImpl(Actor[] positions, bool victory) global
+  If(victory)
+    EndStruggleCustom(positions, LookupBreakfreeAnimations(positions))
+    String rk = Kudasai.GetRaceKey(positions[1])
+    If(rk == "Skeever" || rk == "Wolf")
+      positions[0].PushActorAway(positions[1], 5.00000)
+    ElseIf(rk == "Riekling" || rk == "DwarvenSpider")
+      positions[0].PushActorAway(positions[1], 3.50000)
+    ElseIf(rk == "FrostbiteSpider" || rk == "Falmer" || rk == "Draugr")
+			positions[0].PushActorAway(positions[1], 2.00000)
+    ElseIf(rk == "Sabrecat" || rk == "Gargoyle")
+			positions[0].PushActorAway(positions[1], 1.00000)
+    ElseIf(rk == "Bear" || rk == "Werewolf" || rk == "Chaurus" || rk == "ChaurusReaper" || rk == "ChaurusHunter")
+			positions[0].PushActorAway(positions[1], 0.500000)
+    Else ;If(rk == "Troll" || rk == "Giant")
+			positions[0].PushActorAway(positions[1], 0.200000)
+    EndIf
+  Else
+    EndStruggleCustom(positions, LookupKnockoutAnimations(positions))
+  EndIf
+EndFunction

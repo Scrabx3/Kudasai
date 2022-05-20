@@ -23,12 +23,12 @@ String Property sNotifyColorChoice = "#FF0000" Auto Hidden
 
 float Property fMidCombatBlackout = 10.0 Auto Hidden
 
-bool Property bPostCombatAssault = true Auto Hidden
+bool Property bNPCPostCombat = true Auto Hidden
 
 bool Property bStealArmor = true Auto Hidden
 
-int Property iMaxAssaults = 6 Auto Hidden
-float Property fRapistQuits = 15.0 Auto Hidden
+int Property iMaxAssaults = 4 Auto Hidden
+float Property fRapistQuits = 35.0 Auto Hidden
 
 ; ----------- Defeat
 
@@ -68,6 +68,7 @@ int Property iStrips = 1066390941 Auto Hidden
 ; ----------- Consequences
 
 String[] Property ConTitle Auto Hidden
+String[] Property ConDesc Auto Hidden
 Int[] Property ConWeight Auto Hidden
 
 ; --------------------- Menu
@@ -119,22 +120,24 @@ Event OnPageReset(string page)
     AddColorOptionST("notifycolorchoice", "$YK_NotifyColorChoice", iNotifyColorChoice, getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored))
 
   ElseIf (page == "$YK_Defeat")
-    AddHeaderOption("$YM_MidCombat")
-    AddSliderOptionST("midcmbtblackout", "$YK_MidCmbtBlackout", fMidCombatBlackout, "{1}%")
-
-    AddHeaderOption("$YK_PostCombat")
-    AddToggleOptionST("postcmbtassault", "$YK_PostCmbtAssault", bPostCombatAssault, getFlag(FrameAny))
-    AddEmptyOption()
-    AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
-    AddEmptyOption()
-    AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}", getFlag(FrameAny))
-    AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%", getFlag(FrameAny))
-
-    SetCursorPosition(1)
     AddHeaderOption("$YK_Lethal")
     AddToggleoptionST("lethalessential", "$YK_LethalEssential", bLethalEssential)
     AddSliderOptionST("lethalplayer", "$YK_LethalPlayer", fLethalPlayer, "{1}%")
     AddSliderOptionST("lethalnpc", "$YK_LethalNPC", fLethalNPC, "{1}%")
+
+    SetCursorPosition(1)
+    AddHeaderOption("$YK_Resolution")
+    AddSliderOptionST("midcmbtblackout", "$YK_Blackout", fMidCombatBlackout, "{1}%")
+    AddEmptyOption()
+    AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
+    AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}", getFlag(FrameAny))
+    AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%", getFlag(FrameAny))
+    AddEmptyOption()
+    AddEmptyOption()
+    ; AddEmptyOption()
+    ; AddEmptyOption()
+    AddHeaderOption("$YK_ResNPC")
+    AddToggleOptionST("npcpostcombat", "$YK_NPCPostCombat", bNPCPostCombat, getFlag(FrameAny))
 
   ElseIf (page == "$YK_NSFW")
 		bool SLThere = Game.GetModByName("SexLab.esm") != 255
@@ -226,9 +229,9 @@ Event OnSelectST()
     SetOptionFlagsST(getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored), false, "notifycolorchoice")
 
   ; --------------- Defeat
-  ElseIf(s[0] == "postcmbtassault")
-    bPostCombatAssault = !bPostCombatAssault
-    SetToggleOptionValueST(bPostCombatAssault)
+  ElseIf(s[0] == "npcpostcombat")
+    bNPCPostCombat = !bNPCPostCombat
+    SetToggleOptionValueST(bNPCPostCombat)
   ElseIf(s[0] == "lethalessential")
     bLethalEssential = !bLethalEssential
     SetToggleOptionValueST(bLethalEssential)
@@ -317,7 +320,7 @@ Event OnSliderOpenST()
 		SetSliderDialogInterval(1)
 	ElseIf(s[0] == "postcmbtrapiststays")
 		SetSliderDialogStartValue(fRapistQuits)
-		SetSliderDialogDefaultValue(30)
+		SetSliderDialogDefaultValue(35)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.5)
 
@@ -470,6 +473,8 @@ Event OnHighlightST()
     SetInfoText("$YK_NotifyColorChoiceHighlight")
 
   ; --------------- Defeat
+  ElseIf(s[0] == "npcpostcombat")
+    SetInfoText("$YK_NPCPostCombatHighlight")
   ElseIf(s[0] == "lethalessential")
     SetInfoText("$YK_LethalEssentialHighlight")
   ElseIf(s[0] == "lethalplayer")
@@ -477,7 +482,7 @@ Event OnHighlightST()
   ElseIf(s[0] == "lethalnpc")
     SetInfoText("$YK_LethalNPCHighlight")
   ElseIf(s[0] == "midcmbtblackout")
-    SetInfoText("$YK_MidCmbtBlackoutHighlight")
+    SetInfoText("$YK_BlackoutHighlight")
   ElseIf(s[0] == "postcmbtkeeparmor")
     SetInfoText("$YK_StealArmorHighlight")
   ElseIf(s[0] == "postcmbtmaxassaults")

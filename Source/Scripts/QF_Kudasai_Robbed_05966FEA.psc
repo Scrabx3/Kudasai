@@ -43,7 +43,7 @@ Else
 EndIf
 Alias_NewRobber.ForceRefTo(newRobber)
 
-Kudasai.RemoveAllItems(Game.GetPlayer(), newRobber)
+KudasaiInternal.RobActor(Game.GetPlayer(), newRobber as Actor)
 SetStage(10)
 ;END CODE
 EndFunction

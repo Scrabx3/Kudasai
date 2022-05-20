@@ -24,7 +24,7 @@ Function Maintenance()
     MCM.iOStimWeight = 0
   EndIf
   If(!MCM.FrameAny)
-    MCM.bPostCombatAssault = false
+    MCM.bNPCPostCombat = false
   EndIf
 EndFunction
 

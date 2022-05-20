@@ -33,26 +33,6 @@ bool Property Remembers Auto Hidden Conditional
 int Property CyclesPlayer Auto Hidden Conditional
 ; ============= UTILITY
 
-Function RobVictim(Actor victim, Actor aggressor)
-  Debug.Trace("[Kudasai] Robbing Victim = " + victim + " ;; Aggressor = " + aggressor)
-  If(victim.GetDistance(aggressor) > 128)
-    aggressor.MoveTo(victim, 60 * Math.cos(victim.Z), 60 * Math.sin(victim.Z), 0.0, false)
-    aggressor.SetAngle(victim.GetAngleX(), victim.GetAngleY(), (victim.GetAngleZ() + victim.GetHeadingAngle(aggressor) - 180))
-  EndIf
-  Debug.SendAnimationEvent(aggressor, "KudasaiSearchBleedout")
-  Utility.Wait(1.5)
-
-  Kudasai.RemoveAllItems(victim, aggressor, !MCM.bStealArmor)
-  If(!MCM.bStealArmor)
-    Armor[] wornz = Kudasai.GetWornArmor(victim, false)
-    int i = 0
-    While(i < wornz.length)
-      victim.UnequipItem(wornz, abSilent = true)
-      i += 1
-    EndWhile
-  EndIf
-EndFunction
-
 Function ForceRef(ReferenceAlias[] list, ObjectReference object)
   int i = 0
   While(i < list.Length)
@@ -343,7 +323,7 @@ Function CreateCycle(int ID)
     positions = TerGroup
   EndIf
 
-  scenecounter = new int[3]
+  scenecounter = Utility.CreateIntArray(3, 0)
   CreateNewCycle(ID, victim, positions, true)
 
   RegisterForModEvent("HookAnimationEnd_YKrPlayer_" + ID, "PostAssaultSL_" + ID)
@@ -413,7 +393,7 @@ Function CreateNewCycle(int ID, Actor victim, Actor[] oldpositions, bool firstcy
     If(ID == 0)
       CyclesPlayer = scenecounter[ID]
     EndIf
-    If(MCM.iMaxAssaults > 0 && scenecounter[ID] == MCM.iMaxAssaults - 1)
+    If(MCM.iMaxAssaults > 0 && scenecounter[ID] == MCM.iMaxAssaults)
       Debug.Trace("[Kudasai] Cycle hit max Iterations at Cycle Nr = " + scenecounter[ID])
       QuitCycle(ID)
       return
