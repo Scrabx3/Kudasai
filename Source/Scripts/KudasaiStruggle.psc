@@ -62,7 +62,7 @@ Function SetPositions(Actor[] positions) native global
 Function ClearPositions(Actor[] positions) native global
 
 bool Function OpenQTEMenu(int difficulty, Form callback) native global
-bool Function CloseQTEMenu() native global
+Function CloseQTEMenu() native global
 
 Package Property BlankPackage Auto
 Actor[] _positions

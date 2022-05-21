@@ -46,7 +46,7 @@ EndProperty
 
 bool Property FrameCreature Hidden
   bool Function Get()
-    return iSLWeight > 0
+    return iSLWeight > 0 && KudasaiAnimationSL.AllowCreatures()
   EndFunction
 EndProperty
 

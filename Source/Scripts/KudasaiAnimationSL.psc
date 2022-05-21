@@ -215,3 +215,7 @@ int Function HookIfAnimating(Actor subject, String hook) global
   EndWhile
   return 0
 EndFunction
+
+bool Function AllowCreatures() global
+  return SexLabUtil.GetAPI().AllowCreatures
+EndFunction
