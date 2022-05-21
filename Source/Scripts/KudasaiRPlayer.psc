@@ -389,11 +389,11 @@ Function CreateNewCycle(int ID, Actor victim, Actor[] oldpositions, bool firstcy
   ; Not the first cycle? Count up, check if a new should start & checkout aggressors
   If(!firstcycle)
     scenecounter[ID] = scenecounter[ID] + 1
-    Debug.Trace("[Kudasai] Cycle Nr = " + scenecounter[ID])
+    Debug.Trace("[Kudasai] Completed Cycles = " + scenecounter[ID])
     If(ID == 0)
       CyclesPlayer = scenecounter[ID]
     EndIf
-    If(MCM.iMaxAssaults > 0 && scenecounter[ID] == MCM.iMaxAssaults)
+    If(scenecounter[ID] == MCM.iMaxAssaults)
       Debug.Trace("[Kudasai] Cycle hit max Iterations at Cycle Nr = " + scenecounter[ID])
       QuitCycle(ID)
       return

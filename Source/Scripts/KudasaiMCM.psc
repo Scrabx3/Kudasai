@@ -570,11 +570,11 @@ EndFunction
 
 String Function GetCustomControl(int keyCode)
 	If(keyCode == iSurrenderKey)
-		return "Kudasai: Surrender"
+		return "Surrender"
   ElseIf(keyCode == iHunterPrideKey)
-    return "Kudasai: Hunter's Pride"
+    return "Hunter's Pride"
   ElseIf(keyCode == iAssaultKey)
-    return "Kudasai: Assault"
+    return "Assault"
   Else
 		return ""
 	EndIf
