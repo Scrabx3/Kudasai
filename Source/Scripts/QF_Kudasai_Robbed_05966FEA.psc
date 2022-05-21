@@ -2,14 +2,14 @@
 ;NEXT FRAGMENT INDEX 5
 Scriptname QF_Kudasai_Robbed_05966FEA Extends Quest Hidden
 
-;BEGIN ALIAS PROPERTY robber
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_robber Auto
-;END ALIAS PROPERTY
-
 ;BEGIN ALIAS PROPERTY Player
 ;ALIAS PROPERTY TYPE ReferenceAlias
 ReferenceAlias Property Alias_Player Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY robber
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_robber Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY newRobber
@@ -17,13 +17,13 @@ ReferenceAlias Property Alias_Player Auto
 ReferenceAlias Property Alias_newRobber Auto
 ;END ALIAS PROPERTY
 
-;BEGIN FRAGMENT Fragment_2
-Function Fragment_2()
+;BEGIN FRAGMENT Fragment_1
+Function Fragment_1()
 ;BEGIN CODE
-Alias_newRobber.GetActorReference().ResetInventory()
+RobbedScene.Stop()
+SetObjectiveDisplayed(10)
 
-FailAllObjectives()
-Stop()
+RegisterForSingleUpdateGameTime(72)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -31,6 +31,7 @@ EndFunction
 ;BEGIN FRAGMENT Fragment_0
 Function Fragment_0()
 ;BEGIN CODE
+RobbedScene.Start()
 ToMapEdge.Start()
 
 Actor robber = ALias_Robber.GetActorRef()
@@ -43,8 +44,19 @@ Else
 EndIf
 Alias_NewRobber.ForceRefTo(newRobber)
 
-KudasaiInternal.RobActor(Game.GetPlayer(), newRobber as Actor)
+KudasaiInternal.RobActor(Game.GetPlayer(), newRobber as Actor, false)
 SetStage(10)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_2
+Function Fragment_2()
+;BEGIN CODE
+Alias_newRobber.GetActorReference().ResetInventory()
+
+FailAllObjectives()
+Stop()
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -58,16 +70,6 @@ Stop()
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_1
-Function Fragment_1()
-;BEGIN CODE
-RegisterForSingleUpdateGameTime(72)
-
-SetObjectiveDisplayed(10)
-;END CODE
-EndFunction
-;END FRAGMENT
-
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
 Event OnUpdateGameTime()
@@ -75,3 +77,5 @@ Event OnUpdateGameTime()
 EndEvent
 
 Quest Property ToMapEdge  Auto  
+
+Scene Property RobbedScene  Auto  

@@ -37,15 +37,16 @@ bool Function IsRadiant(Actor subject) global
   return formID <= -16777216
 EndFunction
 
-Function RobActor(Actor victim, Actor robber) global
+Function RobActor(Actor victim, Actor robber, bool animation = true) global
   Debug.Trace("[Kudasai] Robbing Victim = " + victim + "; Robber = " + robber)
-  If(victim.GetDistance(robber) > 128)
-    robber.MoveTo(victim, 60 * Math.cos(victim.Z), 60 * Math.sin(victim.Z), 0.0, false)
-    robber.SetAngle(victim.GetAngleX(), victim.GetAngleY(), (victim.GetAngleZ() + victim.GetHeadingAngle(robber) - 180))
+  If(animation)
+    If(victim.GetDistance(robber) > 128)
+      robber.MoveTo(victim, 60 * Math.cos(victim.Z), 60 * Math.sin(victim.Z), 0.0, false)
+      robber.SetAngle(victim.GetAngleX(), victim.GetAngleY(), (victim.GetAngleZ() + victim.GetHeadingAngle(robber) - 180))
+    EndIf
+    Debug.SendAnimationEvent(robber, "KudasaiSearchBleedout")
+    Utility.Wait(1.5)
   EndIf
-  Debug.SendAnimationEvent(robber, "KudasaiSearchBleedout")
-  Utility.Wait(1.5)
-
   Kudasai.RemoveAllItems(victim, robber, !GetMCM().bStealArmor)
 EndFunction
 
