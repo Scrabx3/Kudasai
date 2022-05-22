@@ -75,6 +75,7 @@ EndFunction
 /;
 Event OnUpdate()
   Debug.Trace("[Kudasai] rPLayer -> START")
+  GoToState("")
   If(PlayerWerewolfQuest.IsRunning())
     IsWerewolf = 1 + ((Game.GetPlayer().GetRace() == WerebearRace) as int)
     PlayerWerewolfQuest.SetStage(100)
@@ -87,8 +88,7 @@ Event OnUpdate()
     return
   EndIf
   ; Fallback
-  ToMapEdge.Start()
-  Stop()
+  GoToState("ShutDown")
 EndEvent
 
 ; Split the <= 20 collected Aliases into up to 3 groups, 1 Player + 2 Follower
@@ -163,6 +163,7 @@ bool Function CreateAssaultGroups()
     n += 1
   EndWhile
   If(prim != none)
+    Debug.Trace("[Kudasai] Found Primary Actor for Assault = " + prim)
     EnemyNPC.ForceRefTo(prim)
     ; Dont waste time if thats no NPC
     If(!creature)
@@ -178,6 +179,7 @@ bool Function CreateAssaultGroups()
       EndWhile
     EndIf
   Else
+    Debug.Trace("[Kudasai] Unable to find Primary Actor for Assault")
     return false
   EndIf
   ; Scene 0 will divide between 3 cases:
@@ -186,6 +188,7 @@ bool Function CreateAssaultGroups()
   ; 3. Creature + Adult will create a Struggle Scene
   Scenes[0].Start()
   If(!Scenes[0].IsPlaying())
+    Debug.Trace("[Kudasai] Scene Failed to play")
     return false
   EndIf
   totalscenes = 1
@@ -209,6 +212,7 @@ Actor[] Function GetActors(ReferenceAlias[] reflist)
   While(i < reflist.Length)
     Actor subject = reflist[i].GetReference() as Actor
     If(subject)
+      Debug.Trace("[Kudasai] GetActors -> Checking " + subject + " at " + i)
       If(subject.HasKeyword(ActorTypeNPC) || MCM.FrameCreature && Kudasai.ValidRace(subject))
         ret[i] = subject
       Else
@@ -260,11 +264,8 @@ Function CreateStruggle(int ID)
   String hook = "YKrPlayer" + ID
 
   If(!KudasaiStruggle.CreateStruggle(positions, difficulty, self))
-    Debug.Trace("Failed to begin Struggle")
-    If(ID == 0)
-      ToMapEdge.Start()
-      Stop()
-    EndIf
+    Debug.Trace("Failed to begin Struggle, skipping to Assault")
+    CreateCycle(ID)
   EndIf
 EndFunction
 
@@ -299,7 +300,7 @@ Event OnFuture_c(Actor[] positions, int victory, String argStr)
   Debug.SendAnimationEvent(positions[1], "IdleReturnToDefault") ; for Werewolves and VampirwLords
   Debug.SendAnimationEvent(positions[1], "ForceFurnExit") ; for Trolls afther the "ReturnToDefault" and draugr, daedras and all dwarven exept spiders
   Debug.SendAnimationEvent(positions[1], "Reset") ; for Hagravens afther the "ReturnToDefault" and Dragons
-  If(GetState() != "Breakfree")
+  If(GetState() == "")
     CreateCycle(ID)
   EndIf
 EndEvent
@@ -476,8 +477,7 @@ Function QuitCycle(int ID)
   If(ID == 0)
     Debug.SendAnimationEvent(Game.GetPlayer(), "bleedoutStart")
     ; Player.GoToState("Exhausted") ; Porting anyway, no need for a "getaway" timer
-    ToMapEdge.Start()
-    Stop()
+    GoToState("ShutDown")
   Else
     SetStage(100 + 100 * ID)
     Actor victim = Followers[ID - 1].GetReference() as Actor
@@ -510,7 +510,17 @@ Function ForceStopScenes()
     KudasaiAnimation.StopAnimating(follower1, MCM)
     Debug.SendAnimationEvent(follower1, "bleedoutStart")
   EndIf
+  If(GetState() == "")
+    GoToState("ShutDown")
+  EndIf
 EndFunction
+
+State ShutDown
+  Event OnBeginState()
+    ToMapEdge.Start()
+    Stop()
+  EndEvent
+EndState
 
 bool Function IsThane()
   Actor PlayerRef = Game.GetPlayer()

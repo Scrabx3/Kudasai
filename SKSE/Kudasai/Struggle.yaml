@@ -1,8 +1,7 @@
-# Struggle animations Kudasai has access to, sorted by RaceKey (@RaceKey.yaml)
-# There should be no reason for you to be here
+# Struggle animations Kudasai has access to, sorted by RaceKey (see RaceKey.yaml)
 Human:
-  Victim: KudasaiHumanStruggleA1S1
-  Aggressor: KudasaiHumanStruggleA2S1
+  Victim: KudasaiHumanStruggleA1LieInstant
+  Aggressor: KudasaiHumanStruggleA2LieInstant
   # Breakfree:
   #   Victim:
   #   Aggressor:

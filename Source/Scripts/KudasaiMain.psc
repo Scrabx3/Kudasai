@@ -86,14 +86,17 @@ Function CreateAssault()
   If(Kudasai.IsDefeated(ref))
     AssaultDefeated.Show()
     return
-  ElseIf(ref.IsInCombat() || ref.IsDead())
+  ElseIf(ref.IsInCombat() || ref.IsDead() || UI.IsMenuOpen("KudasaiQTE"))
     return
   EndIf
 
   Actor[] positions = new Actor[2]
   positions[0] = ref
   positions[1] = Player
-  KudasaiStruggle.CreateStruggle(positions, 70, self)
+  String[] animations = new String[2]
+  animations[0] = "KudasaiHumanStruggleA1S1"
+  animations[1] = "KudasaiHumanStruggleA2S1"
+  (Quest.GetQuest("Kudasai_Struggles") as KudasaiStruggle).CreateStruggleAnimationImpl(positions, 70, self, 0, animations)
   ref.SendAssaultAlarm()
 EndFunction
 

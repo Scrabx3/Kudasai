@@ -69,55 +69,14 @@ Actor[] _positions
 Form _callback
 
 bool Function CreateStruggleAnimation(Actor[] positions, int difficulty, Form callback, int duration)
-  Actor PlayerRef = Game.GetPlayer()
-  bool hasplayer = positions.Find(PlayerRef) > -1
-  If(hasplayer && UI.IsMenuOpen("KudasaiQTE"))
+  If(positions.Find(Game.GetPlayer()) > -1 && UI.IsMenuOpen("KudasaiQTE"))
     return false
   EndIf
   String[] animations = LookupStruggleAnimations(positions)
   If(!animations.length)
     return false
   EndIf
-  Debug.Trace("[Kudasai] Struggle Requested for " + positions + " with animations = " + animations + " callback = " + callback)
-  ; Clear Status
-  int i = 0
-  While(i < positions.Length)
-    If(positions[i].IsInCombat())
-      positions[i].StopCombat()
-    EndIf
-    If(positions[i].IsSneaking())
-      positions[i].StartSneaking()
-    EndIf
-    If(positions[i].IsWeaponDrawn())
-      positions[i].SheatheWeapon()
-    EndIf
-    If(positions[i] != PlayerRef)
-      ActorUtil.AddPackageOverride(positions[i], BlankPackage)
-      positions[i].EvaluatePackage()
-    EndIf
-    Debug.SendAnimationEvent(positions[i], "IdleForceDefaultState")
-    i += 1
-  EndWhile
-  SetPositions(positions)
-  ; Play Animations
-  int n = 0
-  While(n < positions.Length)
-    Debug.SendAnimationEvent(positions[n], animations[n])
-    n += 1
-  EndWhile
-  ; Play QTE
-  If(hasplayer && duration <= 0)
-    Utility.Wait(2)
-    If(OpenQTEMenu(difficulty, self))
-      _callback = callback
-      ; Make a Copy of the array. Never thoght Papyrus would require me to use my brain here owo
-      _positions = PapyrusUtil.RemoveActor(positions, none)
-      return true
-    EndIf
-  EndIf
-  bool victory = Utility.RandomInt(0, 99) < difficulty
-  Kudasai.CreateFuture(duration, callback, positions, victory as int)
-  return true
+  return CreateStruggleAnimationImpl(positions, difficulty, callback, duration, animations)
 EndFunction
 
 Function EndStruggleAnimation(Actor[] positions, String[] animations)
@@ -146,6 +105,50 @@ Event OnQTEEnd_c(bool victory)
   EndIf
   Kudasai.CreateFuture(0.1, _callback, _positions, victory as int)
 EndEvent
+
+bool Function CreateStruggleAnimationImpl(Actor[] positions, int difficulty, Form callback, int duration, String[] animations)
+  Debug.Trace("[Kudasai] Struggle Requested for " + positions + " with animations = " + animations + " callback = " + callback)
+  Actor PlayerRef = Game.GetPlayer()
+  ; Clear Status
+  int i = 0
+  While(i < positions.Length)
+    If(positions[i].IsInCombat())
+      positions[i].StopCombat()
+    EndIf
+    If(positions[i].IsSneaking())
+      positions[i].StartSneaking()
+    EndIf
+    If(positions[i].IsWeaponDrawn())
+      positions[i].SheatheWeapon()
+    EndIf
+    If(positions[i] != PlayerRef)
+      ActorUtil.AddPackageOverride(positions[i], BlankPackage)
+      positions[i].EvaluatePackage()
+    EndIf
+    Debug.SendAnimationEvent(positions[i], "IdleForceDefaultState")
+    i += 1
+  EndWhile
+  SetPositions(positions)
+  ; Play Animations
+  int n = 0
+  While(n < positions.Length)
+    Debug.SendAnimationEvent(positions[n], animations[n])
+    n += 1
+  EndWhile
+  ; Play QTE
+  If(positions.Find(PlayerRef) > -1 && duration <= 0)
+    Utility.Wait(2)
+    If(OpenQTEMenu(difficulty, self))
+      _callback = callback
+      ; Make a Copy of the array. Never thoght Papyrus would require me to use my brain here owo
+      _positions = PapyrusUtil.RemoveActor(positions, none)
+      return true
+    EndIf
+  EndIf
+  bool victory = Utility.RandomInt(0, 99) < difficulty
+  Kudasai.CreateFuture(duration, callback, positions, victory as int)
+  return true
+EndFunction
 
 Function EndStruggleImpl(Actor[] positions, bool victory) global
   If(victory)
