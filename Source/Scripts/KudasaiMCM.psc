@@ -97,7 +97,7 @@ Event OnConfigInit()
 EndEvent
 
 Event OnConfigClose()
-  KudasaiInternal.UpdateWeights()
+  KudasaiInternal.UpdateSettings()
 EndEvent
 
 Event OnPageReset(string page)

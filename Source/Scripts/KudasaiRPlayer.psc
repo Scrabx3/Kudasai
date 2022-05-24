@@ -85,6 +85,7 @@ Event OnUpdate()
   Thane = IsThane()
   DoAdult = MCM.FrameAny
   If(CreateAssaultGroups())
+    SetStage(5)
     return
   EndIf
   ; Fallback
@@ -212,7 +213,6 @@ Actor[] Function GetActors(ReferenceAlias[] reflist)
   While(i < reflist.Length)
     Actor subject = reflist[i].GetReference() as Actor
     If(subject)
-      Debug.Trace("[Kudasai] GetActors -> Checking " + subject + " at " + i)
       If(subject.HasKeyword(ActorTypeNPC) || MCM.FrameCreature && Kudasai.ValidRace(subject))
         ret[i] = subject
       Else
@@ -234,7 +234,7 @@ Function CreateStruggle(int ID)
     ; For the Player, this is only called for pure creature encounters
     positions[0] = Game.GetPlayer()
     positions[1] = PrimGroup[0]
-    difficulty = (100 - (positions[0].GetActorValuePercentage("Health") * 100) - PrimGroup.Length + 10) as int
+    difficulty = (100 - (positions[0].GetActorValuePercentage("Health") * 100) - PrimGroup.Length * 10 + 10) as int
   Else
     Actor[] tmp
     If(ID == 1)
@@ -261,8 +261,6 @@ Function CreateStruggle(int ID)
     difficulty = 0
   EndIf
   Debug.Trace("Beginning Struggle for ID = " + ID + " ( " + positions + " ) Difficulty = " + difficulty)
-  String hook = "YKrPlayer" + ID
-
   If(!KudasaiStruggle.CreateStruggle(positions, difficulty, self))
     Debug.Trace("Failed to begin Struggle, skipping to Assault")
     CreateCycle(ID)

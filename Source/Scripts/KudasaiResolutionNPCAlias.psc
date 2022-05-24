@@ -35,7 +35,7 @@ Function StopQ()
 EndFunction
 
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
-  If(aeCombatState != 0)
+  If(aeCombatState == 1)
     StopQ()
   EndIf
 EndEvent
