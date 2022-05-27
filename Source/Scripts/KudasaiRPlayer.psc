@@ -74,10 +74,11 @@ EndFunction
   If adult content is allowed, this will create a chain assault. NPC will gain some exclusive Dialogue
 /;
 Event OnUpdate()
-  Debug.Trace("[Kudasai] rPLayer -> START")
+  Debug.Trace("[Kudasai] <Assault> START")
+  Actor PlayerRef = Game.GetPlayer()
   GoToState("")
   If(PlayerWerewolfQuest.IsRunning())
-    IsWerewolf = 1 + ((Game.GetPlayer().GetRace() == WerebearRace) as int)
+    IsWerewolf = 1 + ((PlayerRef.GetRace() == WerebearRace) as int)
     PlayerWerewolfQuest.SetStage(100)
   Else
     IsWerewolf = 0
@@ -85,11 +86,16 @@ Event OnUpdate()
   Thane = IsThane()
   DoAdult = MCM.FrameAny
   If(CreateAssaultGroups())
+    Debug.Trace("[Kudasai] <Assault> STAGE 5")
     SetStage(5)
     return
   EndIf
   ; Fallback
-  GoToState("ShutDown")
+  Debug.Trace("[Kudasai] <Assault> FAILED TO CREATE GROUPS")
+  Kudasai.RescueActor(PlayerRef, false, true)
+  Debug.SendAnimationEvent(PlayerRef, "BleedoutStop")
+  Player.GoToState("Exhausted")
+  Player.RegisterForSingleUpdate(11)
 EndEvent
 
 ; Split the <= 20 collected Aliases into up to 3 groups, 1 Player + 2 Follower
@@ -97,6 +103,8 @@ bool Function CreateAssaultGroups()
   Actor PlayerRef = Game.GetPlayer()
   Actor[] fols = GetActors(Followers)
   Actor[] hostiles = GetActors(Enemies)
+  Debug.Trace("[Kudasai] <Assault> Found Hostiles = " + hostiles)
+  Debug.Trace("[Kudasai] <Assault> Found Additional Victims = " + fols)
   int numfols = fols.Length - PapyrusUtil.CountActor(fols, none)
   int numhostile = hostiles.Length - PapyrusUtil.CountActor(hostiles, none)
   If(numhostile == 0)
@@ -105,7 +113,6 @@ bool Function CreateAssaultGroups()
   ; Create Arrays
   int folsize = Math.floor((numhostile as float) / 3)
   int playersize = hostiles.Length - folsize * numfols
-  Debug.Trace("folsize = " + folsize + " playersize = " + playersize)
   PrimGroup = PapyrusUtil.ActorArray(playersize)
   SecGroup = PapyrusUtil.ActorArray(folsize)
   TerGroup = PapyrusUtil.ActorArray(folsize)
@@ -117,11 +124,11 @@ bool Function CreateAssaultGroups()
         Kudasai.RescueActor(hostiles[i], true)
       EndIf
       int rand = Utility.RandomInt(0, 99)
-      If(fols[1] && rand < 20 && SecGroup.find(none) > -1 && Kudasai.IsInterested(fols[1], hostiles[i]))
+      If(fols[1] && rand < 25 && TerGroup.find(none) > -1 && Kudasai.IsInterested(fols[1], hostiles[i]))
         ForceRef(TerRefs, hostiles[i])
         TerGroup[TerGroup.find(none)] = hostiles[i]
         Enemies[i].Clear()
-      ElseIf(fols[0] && rand < 40 && TerGroup.find(none) > -1 && Kudasai.IsInterested(fols[0], hostiles[i]))
+      ElseIf(fols[0] && rand < 45 && SecGroup.find(none) > -1 && Kudasai.IsInterested(fols[0], hostiles[i]))
         ForceRef(SecRefs, hostiles[i])
         SecGroup[SecGroup.find(none)] = hostiles[i]
         Enemies[i].Clear()
@@ -134,9 +141,9 @@ bool Function CreateAssaultGroups()
   PrimGroup = PapyrusUtil.RemoveActor(PrimGroup, none)
   SecGroup = PapyrusUtil.RemoveActor(SecGroup, none)
   TerGroup = PapyrusUtil.RemoveActor(TerGroup, none)
-  Debug.Trace("[Kudasai] Prim = " + PrimGroup)
-  Debug.Trace("[Kudasai] Sec = " + SecGroup)
-  Debug.Trace("[Kudasai] Ter = " + TerGroup)
+  Debug.Trace("[Kudasai] <Assault> Prim = " + PrimGroup)
+  Debug.Trace("[Kudasai] <Assault> Sec = " + SecGroup)
+  Debug.Trace("[Kudasai] <Assault> Ter = " + TerGroup)
   ; From here, all Aliases are sorted into the 3 Groups. Leftovers will simply "spectate" the Player
   If(!PrimGroup.Length)
     return false
@@ -164,7 +171,7 @@ bool Function CreateAssaultGroups()
     n += 1
   EndWhile
   If(prim != none)
-    Debug.Trace("[Kudasai] Found Primary Actor for Assault = " + prim)
+    Debug.Trace("[Kudasai] <Assault> Found Primary Actor = " + prim)
     EnemyNPC.ForceRefTo(prim)
     ; Dont waste time if thats no NPC
     If(!creature)
@@ -180,7 +187,7 @@ bool Function CreateAssaultGroups()
       EndWhile
     EndIf
   Else
-    Debug.Trace("[Kudasai] Unable to find Primary Actor for Assault")
+    Debug.Trace("[Kudasai] <Assault> No Primary Actor found")
     return false
   EndIf
   ; Scene 0 will divide between 3 cases:
@@ -189,7 +196,7 @@ bool Function CreateAssaultGroups()
   ; 3. Creature + Adult will create a Struggle Scene
   Scenes[0].Start()
   If(!Scenes[0].IsPlaying())
-    Debug.Trace("[Kudasai] Scene Failed to play")
+    Debug.Trace("[Kudasai] <Assault> Primary Scene Failed to play")
     return false
   EndIf
   totalscenes = 1
@@ -204,6 +211,8 @@ bool Function CreateAssaultGroups()
       EndIf
     EndIf
   EndIf
+  Debug.Trace("[Kudasai] <Assault> Total Scenes started = " + totalscenes)
+  scenecounter = Utility.CreateIntArray(3, 0)
   return true
 EndFunction
 
@@ -218,6 +227,8 @@ Actor[] Function GetActors(ReferenceAlias[] reflist)
       Else
         reflist[i].Clear()
       EndIf
+    Else
+      return ret
     EndIf
     i += 1
   EndWhile
@@ -260,15 +271,15 @@ Function CreateStruggle(int ID)
     ; Make Followers always lose the struggle zz
     difficulty = 0
   EndIf
-  Debug.Trace("Beginning Struggle for ID = " + ID + " ( " + positions + " ) Difficulty = " + difficulty)
+  Debug.Trace("[Kudasai] <Assault> Beginning Struggle for ID = " + ID + " ( " + positions + " ) Difficulty = " + difficulty)
   If(!KudasaiStruggle.CreateStruggle(positions, difficulty, self))
-    Debug.Trace("Failed to begin Struggle, skipping to Assault")
+    Debug.Trace("[Kudasai] <Assault> Failed to begin Struggle, skipping to Assault")
     CreateCycle(ID)
   EndIf
 EndFunction
 
 Event OnFuture_c(Actor[] positions, int victory, String argStr)
-  Debug.Trace("[Kudasai] rPlayer -> Struggle End (Callback)")
+  Debug.Trace("[Kudasai] <Assault> Struggle End (Callback)")
   int ID
   Actor PlayerRef = Game.GetPlayer()
   If(positions.find(PlayerRef) > -1)
@@ -291,13 +302,7 @@ Event OnFuture_c(Actor[] positions, int victory, String argStr)
   anims[0] = "BleedoutStart"
   anims[1] = "IdleForceDefaultState"
   KudasaiStruggle.EndStruggleCustom(positions, anims)
-  ; Derived from SLF
-  Debug.SendAnimationEvent(positions[1], "ReturnDefaultState") ; for chicken, hare and slaughterfish before the "ReturnToDefault"
-  Debug.SendAnimationEvent(positions[1], "ReturnToDefault") ; the rest creature-animal
-  Debug.SendAnimationEvent(positions[1], "FNISDefault") ; for dwarvenspider and chaurus
-  Debug.SendAnimationEvent(positions[1], "IdleReturnToDefault") ; for Werewolves and VampirwLords
-  Debug.SendAnimationEvent(positions[1], "ForceFurnExit") ; for Trolls afther the "ReturnToDefault" and draugr, daedras and all dwarven exept spiders
-  Debug.SendAnimationEvent(positions[1], "Reset") ; for Hagravens afther the "ReturnToDefault" and Dragons
+  Debug.SendAnimationEvent(positions[1], "ReturnToDefault")
   If(GetState() == "")
     CreateCycle(ID)
   EndIf
@@ -312,19 +317,12 @@ Function CreateCycle(int ID)
   Actor victim
   Actor[] positions
   If(ID == 0)
-    victim = Game.GetPlayer()
-    positions = PrimGroup
+    CreateNewCycle(ID, Game.GetPlayer(), PrimGroup, true)
   ElseIf(ID == 1)
-    victim = Followers[0].GetReference() as Actor
-    positions = SecGroup
+    CreateNewCycle(ID, Followers[0].GetActorReference(), SecGroup, true)
   Else
-    victim = Followers[1].GetReference() as Actor
-    positions = TerGroup
+    CreateNewCycle(ID, Followers[1].GetActorReference(), TerGroup, true)
   EndIf
-
-  scenecounter = Utility.CreateIntArray(3, 0)
-  CreateNewCycle(ID, victim, positions, true)
-
   RegisterForModEvent("HookAnimationEnd_YKrPlayer_" + ID, "PostAssaultSL_" + ID)
   RegisterForModEvent("ostim_end", "PostAssaultOStim")
 EndFunction
@@ -358,21 +356,18 @@ Event PostAssaultOStim(string asEventName, string asStringArg, float afNumArg, f
     victim = Followers[1].GetReference() as Actor
     ID = 2
   EndIf
-  If(victim == none)
+  If(!victim)
     return
   EndIf
-
   CreateNewCycle(ID, victim, positions)
 EndEvent
 
 Function CreateNewCycle(int ID, Actor victim, Actor[] oldpositions, bool firstcycle = false)
-  Debug.Trace("[Kudasai] Creating new Cycle for ID = " + ID + " With Victim = " + Victim + " old positions = " + oldpositions)
-  ; If player is too far away or a Shutdown Stage is set, dont start a new Scene
+  Debug.Trace("[Kudasai] <Assault> " + ID + " (" + Victim + "): Creating new Cycle")
   If(GetStage() > 300 || (ID != 0 && victim.GetDistance(Game.GetPlayer()) > 8192.0))
     QuitCycle(ID)
     return
   EndIf
-  ; How much I wish thered be multidimensional arrays rn :<
   Actor[] potentials
   ReferenceAlias[] list
   If(ID == 0)
@@ -385,49 +380,45 @@ Function CreateNewCycle(int ID, Actor victim, Actor[] oldpositions, bool firstcy
     list = TerRefs
     potentials = TerGroup
   EndIf
-  ; Not the first cycle? Count up, check if a new should start & checkout aggressors
-  If(!firstcycle)
+  Utility.Wait(1) ; Wait for the Scene to fully shut down zzz
+  If(!firstcycle) ; Stack up Scene Counter & Checkout previously animated Actors
     scenecounter[ID] = scenecounter[ID] + 1
-    Debug.Trace("[Kudasai] Completed Cycles = " + scenecounter[ID])
-    If(ID == 0)
-      CyclesPlayer = scenecounter[ID]
-    EndIf
+    Debug.Trace("[Kudasai] <Assault> " + ID + ": Completed Cycles = " + scenecounter[ID] + "/" + MCM.iMaxAssaults)
     If(scenecounter[ID] == MCM.iMaxAssaults)
-      Debug.Trace("[Kudasai] Cycle hit max Iterations at Cycle Nr = " + scenecounter[ID])
       QuitCycle(ID)
       return
+    ElseIf(ID == 0)
+      CyclesPlayer = scenecounter[ID]
     EndIf
-    Debug.Trace("[Kudasai] Removing Actors; Pre Removal = " + potentials)
     ; Checkout Aggressors
     int i = 0
     While(i < oldpositions.Length)
       If(oldpositions[i] != victim && (Utility.RandomFloat(0, 99.5) < MCM.fRapistQuits))
-        int where = potentials.find(oldpositions[i])
-        potentials[where] = none
+        potentials[potentials.find(oldpositions[i])] = none
       EndIf
       i += 1
     EndWhile
-    Debug.Trace("[Kudasai] Post Removal = " + potentials)
     potentials = PapyrusUtil.RemoveActor(potentials, none)
-
     If(!potentials.Length)
-      Debug.Trace("[Kudasai] No Actors left to animate")
+      Debug.Trace("[Kudasai] <Assault> " + ID + ": No Actors left to animate")
       QuitCycle(ID)
       return
     Else
       Debug.SendAnimationEvent(victim, "KudasaiTraumeLie")
-      Game.SetPlayerAIDriven(true)
+      If(ID == 0)
+        Game.SetPlayerAIDriven(true)
+      Else
+        Victim.SetDontMove(true)
+      EndIf
     EndIf
   EndIf
-
   int max = KudasaiAnimation.GetAllowedParticipants(potentials.Length + 1) - 1
   Actor[] newpositions = PapyrusUtil.ActorArray(max)
-  Debug.Trace("[Kudasai] Creating Scene for ID = " + ID + " with Num Partners (max) = " + max)
-
+  Debug.Trace("[Kudasai] <Assault> " + ID + ": Num Partners (max) = " + max)
   bool humanz = potentials[Utility.RandomInt(0, potentials.Length - 1)].HasKeyword(ActorTypeNPC)
   Race match
   int i = 0
-  While(i < 50 && newpositions.Find(none) > -1)
+  While(i < 25 && newpositions.Find(none) > -1)
     int n = Utility.RandomInt(0, potentials.Length - 1)
     If(newpositions.find(potentials[n]) == -1)
       int where = newpositions.Find(none)
@@ -444,40 +435,56 @@ Function CreateNewCycle(int ID, Actor victim, Actor[] oldpositions, bool firstcy
     EndIf
     i += 1
   EndWhile
-  Debug.Trace("[Kudasai] Found Actors = " + newpositions)
+  Debug.Trace("[Kudasai] <Assault> " + ID + ": New Positions = " + newpositions)
   newpositions = PapyrusUtil.RemoveActor(newpositions, none)
-
-  If(!newpositions.Length)
-    QuitCycle(ID)
-    If(ID == 0)
-      Debug.Notification("Failed to create Scene")
-    EndIf
-  Else
+  If(newpositions.Length)
     If(ID == 0 && humanz && !firstcycle)
       int where = Utility.RandomInt(0, newpositions.Length - 1)
       newpositions[where].Say(CycleTopic)
+      Utility.Wait(3)
     EndIf
-    Utility.Wait(Utility.RandomFloat(2, 5))
-    If (KudasaiAnimation.CreateAssault(victim, newpositions, "YKrPlayer_" + ID) == -1)
-      Debug.Trace("[Kudasai] Failed to create Scene")
-      QuitCycle(ID)
-      If(ID == 0)
-        Debug.Notification("Failed to create Scene")
-      EndIf
+    If (KudasaiAnimation.CreateAssault(victim, newpositions, "YKrPlayer_" + ID) > -1)
+      return
     EndIf
+  EndIf
+  Debug.Trace("[Kudasai] <Assault> " + ID + ": Failed to create Scene")
+  QuitCycle(ID)
+  If(ID == 0)
+    Debug.Notification("Failed to create Scene")
   EndIf
 EndFunction
 
 ; =============== CLEANUP
 
+; Called when the Scene Loop no longer continues for w/e reason or the associated Scene ends
 Function QuitCycle(int ID)
-  ; No longer Setting Stage for Player, so the NPC stay around clapping until the Quest ends & the player is ported
+  int stage = 100 + 100 * ID
+  If(GetStageDone(stage))
+    return
+  ElseIf(GetStage() > 300)
+    Debug.Trace("[Kudasai] <Assault> QuitCycle for ID = " + ID + " -> Stage > 300")
+    If(ID == 0)
+      Kudasai.DefeatActor(Game.GetPlayer())
+    EndIf
+    return
+  EndIf
+  SetStage(stage)
+  totalscenes -= 1
+  Debug.Trace("[Kudasai] <Assault> QuitCycle for ID = " + ID + " Remaining Scenes = " + totalscenes)
+  ; If all Stages completed, stop the Quest
   If(ID == 0)
-    Debug.SendAnimationEvent(Game.GetPlayer(), "bleedoutStart")
-    ; Player.GoToState("Exhausted") ; Porting anyway, no need for a "getaway" timer
-    GoToState("ShutDown")
+    ; Quest ended early due to combat
+    ClearGroup(Enemies)
+    Utility.Wait(3)
+    Player.GoToState("Exhausted")
+    If(totalscenes == 0)
+      Player.RegisterForSingleUpdate(13)
+    EndIf
   Else
-    SetStage(100 + 100 * ID)
+    If(totalscenes == 0)
+      Stop()
+      return
+    EndIf
     Actor victim = Followers[ID - 1].GetReference() as Actor
     Debug.SendAnimationEvent(victim, "bleedoutStart")
     If(ID == 1)
@@ -508,17 +515,7 @@ Function ForceStopScenes()
     KudasaiAnimation.StopAnimating(follower1, MCM)
     Debug.SendAnimationEvent(follower1, "bleedoutStart")
   EndIf
-  If(GetState() == "")
-    GoToState("ShutDown")
-  EndIf
 EndFunction
-
-State ShutDown
-  Event OnBeginState()
-    ToMapEdge.Start()
-    Stop()
-  EndEvent
-EndState
 
 bool Function IsThane()
   Actor PlayerRef = Game.GetPlayer()

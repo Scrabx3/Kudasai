@@ -50,7 +50,8 @@ EndFunction
 Function Fragment_12()
 ;BEGIN CODE
 ; Failsafe
-GetOwningQuest().SetStage(100)
+KudasaiRPlayer q = GetOwningQuest() as KudasaiRPlayer
+q.QuitCycle(0)
 ;END CODE
 EndFunction
 ;END FRAGMENT

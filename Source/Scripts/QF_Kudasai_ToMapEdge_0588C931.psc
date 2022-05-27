@@ -2,29 +2,19 @@
 ;NEXT FRAGMENT INDEX 1
 Scriptname QF_Kudasai_ToMapEdge_0588C931 Extends Quest Hidden
 
-;BEGIN ALIAS PROPERTY Player
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Player Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY currentLoc
-;ALIAS PROPERTY TYPE LocationAlias
-LocationAlias Property Alias_currentLoc Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY MapMarker
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_MapMarker Auto
-;END ALIAS PROPERTY
-
 ;BEGIN ALIAS PROPERTY currentHold
 ;ALIAS PROPERTY TYPE LocationAlias
 LocationAlias Property Alias_currentHold Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY OutsideMarker
+;BEGIN ALIAS PROPERTY FallbackMarker
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_OutsideMarker Auto
+ReferenceAlias Property Alias_FallbackMarker Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Player
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Player Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY EdgeMarker
@@ -32,9 +22,14 @@ ReferenceAlias Property Alias_OutsideMarker Auto
 ReferenceAlias Property Alias_EdgeMarker Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY FallbackMarker
+;BEGIN ALIAS PROPERTY MapMarker
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_FallbackMarker Auto
+ReferenceAlias Property Alias_MapMarker Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY OutsideMarker
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_OutsideMarker Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY EdgeMarkerHold
@@ -47,20 +42,10 @@ ReferenceAlias Property Alias_EdgeMarkerHold Auto
 ReferenceAlias Property Alias_OutsideMarkerHold Auto
 ;END ALIAS PROPERTY
 
-;BEGIN FRAGMENT Fragment_0
-Function Fragment_0()
-;BEGIN CODE
-Actor player = Alias_Player.GetReference() as Actor
-If(Kudasai.IsDefeated(player))
-  Kudasai.RescueActor(player, false)
-  Utility.Wait(3)
-  Kudasai.UndoPacify(player)
-EndIf
-
-Stop()
-;END CODE
-EndFunction
-;END FRAGMENT
+;BEGIN ALIAS PROPERTY currentLoc
+;ALIAS PROPERTY TYPE LocationAlias
+LocationAlias Property Alias_currentLoc Auto
+;END ALIAS PROPERTY
 
 ;BEGIN FRAGMENT Fragment_5
 Function Fragment_5()
@@ -101,6 +86,24 @@ EndIf
 
 Debug.Messagebox("[Kudasai] Failed to find valid porting Location")
 Debug.Trace("[Kudasai] < ToMapEdge > Failed to find a valid porting Location", 1)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_0
+Function Fragment_0()
+;BEGIN CODE
+Actor player = Alias_Player.GetReference() as Actor
+If(Kudasai.IsDefeated(player))
+  Kudasai.RescueActor(player, false)
+  Utility.Wait(3)
+  Kudasai.UndoPacify(player)
+ElseIf(Kudasai.IsPacified(player))
+  Kudasai.UndoPacify(player)
+  Debug.SendAnimationEvent(player, "ForceDefaultState")
+EndIf
+
+Stop()
 ;END CODE
 EndFunction
 ;END FRAGMENT

@@ -1,30 +1,10 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
-;NEXT FRAGMENT INDEX 7
+;NEXT FRAGMENT INDEX 10
 Scriptname QF_Kudasai_rPlayer_05808E86 Extends Quest Hidden
 
-;BEGIN ALIAS PROPERTY Ter02
+;BEGIN ALIAS PROPERTY Enemy09
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ter02 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy13
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy13 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy01
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy01 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy04
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy04 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy12
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy12 Auto
+ReferenceAlias Property Alias_Enemy09 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Enemy02
@@ -32,19 +12,9 @@ ReferenceAlias Property Alias_Enemy12 Auto
 ReferenceAlias Property Alias_Enemy02 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy06
+;BEGIN ALIAS PROPERTY Enemy04
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy06 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Sec03
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec03 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Sec01
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec01 Auto
+ReferenceAlias Property Alias_Enemy04 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY EnemyNPC
@@ -52,54 +22,9 @@ ReferenceAlias Property Alias_Sec01 Auto
 ReferenceAlias Property Alias_EnemyNPC Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy11
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy11 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy16
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy16 Auto
-;END ALIAS PROPERTY
-
 ;BEGIN ALIAS PROPERTY Player
 ;ALIAS PROPERTY TYPE ReferenceAlias
 ReferenceAlias Property Alias_Player Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy20
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy20 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy05
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy05 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Follower01
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Follower01 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy03
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy03 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy08
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy08 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Sec04
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec04 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Enemy07
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy07 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Ter06
@@ -107,29 +32,29 @@ ReferenceAlias Property Alias_Enemy07 Auto
 ReferenceAlias Property Alias_Ter06 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy10
+;BEGIN ALIAS PROPERTY Ter01
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy10 Auto
+ReferenceAlias Property Alias_Ter01 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy15
+;BEGIN ALIAS PROPERTY Enemy01
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy15 Auto
+ReferenceAlias Property Alias_Enemy01 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Sec06
+;BEGIN ALIAS PROPERTY Enemy08
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec06 Auto
+ReferenceAlias Property Alias_Enemy08 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy17
+;BEGIN ALIAS PROPERTY Enemy12
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy17 Auto
+ReferenceAlias Property Alias_Enemy12 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Follower02
+;BEGIN ALIAS PROPERTY Sec01
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Follower02 Auto
+ReferenceAlias Property Alias_Sec01 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Ter03
@@ -137,34 +62,34 @@ ReferenceAlias Property Alias_Follower02 Auto
 ReferenceAlias Property Alias_Ter03 Auto
 ;END ALIAS PROPERTY
 
+;BEGIN ALIAS PROPERTY Follower01
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Follower01 Auto
+;END ALIAS PROPERTY
+
 ;BEGIN ALIAS PROPERTY Enemy19
 ;ALIAS PROPERTY TYPE ReferenceAlias
 ReferenceAlias Property Alias_Enemy19 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy18
+;BEGIN ALIAS PROPERTY Ter02
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy18 Auto
+ReferenceAlias Property Alias_Ter02 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Sec02
+;BEGIN ALIAS PROPERTY Enemy06
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec02 Auto
+ReferenceAlias Property Alias_Enemy06 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Sec05
+;BEGIN ALIAS PROPERTY Follower02
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Sec05 Auto
+ReferenceAlias Property Alias_Follower02 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Enemy09
+;BEGIN ALIAS PROPERTY Enemy03
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Enemy09 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Ter01
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ter01 Auto
+ReferenceAlias Property Alias_Enemy03 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Ter04
@@ -172,9 +97,44 @@ ReferenceAlias Property Alias_Ter01 Auto
 ReferenceAlias Property Alias_Ter04 Auto
 ;END ALIAS PROPERTY
 
+;BEGIN ALIAS PROPERTY Sec05
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec05 Auto
+;END ALIAS PROPERTY
+
 ;BEGIN ALIAS PROPERTY Enemy14
 ;ALIAS PROPERTY TYPE ReferenceAlias
 ReferenceAlias Property Alias_Enemy14 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy05
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy05 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Sec03
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec03 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy16
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy16 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy10
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy10 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy11
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy11 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy13
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy13 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Ter05
@@ -182,14 +142,84 @@ ReferenceAlias Property Alias_Enemy14 Auto
 ReferenceAlias Property Alias_Ter05 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN FRAGMENT Fragment_4
-Function Fragment_4()
+;BEGIN ALIAS PROPERTY Enemy15
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy15 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy17
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy17 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy07
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy07 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy18
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy18 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Enemy20
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Enemy20 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Sec04
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec04 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Sec06
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec06 Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Sec02
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Sec02 Auto
+;END ALIAS PROPERTY
+
+;BEGIN FRAGMENT Fragment_0
+Function Fragment_0()
 ;BEGIN AUTOCAST TYPE KudasaiRPlayer
 Quest __temp = self as Quest
 KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
 ;END AUTOCAST
 ;BEGIN CODE
-; First Loop Complete
+; Shut down
+Debug.Trace("[Kudasai] <Assault> STOP QUEST")
+kmyQuest.ForceStopScenes()
+If(!GetStageDone(450))
+  Actor player = Game.GetPlayer()
+  If(Kudasai.isdefeated(player))
+    Kudasai.RescueActor(player, true)
+  ElseIf(Kudasai.IsPacified(player))
+    Kudasai.UndoPacify(player)
+  EndIf
+EndIf
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_5
+Function Fragment_5()
+;BEGIN AUTOCAST TYPE KudasaiRPlayer
+Quest __temp = self as Quest
+KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
+;END AUTOCAST
+;BEGIN CODE
+; Loop end 2
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_7
+Function Fragment_7()
+;BEGIN CODE
+; Setup completed
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -206,46 +236,37 @@ KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_0
-Function Fragment_0()
-;BEGIN AUTOCAST TYPE KudasaiRPlayer
-Quest __temp = self as Quest
-KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
-;END AUTOCAST
+;BEGIN FRAGMENT Fragment_9
+Function Fragment_9()
 ;BEGIN CODE
-kmyQuest.ForceStopScenes()
-
-Actor player = Game.GetPlayer()
-If(Kudasai.isdefeated(player))
-  Kudasai.RescueActor(player, true)
-ElseIf(Kudasai.IsPacified(player))
-  Kudasai.UndoPacify(player)
-EndIf
+; Stage 450
+Debug.Trace("[Kudasai] <Assault> STAGE 450")
+Stop()
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;BEGIN FRAGMENT Fragment_2
 Function Fragment_2()
-;BEGIN CODE
-; Quest is started through cpp
-
-; by the time Scene01 is started the game didnt pull out the victoires out of combat yet
-; have to delay this a bit
-
-RegisterForSingleUpdate(1)
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_5
-Function Fragment_5()
 ;BEGIN AUTOCAST TYPE KudasaiRPlayer
 Quest __temp = self as Quest
 KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
 ;END AUTOCAST
 ;BEGIN CODE
-; Loop end 2
+; Quest Start
+RegisterForSingleUpdate(0.5)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_4
+Function Fragment_4()
+;BEGIN AUTOCAST TYPE KudasaiRPlayer
+Quest __temp = self as Quest
+KudasaiRPlayer kmyQuest = __temp as KudasaiRPlayer
+;END AUTOCAST
+;BEGIN CODE
+; First Loop Complete
 ;END CODE
 EndFunction
 ;END FRAGMENT
