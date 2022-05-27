@@ -97,7 +97,7 @@ Giant:
     Victim: KudasaiGiantStruggle_A1_Stop
     Aggressor: KudasaiGiantStruggle_A2_Stop
 
-BoarMounted: # TODO: Name change from MountedRiekling to BoarMounted
+BoarMounted:
   Victim: KudasaiBoarMountedStruggle_A1_Start
   Aggressor: KudasaiBoarMountedStruggle_A2_Start
   Breakfree:

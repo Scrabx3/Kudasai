@@ -2,7 +2,8 @@ Name: Example # The name of the Event, as seen in the MCM
 Data: # Information to access the Quest which is to start
   ESP_Name: Mod_0.esp
   FormID: 0x123456
-Blackout: false # Is this Event a valid Blackout Event? Blackouts should port the Player away from combat, i.e. "Capturing the Player" in some way
+Blackout: false # Is Blackout Event? Blackouts should port the Player away from combat, i.e. "Capturing the Player" in some way. Missing => false
+DoesTeleport: true # Does this Event teleport the Player at any point in time? Used to filter out Events in TP-Prohibited areas. Missing => true
 Requirements: # Requirements for this Event to be valid. All of the below keys are optional
   Mods: # Required mods, which need to be present alongside the Event Quest itself
     - Mod_1.esp
@@ -10,4 +11,4 @@ Requirements: # Requirements for this Event to be valid. All of the below keys a
   RaceKey: # The victoires group needs to include members whichs RaceKey matches with the given RaceKeys
     - Human
     - Wolf
-  RaceKey_All: true # Missing = true. If all of the given RaceKeys have need to be present in the victoires group
+  RaceKey_All: true # If all of the given RaceKeys have need to be present in the victoires group. Missing => true
