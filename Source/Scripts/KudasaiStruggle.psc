@@ -93,7 +93,9 @@ Function EndStruggleAnimation(Actor[] positions, String[] animations)
     EndIf
     n += 1
   EndWhile
-  Utility.Wait(2.3)
+  If(animations.Find("IdleForceDefaultState") == -1)
+    Utility.Wait(2.3)
+  EndIf
   ClearPositions(positions)
 EndFunction
 
@@ -153,8 +155,13 @@ EndFunction
 Function EndStruggleImpl(Actor[] positions, bool victory) global
   If(victory)
     EndStruggleCustom(positions, LookupBreakfreeAnimations(positions))
+    If(positions[1] == Game.GetPlayer()) ; Dont ragdoll the player..
+      return
+    EndIf
     String rk = Kudasai.GetRaceKey(positions[1])
-    If(rk == "Skeever" || rk == "Wolf")
+    If(rk == "Human")
+      return
+    ElseIf(rk == "Skeever" || rk == "Wolf")
       positions[0].PushActorAway(positions[1], 5.00000)
     ElseIf(rk == "Riekling" || rk == "DwarvenSpider")
       positions[0].PushActorAway(positions[1], 3.50000)
