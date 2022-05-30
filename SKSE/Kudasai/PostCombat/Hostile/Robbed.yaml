@@ -6,3 +6,4 @@ Blackout: true
 Requirements:
   RaceKey:
     - Human
+Weight: 50

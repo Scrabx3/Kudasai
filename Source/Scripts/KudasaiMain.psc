@@ -1,16 +1,14 @@
 Scriptname KudasaiMain extends Quest  
 
 KudasaiMCM Property MCM Auto
-
+KudasaiCaptures Property Captures Auto
 Perk Property InteractionPerk Auto
 
 Quest Property SurrenderQuest Auto
 Message Property SurrenderQFailure Auto
-
 Spell Property HunterPride Auto
 Message Property HunterPrideAdd Auto
 Message Property HunterPrideRemove Auto
-
 Message Property AssaultDefeated Auto
 
 Function Maintenance()
@@ -33,6 +31,7 @@ Function RegisterKeys()
   RegisterForKey(MCM.iSurrenderKey)
   RegisterForKey(MCM.iHunterPrideKey)
   RegisterForKey(MCM.iAssaultKey)
+  RegisterForKey(MCM.iCapturesKey)
 EndFunction
 
 Event OnKeyDown(int keyCode)
@@ -52,6 +51,8 @@ Event OnKeyDown(int keyCode)
     ToggleHunterPride()
   ElseIf(keyCode == MCM.iAssaultKey)
     CreateAssault()
+  ElseIf(keyCode == MCM.iCapturesKey)
+    ViewCaptures()
   EndIf
 EndEvent
 
@@ -112,4 +113,19 @@ Event OnFuture_c(Actor[] positions, int victory, String argStr)
     KudasaiStruggle.EndStruggleCustom(positions, anims)
     Kudasai.DefeatActor(positions[0])
   EndIf
+EndEvent
+
+Function ViewCaptures()
+  RegisterForModEvent("YKSelect_Accept", "CapturesAccept")
+  RegisterForModEvent("YKSelect_Cancel", "CapturesCancel")
+  Captures.OpenCapturesMenu()
+EndFunction
+
+Event CapturesAccept(string asEventName, string CapturesName, float aiCapturesIndex, form akSender)
+  Debug.Trace("[Kudasai] Rescueing Actor = " + CapturesName)
+  Captures.RescueActorByID(aiCapturesIndex as int, Game.GetPlayer())
+EndEvent
+
+Event CapturesCancel(string asEventName, string asStringArg, float afNumArg, form akSender)
+  Debug.Trace("[Kudasai] Canceled Captures View")
 EndEvent

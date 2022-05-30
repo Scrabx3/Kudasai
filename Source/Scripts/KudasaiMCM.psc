@@ -12,6 +12,7 @@ bool Property bEnabled = true Auto Hidden
 int Property iSurrenderKey = -1 Auto Hidden ; Surrender
 int Property iHunterPrideKey = -1 Auto Hidden ; Allowing Player to defeat through Combat
 int Property iAssaultKey = -1 Auto Hidden ; Player initiated Struggle Game
+int Property iCapturesKey = -1 Auto Hidden ; Access captured Targets
 
 bool Property bNotifyDefeat = false Auto Hidden
 bool Property bNotifyDestroy = false Auto Hidden ; TODO: implement this when doing the destruction stuff
@@ -111,6 +112,8 @@ Event OnPageReset(string page)
     AddKeyMapOptionST("surrenderkey", "$YK_SurrenderKey", iSurrenderKey)
     AddKeyMapOptionST("hunterpridekey", "$YK_HunterPrideKey", iHunterPrideKey)
     AddKeyMapOptionST("assaultkey", "$YK_AssaultKey", iAssaultKey)
+    AddEmptyOption()
+    AddKeyMapOptionST("huntercaptureskey", "$YK_CapturesKey", iCapturesKey)
 
     SetCursorPosition(1)
     AddHeaderOption("$YK_Notification")
@@ -433,6 +436,9 @@ Event OnKeyMapChangeST(int newKeyCode, string conflictControl, string conflictNa
   ElseIf(s[0] == "assaultkey")
     iAssaultKey = newKeyCode
     SetKeyMapOptionValueST(iAssaultKey)
+  ElseIf(s[0] == "huntercaptureskey")
+    iCapturesKey = newKeyCode
+    SetKeyMapOptionValueST(iCapturesKey)
   EndIf
   ((Self as Quest) as KudasaiMain).RegisterKeys()
 EndEvent

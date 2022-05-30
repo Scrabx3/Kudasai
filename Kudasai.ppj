@@ -21,13 +21,15 @@
         <Import>@MO2\Race Menu Sources\Source\Scripts</Import>
         <Import>@MO2\SkyUI SDK\Source\Scripts</Import>
         <Import>@MO2\Mfg Fix\Source\Scripts</Import>
+        <Import>@MO2\JContainers SE\source\scripts</Import>
         <!-- Adult Frameworks -->
         <Import>@MO2\SexLab Framework\Source\Scripts</Import>
         <Import>@MO2\SexLab Aroused\Source\Scripts</Import>
         <Import>@MO2\OStim\Scripts\Source</Import>
         <Import>@MO2\OSA - Skyrim Ascendancy Engine\Source\Scripts</Import>
         <Import>@MO2\OAroused\source\scripts</Import>
-        <Import>@MO2\JContainers SE\source\scripts</Import>
+        <!-- Soft Integrations -->
+        <Import>@MO2\Paradise Halls\source\scripts</Import>
         <!-- Base Game -->
         <Import>C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition\Data\Source\Scripts</Import>
     </Imports>
