@@ -1,7 +1,7 @@
 # Those are Setting used in Flash associated mechanics
 QTE:
   # The Keys used by Kudasais QTE Events, can set or delete new Keys. Only Keyboard/Controller Keys are allowed
-  # Further, the following Keys are natively filtered & will not be processed: 'Esc'(K), 'Enter'(K), 'Tab'(K), 'Pause'(C), 'Home'(C)
+  # Further, the following Keys are natively filtered & will not be processed: 'Esc', 'Enter', 'Tab', 'Pause', 'Home'
   # The Following Keys have side effects and should be avoided: PoV-Switch (F)
   # Keycodes are taken from here: https://www.creationkit.com/index.php?title=Input_Script#DXScanCodes
   Keycodes:

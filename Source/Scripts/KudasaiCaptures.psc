@@ -4,6 +4,10 @@ GlobalVariable Property Capacity Auto
 {Total amount of Victims that the Ring may store}
 ImageSpaceModifier Property FadeToBlackAndBackFast Auto
 {Fast Fading in and out. Wind up is 0.55 seconds, fade out lasts 0.15 seconds, fade back takes 0.2 seconds}
+ImageSpaceModifier Property FadeToBlackHoldImod Auto
+ImageSpaceModifier Property FadeToBlackHoldBackFastImod Auto
+{Same as Default, but speed up to only take 0.4 seconds}
+
 Cell Property HoldingCell Auto
 ObjectReference Property HoldingCellMarker Auto
 Message Property _NoFreeSlot Auto
@@ -74,12 +78,14 @@ bool Function Store(Actor subject)
     victim = subject.PlaceAtMe(vicbase) as Actor
     subject.MoveTo(HoldingCellMarker)
   EndIf
-  Location subloc = subject.GetCurrentLocation()
+  Location subloc = victim.GetCurrentLocation()
   victim.MoveTo(HoldingCellMarker)
   empty.ForceRefTo(victim)
+  Kudasai.RemoveAllItems(victim, none)
   size += 1
   ; Create Flash Entry
   ActorBase sbase = subject.GetLeveledActorBase()
+  ; Cant do this in the original split cause time
   
   StorageUtil.SetStringValue(victim, "YK_CapturesName", sbase.GetName())
   StorageUtil.SetStringValue(victim, "YK_CapturesLevel", " Lv. " + subject.GetLevel())
@@ -123,8 +129,11 @@ bool Function RescueActorByID(int index, ObjectReference whereto)
     Kudasai.DefeatActor(ref, true)
     FadeToBlackAndBackFast.Apply() ;TODO: Add FadeToBlackHoldImod.Apply() Spawning the NPC takes ~1 second, too long for the fast one
     Utility.Wait(0.50)
+    FadeToBlackAndBackFast.PopTo(FadeToBlackHoldImod)
     ref.MoveTo(whereto, moveX, moveY)
     Debug.SendAnimationEvent(ref, "BleedoutStart")
+    Utility.Wait(0.4)
+    FadeToBlackHoldImod.PopTo(FadeToBlackHoldBackFastImod)
   Else
     ActorBase refbase = ref.GetLeveledActorBase()
     If(refbase.IsEssential())

@@ -1,39 +1,23 @@
-# Genders TODO: rewrite
-# This list is used to validate different Gender Combinations. If a combination is not listed, the last aggressor  
-# will be removed until only 1 aggressor is left. This does NOT affect who will participate in the assault
-# If this combination is not found either, the request will be considered invalid (the aggressor(s) will be 
-# considered unintrested in the victim)
-# To create a new combination, simply add them to the below list
-# Syntax: Victim<-Aggressor(s)
+# Genders (Selective)
+# Set Gender Combinations which are allowed to assault another here. Genders which arent set will be implicitly considered allowed
+# Keys listed under "Follower" only apply to Followers and will overwrite common Keys if possible
+# Syntax: Victim<-Aggressor
 # Keys:
-#   * - Wildcard, represents any Gender. Only checked if there are no other matching Combinations
+#   * - Wildcard (Aggressor only)
 #   M - Male
 #   F - Female
 #   H - Futa
 #   C - Creature
-#   Z - F. Creature
-# Priority: M > F > H > C > Z
 # Examples:
-#   F<-M: true    => A male is allowed to assault a female
-#   F<-M: false   => A male is NOT allowed to assault a female
-#   F<-MM: true   => Two males are allowed to assault a female (including when F<-M is not allowed or not present)
-#   M<-MH: true   => A male and a Futa are allowed to assault a male
-#   M<-HM: true   => Invalid, because males have ahigher priority, they must be listed first. This will never be read
-Combinations:
-  # Male
-  M<-*: true
-  M<-C: false
-  M<-**: false # overrides M<-*, thus only 1v1 Assaults are allowed for male victims, 1v2+ assaults fall back to this
-  # Female
-  F<-*: true
-  # Futa
-  H<-*: true
-  H<-H: false
-  H<-C: false
-  # Creature
+#   M<-M: false   -> A male will never assault another male
+#   F<-F: true    -> A female is allowed to assault another female (same as if you didnt set anything)
+#   C<-*: false   -> A Creature will never be assaulted by anyone
+#   Follower:
+#     M<-M: true  -> A male follower will assault another male (despite M<-M being disabled)
+Selective:
   C<-*: false
-  # F. Creature
-  Z<-*: false
+  Follower:
+    M<-M: true
 
 # Creatures
 # Creatures are grouped together based on a unique Identifier called "RaceKey". Similar to SexLab, similar Creatures will use
