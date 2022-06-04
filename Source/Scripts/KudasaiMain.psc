@@ -15,15 +15,21 @@ Function Maintenance()
   Game.GetPlayer().AddPerk(InteractionPerk)
   RegisterKeys()
 
-  If(Game.GetModByName("SexLab.esm") == 255)
+  If(Kudasaiinternal.IsAlternateVersion())
+    If(Game.GetModByName("SexLab.esm") == 255)
+      MCM.iSLWeight = 0
+    EndIf
+    If(Game.GetModByName("OStim.esp") == 255)
+      MCM.iOStimWeight = 0
+    EndIf
+    If(!MCM.FrameAny)
+      MCM.bNPCPostCombat = false
+    EndIf
+  Else
     MCM.iSLWeight = 0
-  EndIf
-  If(Game.GetModByName("OStim.esp") == 255)
     MCM.iOStimWeight = 0
   EndIf
-  If(!MCM.FrameAny)
-    MCM.bNPCPostCombat = false
-  EndIf
+  MCM.SetPages()
 EndFunction
 
 Function RegisterKeys()
@@ -116,8 +122,8 @@ Event OnFuture_c(Actor[] positions, int victory, String argStr)
 EndEvent
 
 Function ViewCaptures()
-  RegisterForModEvent("YKSelect_Accept", "CapturesAccept")
-  RegisterForModEvent("YKSelect_Cancel", "CapturesCancel")
+  RegisterForModEvent("YKCaptures_Accept", "CapturesAccept")
+  RegisterForModEvent("YKCaptures_Cancel", "CapturesCancel")
   Captures.OpenCapturesMenu()
 EndFunction
 

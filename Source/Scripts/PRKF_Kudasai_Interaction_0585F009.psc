@@ -26,33 +26,28 @@ Function OpenMenu(Actor victim)
   Debug.Trace("[Kudasai] Robbing, Worn Armor = " + worn)
   Debug.Trace("[Kudasai] Rescue, Potion = " + hPotion)
   ; Open Menu
-  UI.OpenCustomMenu("YameteKudasaiHunterPride")
-	int iHandle = UICallback.Create("CustomMenu", "_root.YamMenu.OpenMenu")
-  If(!iHandle)
-    Debug.MessageBox("Error opening Menu..")
-    return
-  EndIf
-  UICallback.PushInt(iHandle, 1) ; Tie Up
-  UICallback.PushInt(iHandle, (worn.Length > 0) as int) ; Strip
-  UICallback.PushInt(iHandle, 1) ; Rob
-  UICallback.PushInt(iHandle, (hPotion != none) as int) ; Rescue
-  UICallback.PushInt(iHandle, PlayerRef.HasKeyword(Vampire) as int) ; Feed
-  int ph
+  int[] args = new int[11]
+  args[0] = 1 ; Tie Up
+  args[1] = (worn.Length > 0) as int ; Strip
+  args[2] = 1 ; Rob
+  args[3] = (hPotion != none) as int ; Rescue
+  args[4] = PlayerRef.HasKeyword(Vampire) as int ; Feed
   If(Game.GetModByName("paradise_halls.esm") != 255)
-    ph = 1
+    args[5] = 1
   Else
-    ph = -1
+    args[5] = -1
   EndIf
-  UICallback.PushInt(iHandle, ph) ; Paradise Halls
-  UICallback.PushInt(iHandle, 1) ; Capture
-  UICallback.PushInt(iHandle, MCM.FrameAny as int) ; Assault
-  UICallback.PushInt(iHandle, 1) ; Execute
-  UICallback.PushInt(iHandle, -1) ; Missing
+  args[6] = 1 ; Capture
+  args[7] = MCM.FrameAny as int
+  args[8] = 1 ; Execute
+  args[9] = -1 ; Nothin yet
+  args[10] = Kudasaiinternal.IsAlternateVersion() as int
   result = -2
   RegisterForModEvent("YamMenu_Accept", "MenuAccept")
   RegisterForModEvent("YamMenu_Cancel", "MenuCancel")
-  ; KudasaiInternal.OpenHunterPrideMenu(1, (worn.Length > 0) as int, 1, (hPotion != none) as int,  PlayerRef.HasKeyword(Vampire) as int, ph, 1, MCM.FrameAny as int, 1, -1)
-  UICallback.Send(iHandle)
+  Debug.Trace("[Kudasai] Invoking Hunter Pride with args = " + args)
+  UI.OpenCustomMenu("YameteKudasaiHunterPride")
+  UI.InvokeIntA("CustomMenu", "_root.YamMenu.OpenMenu", args)
   ; Wait for Result..
   While(result == -2)
     Utility.Wait(0.1)
@@ -71,7 +66,8 @@ Function OpenMenu(Actor victim)
   - Nothing
   /;
   If(result == 0)
-    Debug.MessageBox("--- TODO: ---\nThis means this is NOT YET IMPLEMENTED")
+    Debug.MessageBox(" --- TODO: ---\n\nTHIS MEANS THIS IS NOT YET IMPLEMENTED")
+    ; DoTieUp(victim)
   ElseIf(result == 1)
     int i = 0
     While(i < worn.Length)
@@ -83,7 +79,8 @@ Function OpenMenu(Actor victim)
     Victim.SendAssaultAlarm()
   ElseIf(result == 3)
     PlayerRef.RemoveItem(hPotion, 1, true, Victim)
-    Victim.EquipItem(hPotion, false, true)
+    victim.EquipItem(hPotion, false, true)
+    Kudasai.RescueActor(victim, true)
   ElseIf(result == 4)
     If(IsEssential(Victim))
       return
@@ -119,16 +116,85 @@ EndFunction
 
 Event MenuAccept(string asEventName, string menu_name, float menu_id, form akSender)
   Debug.Trace("[Kudasai] HUNTER PRIDE: Menu Acceot with Option = " + menu_name)
-  ; Debug.MessageBox("Returned = " + menu_id + " ( " + menu_name + " )")
   result = menu_id as int
 EndEvent
-
 Event MenuCancel(string asEventName, string asStringArg, float afNumArg, form akSender)
   Debug.Trace("[Kudasai] HUNTER PRIDE: Menu Cancel")
-  ; Debug.MessageBox("Canceled")
   result = -1
 EndEvent
 
+
+Function DoTieUp(Actor victim)
+  String[] options = new String[14]
+  options[0] = "TEST 0"
+  options[1] = "TEST 1"
+  options[2] = "TEST 2"
+  options[3] = "TEST 3"
+  options[4] = "TEST 4"
+  options[5] = "TEST 5"
+  options[6] = "TEST 6"
+  options[7] = "TEST 7"
+  options[8] = "TEST 8"
+  options[9] = "TEST 9"
+  options[10] = "TEST 10"
+  options[11] = "TEST 11"
+  options[12] = "TEST 12"
+  options[13] = "Reset"
+  String[] animevents = new String[14]
+  animevents[0] = "KudasaiAPC006" ; Sit, Relaxed
+  animevents[1] = "KudasaiAPC008" ; Sit
+  animevents[2] = "KudasaiAPC011" ; Face down
+  animevents[3] = "KudasaiAPC012" ; Sideway, Relaxed
+  animevents[4] = "KudasaiAPC014" ; Sideway
+  animevents[5] = "KudasaiAPC013" ; Face up
+  animevents[6] = "KudasaiAPC015" ; Hogtie, Relaxed
+  animevents[7] = "KudasaiAPC056" ; Hogtie, legs open
+  animevents[8] = "KudasaiAPC057" ; Hogtie, legs closed 
+  animevents[9] = "KudasaiAPC016" ; Captive
+  animevents[10] = "KudasaiAPC018" ; Captive, Legs closed
+  animevents[11] = "KudasaiAPC019" ; Captive, Legs open
+  animevents[12] = "KudasaiAPC058" ; Captive, Relaxed
+  animevents[13] = "BleedoutStart" ; 
+  RegisterForModEvent("YKSelect_Accept", "SelectAccept")
+  RegisterForModEvent("YKSelect_Cancel", "SelectCancel")
+  result = -3
+  While(UI.IsMenuOpen("CustomMenu"))
+    Utility.Wait(0.05)
+  EndWhile
+  UI.OpenCustomMenu("YameteKudasaiSelect")
+  UI.InvokeStringA("CustomMenu", "_root.main.OpenMenu", options)
+  While(result == -3)
+    Utility.Wait(0.05)
+  EndWhile
+  If(result == -1)
+    return
+  EndIf
+  FadeToBlackAndBackFastImod.Apply()
+  Utility.Wait(0.5)
+  Debug.SendAnimationEvent(victim, animevents[result])
+  If(result == 13)
+    RemoveAllRestraints(victim)
+  Else
+    EquipRestraint(victim, RopeWrist)
+    EquipRestraint(victim, RopeWElbow)
+    If(result == 6 || result == 7 || result == 8)
+      EquipRestraint(victim, RopeAnkle)
+    Else
+      RemoveRestraint(victim, RopeAnkle)
+    EndIf
+  EndIf
+EndFunction
+
+Event SelectAccept(string asEventName, string optionname, float optionindex, form akSender)
+  Debug.Trace("[Kudasai] Selection Menu Accept -> Option = " + optionname)
+  result = optionindex as int
+  UnregisterForModEvent(asEventName)
+EndEvent
+Event SelectCancel(string asEventName, string asStringArg, float afNumArg, form akSender)
+  Debug.Trace("[Kudasai] Selection Menu Cancel")
+  result = -1
+  UnregisterForModEvent(asEventName)
+EndEvent
 
 Event PostSceneSL(int tid, bool hasPlayer)
   Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
@@ -149,6 +215,28 @@ Function HandlePostScene(Actor[] positions)
     EndIf
     i += 1
   EndWhile
+EndFunction
+
+Function EquipRestraint(Actor victim, Armor restraint)
+  If(victim.IsEquipped(restraint))
+    return
+  ElseIf(victim.GetItemCount(restraint) == 0)
+    victim.AddItem(restraint, 1, true)
+  EndIf
+  victim.EquipItem(restraint, false, true)
+EndFunction
+Function RemoveRestraint(Actor victim, Armor restraint)
+  If(victim.IsEquipped(restraint))
+    victim.UnequipItem(restraint, false, true)
+    victim.RemoveItem(restraint, 1, true)
+  ElseIf(victim.GetItemCount(restraint) > 0)
+    victim.RemoveItem(restraint, victim.GetItemCount(restraint), true)
+  EndIf
+EndFunction
+Function RemoveAllRestraints(Actor victim)
+  RemoveRestraint(victim, RopeWrist)
+  RemoveRestraint(victim, RopeWElbow)
+  RemoveRestraint(victim, RopeAnkle)
 EndFunction
 
 bool Function IsEssential(Actor Victim)
@@ -172,3 +260,11 @@ PlayerVampireQuestScript Property PlayerVampireQuest  Auto
 Message Property EssentialConformation  Auto
 
 KudasaiCaptures Property Captures  Auto
+
+ImageSpaceModifier Property FadeToBlackAndBackFastImod Auto
+
+Armor Property RopeWrist Auto
+
+Armor Property RopeWElbow Auto
+
+Armor Property RopeAnkle Auto

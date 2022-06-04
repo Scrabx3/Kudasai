@@ -21,7 +21,7 @@ GlobalVariable Property GameYear Auto
 GlobalVariable Property GameHour Auto
 
 ; Load & open the Captures Menu to display all captures
-; The caller should register for the Callback Events "YKSelect_Accept" and "YKSelect_Cancel"
+; The caller should register for the Callback Events "YKCaptures_Accept" and "YKCaptures_Cancel"
 ; The Accept Event sends the chosen captures name + storage ID (which is used in this Script to find and retrieve the captures)
 Function OpenCapturesMenu()
   ; SetData(optionid: Number, n: String, lv: String, sx: String, loc: String, t: String, r: String, w: Boolean): Void

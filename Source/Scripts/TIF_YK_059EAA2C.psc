@@ -1,14 +1,12 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
 ;NEXT FRAGMENT INDEX 1
-Scriptname TIF_YK_057A3A29 Extends TopicInfo Hidden
+Scriptname TIF_YK_059EAA2C Extends TopicInfo Hidden
 
 ;BEGIN FRAGMENT Fragment_0
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-KudasaiSurrender Sur = GetOwningQuest() as KudasaiSurrender
-Sur.StripAndHandOver(Game.GetPlayer(), akSpeaker)
-Sur.StartSceneCustom(Game.GetPlayer(), akSpeaker, "oral")
+GetOwningQuest().SetStage(100)
 ;END CODE
 EndFunction
 ;END FRAGMENT

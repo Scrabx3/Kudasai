@@ -79,14 +79,6 @@ int Function GetVersion()
 endFunction
 
 Event OnConfigInit()
-  Pages = new String[6]
-  Pages[0] = "$YK_General"
-  Pages[1] = "$YK_Defeat"
-  Pages[2] = "$YK_NSFW"
-  Pages[3] = "$YK_Stripping"
-  Pages[4] = "$YK_Consequences"
-  Pages[5] = "$YK_Debug"
-
   SLTags = new String[6]
   SLTags[2] = "femdom"
 
@@ -97,12 +89,32 @@ Event OnConfigInit()
   iSceneTypeWeight[3] = 20
 EndEvent
 
+Function SetPages()
+  If(KudasaiInternal.IsAlternateVersion())
+    Pages = new String[6]
+    Pages[0] = "$YK_General"
+    Pages[1] = "$YK_Defeat"
+    Pages[2] = "$YK_NSFW"
+    Pages[3] = "$YK_Stripping"
+    Pages[4] = "$YK_Consequences"
+    Pages[5] = "$YK_Debug"
+  Else
+    Pages = new String[5]
+    Pages[0] = "$YK_General"
+    Pages[1] = "$YK_Defeat"
+    Pages[2] = "$YK_Stripping"
+    Pages[3] = "$YK_Consequences"
+    Pages[4] = "$YK_Debug"
+  EndIf
+EndFunction
+
 Event OnConfigClose()
   KudasaiInternal.UpdateSettings()
 EndEvent
 
 Event OnPageReset(string page)
   SetCursorFillMode(TOP_TO_BOTTOM)
+  bool alternate = KudasaiInternal.IsAlternateVersion()
   If (page == "")
     page = "$YK_General"
   EndIf
@@ -111,8 +123,8 @@ Event OnPageReset(string page)
     AddHeaderOption("$YK_Hotkeys")
     AddKeyMapOptionST("surrenderkey", "$YK_SurrenderKey", iSurrenderKey)
     AddKeyMapOptionST("hunterpridekey", "$YK_HunterPrideKey", iHunterPrideKey)
-    AddKeyMapOptionST("assaultkey", "$YK_AssaultKey", iAssaultKey)
-    AddKeyMapOptionST("huntercaptureskey", "$YK_CapturesKey", iCapturesKey)
+    AddKeyMapOptionST("assaultkey", "$YK_AssaultKey", iAssaultKey, getFlagHidden(alternate))
+    AddKeyMapOptionST("huntercaptureskey", "$YK_CapturesKey", iCapturesKey, getFlagHidden(alternate))
 
     SetCursorPosition(1)
     AddHeaderOption("$YK_Notification")
@@ -132,14 +144,10 @@ Event OnPageReset(string page)
     AddSliderOptionST("midcmbtblackout", "$YK_Blackout", fMidCombatBlackout, "{1}%")
     AddEmptyOption()
     AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
-    AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}", getFlag(FrameAny))
-    AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%", getFlag(FrameAny))
+    AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}", getFlagHidden(alternate))
+    AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%", getFlagHidden(alternate))
     AddEmptyOption()
     AddEmptyOption()
-    ; AddEmptyOption()
-    ; AddEmptyOption()
-    AddHeaderOption("$YK_ResNPC")
-    AddToggleOptionST("npcpostcombat", "$YK_NPCPostCombat", bNPCPostCombat, getFlag(FrameAny))
 
   ElseIf (page == "$YK_NSFW")
 		bool SLThere = Game.GetModByName("SexLab.esm") != 255
@@ -503,8 +511,7 @@ Event OnHighlightST()
   ElseIf(s[0] == "ostimweight")
     SetInfoText("$YK_OStimWeighhighlightHighlight")
   ElseIf(s[0] == "scenetype")
-    int i = s[1] as int
-    SetInfoText("$YK_SceneTypeHighlight_" + i)    
+    SetInfoText("$YK_SceneTypeHighlight")    
   ElseIf(s[0] == "ostimdurmin")
     SetInfoText("$YK_OStimDurMinHighlight")
   ElseIf(s[0] == "ostimdurmax")
@@ -592,5 +599,13 @@ int Function getFlag(bool option)
 		return OPTION_FLAG_NONE
 	else
 		return OPTION_FLAG_DISABLED
+	EndIf
+endFunction
+
+int Function getFlagHidden(bool option)
+	If(option)
+		return OPTION_FLAG_NONE
+	else
+		return OPTION_FLAG_HIDDEN
 	EndIf
 endFunction

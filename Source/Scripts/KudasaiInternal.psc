@@ -1,7 +1,7 @@
 Scriptname KudasaiInternal Hidden
 
-; Update the Weights in MCM Script
 Function UpdateSettings() native global
+bool Function IsAlternateVersion() native global
 
 KudasaiMCM Function GetMCM() global
   return Game.GetFormFromFile(0x7853F1, "YameteKudasai.esp") as KudasaiMCM

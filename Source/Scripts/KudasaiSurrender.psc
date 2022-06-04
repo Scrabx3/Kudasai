@@ -38,6 +38,7 @@ bool Property PermitNSFWCrt Auto Hidden Conditional
 bool Property HasSchlong Auto Hidden Conditional
 bool Property Outlaw Auto Hidden Conditional
 bool Property Nude Auto Hidden Conditional
+bool Property IsAlone Auto Hidden Conditional
 
 int Property Offered Auto Hidden Conditional ; When the Victoire demands the Player to hand over all their items, this is the result
 
@@ -72,13 +73,11 @@ Event OnInit()
     Debug.Trace("[Kudasai] <Surrender> Checking Actor at " + i + " = " + enemy)
     If (enemy)
       If (enemy.HasKeyword(ActorTypeNPC))
-        ; Checks if this NPC is a Guard + ensures Crimegold to be at least 100
         If (ValidGuard(enemy))
           primus = enemy
           i = Enemies.Length
         Else
-          ; Regular NPC, for a common defeat, take the Actor with highest confidence
-          ; Prefer adults over elder over childs
+          ; Adults over elder over childs
           If (!primus)
             Debug.Trace("[Kudasai] First primus at " + i + " = " + enemy)
             primus = enemy
@@ -140,12 +139,8 @@ Event OnInit()
     Stop()
     return
   EndIf
-
   Kudasai.PacifyActor(PlayerRef)
-  ; Game.SetPlayerAIDriven(true)
-  ; Debug.SendAnimationEvent(PlayerRef, "IdleSurrender")
   Debug.SendAnimationEvent(PlayerRef, "KudasaiSurrender")
-
   int n = 0
   While(n < Hostiles.Length)
     If (Hostiles[n])
@@ -156,41 +151,40 @@ Event OnInit()
     EndIf
     n += 1
   EndWhile
-
   Utility.Wait(0.7)
-  ; Game.SetPlayerAIDriven(false)
-  
-  ; At this point, there is at least 1 Valid Hostile and all Hostiles are either NPC or Creatures of the same Race
-  If (!primus)
-    int accept = 20
-    int j = 0
-    While(j < Followers.Length)
-      If (Followers[j].GetReference())
-        accept += 15
-      EndIf
-      j += 1
-    EndWhile
-    If(Utility.RandomInt(0, 99) < accept) ; -- Accept & Move On
-      Debug.Trace("[Kudasai] Creature -> Surrender accepted")
-      CrtAccept.Show()
-      SetStage(100)
-    ElseIf(MCM.FrameCreature) ; -------------- Assault
+  If (!primus) ; Only Creatures
+    If(MCM.FrameCreature) ; -------------- Assault
       Debug.Trace("[Kudasai] Creature -> Assault")
       StartSceneCreature()
-    Else ; ----------------------------------- Ignore
-      Debug.Trace("[Kudasai] Creature -> Ignored")
-      CrtIgnore.Show()
-      SurrenderEnd()
-      Stop()
-      return
+    Else
+      int accept = 20
+      int j = 0
+      While(j < Followers.Length)
+        If (Followers[j].GetReference())
+          accept += 15
+        EndIf
+        j += 1
+      EndWhile
+      If(Utility.RandomInt(0, 99) < accept) ; -- Accept & Move On
+        Debug.Trace("[Kudasai] Creature -> Surrender accepted")
+        CrtAccept.Show()
+        SetStage(100)
+      Else ; ----------------------------------- Ignore
+        Debug.Trace("[Kudasai] Creature -> Ignored")
+        CrtIgnore.Show()
+        SurrenderEnd()
+        Stop()
+        return
+      EndIf
     EndIf
   Else
     DialogueAlias.ForceRefTo(primus)
-    PermitNSFW = MCM.FrameAny && Hostiles.Length
-    PermitNSFWCrt = MCM.FrameCreature && Creatures.Length
+    PermitNSFW = MCM.FrameAny && Hostiles.Length && KudasaiInternal.IsAlternateVersion()
+    PermitNSFWCrt = MCM.FrameCreature && Creatures.Length && KudasaiInternal.IsAlternateVersion()
     HasSchlong = primus.GetLeveledActorBase().GetSex() == 0 || KudasaiInternal.HasSchlong(primus)
     Outlaw = primus.GetCrimeFaction() == none
     Nude = PlayerRef.GetWornForm(4) == none
+    IsAlone = Hostiles.Length + Creatures.Length == 1
   EndIf
   Debug.Trace("[Kudasai] Surrender Setup = completed")
   RegisterForSingleUpdate(0.5) ; cant start Scenes in OnInit..
@@ -246,15 +240,13 @@ Function SellOut()
   SetStage(100)
   FadeToBlackImod.Apply()
   Utility.Wait(1.8)
-  ; If(MCM.SimpleSlavery != 0)
-  ; TODO: Create entry points for other Mods
-  ;   SendModEvent("SSLV Entry")
-  ; Else
-    ; This feature isnt fully implemented yet due to the Blackmarket missing player selling. Using Default Sendjail as temporary solution
+  If(KudasaiInternal.IsAlternateVersion() && Game.GetModByName("SimpleSlavery.esp") != 255)
+    SendModEvent("SSLV Entry")
+  Else
     Faction cf = CrimeFactions.GetAt(Utility.RandomInt(0, CrimeFactions.GetSize() - 1)) as Faction
     cf.ModCrimeGold(600, true)
     cf.SendPlayerToJail()
-  ; EndIf
+  EndIf
   FadeToBlackImod.PopTo(FadeToBlackBackImod)
 EndFunction
 
@@ -272,37 +264,36 @@ Function Imprison(Faction crimefaction)
   FadeToBlackImod.PopTo(FadeToBlackBackImod)
 EndFunction
 
-Function StripAndHandOver(Actor tostrip, Actor handover)
-  Armor[] wornz = Kudasai.GetWornArmor(tostrip, false)
-  Debug.Trace("<StripAndHandOver> Subject = " + tostrip + " Worn Armor = " + wornz)
-  ; No need to check for DD, they use SLNoStrip
-  Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
-  Keyword ToysToy = Keyword.GetKeyword("ToysToy")
+Function Strip(Actor stripper)
+  Armor[] wornz = KudasaiInternal.GetWornArmor_Filtered(stripper)
+  Debug.Trace("[Kudasai] <Strip> Subject = " + stripper + " Worn Armor = " + wornz)
   int i = 0
   While (i < wornz.length)
-    If ((!SexLabNoStrip || !wornz[i].HasKeyword(SexLabNoStrip)) && (!ToysToy || !wornz[i].HasKeyword(ToysToy)))
-      tostrip.UnequipItem(wornz[i], abSilent = true)
-      tostrip.RemoveItem(wornz[i], 1, true, handover)
-    EndIf
+    stripper.UnequipItem(wornz[i], abSilent = true)
     i += 1
   EndWhile
 EndFunction
-
+Function StripAndHandOver(Actor tostrip, Actor handover)
+  Armor[] wornz = KudasaiInternal.GetWornArmor_Filtered(tostrip)
+  Debug.Trace("[Kudasai] <StripAndHandOver> Subject = " + tostrip + " Worn Armor = " + wornz)
+  int i = 0
+  While (i < wornz.length)
+    tostrip.UnequipItem(wornz[i], abSilent = true)
+    tostrip.RemoveItem(wornz[i], 1, true, handover)
+    i += 1
+  EndWhile
+EndFunction
 Function StripAndHandOverAll(Actor handover)
   Actor target = Game.GetPlayer()
-  Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
-  Keyword ToysToy = Keyword.GetKeyword("ToysToy")
   int n = Followers.Length
   While(true)
     If (target)
-      Armor[] wornz = Kudasai.GetWornArmor(target, false)
-      Debug.Trace("<StripAndHandOver> Subject = " + target + " Worn Armor = " + wornz)
+      Armor[] wornz = KudasaiInternal.GetWornArmor_Filtered(target)
+      Debug.Trace("[Kudasai] <StripAndHandOver> Subject = " + target + " Worn Armor = " + wornz)
       int i = 0
       While (i < wornz.length)
-        If ((!SexLabNoStrip || !wornz[i].HasKeyword(SexLabNoStrip)) && (!ToysToy || !wornz[i].HasKeyword(ToysToy)))
-          target.UnequipItem(wornz[i], abSilent = true)
-          target.RemoveItem(wornz[i], 1, true, handover)
-        EndIf
+        target.UnequipItem(wornz[i], abSilent = true)
+        target.RemoveItem(wornz[i], 1, true, handover)
         i += 1
       EndWhile
     EndIf
@@ -324,12 +315,10 @@ Function OfferItems(Actor aggressor)
     return
   EndIf
   float numGold = PlayerRef.GetItemCount(Gold001) as float
-  
+  ; Open Gifting Menu, then analyze difference
   aggressor.ShowGiftMenu(true, none, true)
-  
   int nItm = PlayerRef.GetNumItems()
   Debug.Trace("[Kudasai] <Surrender> items after trade = " + nItm)
-  
   If(nItm == iItm)
     ; Didnt give any Items but has Items
     Offered = 0
@@ -366,19 +355,10 @@ Function OfferItems(Actor aggressor)
   EndIf
 EndFunction
 
-Function StartSceneCreature()
-  SetStage(90)
-  Debug.Trace("[Kudasai] Starting Creature Scene with Creaeturs = " + Creatures)
-  int num = KudasaiAnimation.GetAllowedParticipants(Creatures.Length + 1) - 1
-  If (Creatures.Length > num)
-    Creatures = PapyrusUtil.SliceActorArray(Creatures, 0, num)
-  EndIf
-  If (KudasaiAnimation.CreateAssault(Game.GetPlayer(), Creatures, "KSurrender") == -1)
-    Debug.Trace("[Kudasai] <Surrender> Failed to start Creature Scene")
-    CrtAccept.Show()
-    SetStage(100)
-    return
-  EndIf
+Function GiveGold(float percent, ObjectReference to)
+  Actor PlayerRef = Game.GetPlayer()
+  int give = Math.Ceiling(PlayerRef.GetItemCount(Gold001) * percent)
+  PlayerRef.RemoveItem(Gold001, give, false, to)
 EndFunction
 
 Function StartScene(Actor req, Actor victim, bool multiple)
@@ -400,7 +380,20 @@ Function StartScene(Actor req, Actor victim, bool multiple)
     SetStage(100)
   EndIf
 EndFunction
-
+Function StartSceneCreature()
+  SetStage(90)
+  Debug.Trace("[Kudasai] Starting Creature Scene with Creaeturs = " + Creatures)
+  int num = KudasaiAnimation.GetAllowedParticipants(Creatures.Length + 1) - 1
+  If (Creatures.Length > num)
+    Creatures = PapyrusUtil.SliceActorArray(Creatures, 0, num)
+  EndIf
+  If (KudasaiAnimation.CreateAssault(Game.GetPlayer(), Creatures, "KSurrender") == -1)
+    Debug.Trace("[Kudasai] <Surrender> Failed to start Creature Scene")
+    CrtAccept.Show()
+    SetStage(100)
+    return
+  EndIf
+EndFunction
 Function StartSceneCustom(Actor victim, Actor secundus, String tags)
   IF (KudasaiAnimation.CreateAnimationCustom2p(MCM, victim, secundus, victim, tags, "KSurrender") == -1)
     Debug.Trace("[Kudasai] <Surrender> Failed to start custom Scene")

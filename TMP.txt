@@ -1,0 +1,20 @@
+ZazAPC006: Sit, Relaxed
+ZazAPC008: Sit
+
+ZazAPC011: Face down
+
+ZazAPC012: Sideway, Relaxed
+ZazAPC014: Sideway
+
+ZazAPC013: Face up
+
+ZazAPC015: Hogtie, Relaxed
+ZazAPC056: Hogtie, legs open
+ZazAPC057: Hogtie, legs closed 
+
+ZazAPC016: Captive
+ZazAPC018: Captive, Legs closed
+ZazAPC019: Captive, Legs open
+ZazAPC058: Captive, Relaxed
+
+
