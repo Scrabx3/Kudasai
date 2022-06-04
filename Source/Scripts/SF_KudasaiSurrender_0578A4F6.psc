@@ -6,7 +6,7 @@ Scriptname SF_KudasaiSurrender_0578A4F6 Extends Scene Hidden
 Function Fragment_2()
 ;BEGIN CODE
 ; Scene Begin
-Debug.Trace("[Kudasai] Scene Begin")
+Debug.Trace("[Kudasai] Surrender Scene Begin")
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -16,7 +16,7 @@ Function Fragment_1()
 ;BEGIN CODE
 ; Scene End
 (GetOwningQuest() as KudasaiSurrender).SurrenderEnd()
-Debug.Trace("[Kudasai] Scene End")
+Debug.Trace("[Kudasai] Surrender Scene End")
 ;END CODE
 EndFunction
 ;END FRAGMENT
