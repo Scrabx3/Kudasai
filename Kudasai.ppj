@@ -4,9 +4,10 @@
     Output="Scripts" 
     Optimize="true" 
     Anonymize="true" 
+    Package="true"
     Zip="true">
     <Variables>
-        <Variable Name="ModName" Value="Kudasai"/>
+        <Variable Name="ModName" Value="YameteKudasai"/>
         <Variable Name="ThisProject" Value="."/>
         <Variable Name="Rel" Value=".\.release"/>
         <Variable Name="MO2" Value=".."/>
@@ -36,6 +37,14 @@
     <Folders>
         <Folder>.\Source\Scripts</Folder>
     </Folders>
+    <Packages Output="@ThisProject/_light">
+        <Package Name="@ModName" RootDir="@ThisProject">
+            <Include>Interface</Include>
+            <Include>meshes/actors/character</Include>
+            <Include>Scripts</Include>
+            <Include>Seq</Include>
+        </Package>
+    </Packages>
     <ZipFiles Output="@Rel">
         <ZipFile Name="@ModName - @Ver" RootDir="@ThisProject" Compression="deflate">
         	<Include NoRecurse="true">YameteKudasai.esp</Include>
@@ -48,16 +57,12 @@
         </ZipFile>
         <ZipFile Name="@ModName - @Ver - Light" RootDir="@ThisProject" Compression="deflate">
         	<Include Path=".">_light/YameteKudasai.esp</Include>
-            <Include>Interface</Include>
-            <Include>meshes/actors/character</Include>
-            <Include>Scripts</Include>
-            <Include>Seq</Include>
+            <Include Path=".">_light/*.bsa</Include>
             <Include>SKSE/Plugins</Include>
             <Include>SKSE/Kudasai/Exclusion</Include>
             <Include>SKSE/Kudasai/PostCombat/Example.yaml</Include>
             <Include>SKSE/Kudasai/PostCombat/Hostile/Robbed.yaml</Include>
             <Include NoRecurse="true">SKSE/Kudasai/</Include>
-            <Include>Source</Include>
         </ZipFile>
     </ZipFiles>
 </PapyrusProject>
