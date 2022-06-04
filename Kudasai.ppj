@@ -38,12 +38,25 @@
     </Folders>
     <ZipFiles Output="@Rel">
         <ZipFile Name="@ModName - @Ver" RootDir="@ThisProject" Compression="deflate">
-        	<Include>YameteKudasai.esp</Include>
+        	<Include NoRecurse="true">YameteKudasai.esp</Include>
             <Include>Interface</Include>
             <Include>meshes</Include>
             <Include>Scripts</Include>
             <Include>Seq</Include>
             <Include>SKSE</Include>
+            <Include>Source</Include>
+        </ZipFile>
+        <ZipFile Name="@ModName - @Ver - Light" RootDir="@ThisProject" Compression="deflate">
+        	<Include Path=".">_light/YameteKudasai.esp</Include>
+            <Include>Interface</Include>
+            <Include>meshes/actors/character</Include>
+            <Include>Scripts</Include>
+            <Include>Seq</Include>
+            <Include>SKSE/Plugins</Include>
+            <Include>SKSE/Kudasai/Exclusion</Include>
+            <Include>SKSE/Kudasai/PostCombat/Example.yaml</Include>
+            <Include>SKSE/Kudasai/PostCombat/Hostile/Robbed.yaml</Include>
+            <Include NoRecurse="true">SKSE/Kudasai/</Include>
             <Include>Source</Include>
         </ZipFile>
     </ZipFiles>
