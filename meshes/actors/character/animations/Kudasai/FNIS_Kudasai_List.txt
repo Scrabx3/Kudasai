@@ -1,4 +1,4 @@
-Version V1
+Version V2.0
 
 ' Format:
 '			<type> [-<option,option,...>] <AnimEvent> <AnimFile> [<AnimObject> ...]		(FNIS Animation)
@@ -62,6 +62,20 @@ b -a KudasaiSearchBleedout SearchBleedout.hkx
 b KudasaiTraumeLie BaboDefeatTraumaLie.hkx
 b KudasaiTraumeStand BaboDefeatTraumaStand.hkx
 
+' Bound Idles
+b -md KudasaiAPC006	YK_ZazAPC006.hkx
+b -md KudasaiAPC008 YK_ZazAPC008.hkx
+b -md KudasaiAPC011 YK_ZazAPC011.hkx
+b -md KudasaiAPC012 YK_ZazAPC012.hkx
+b -md KudasaiAPC014 YK_ZazAPC014.hkx
+b -md KudasaiAPC013 YK_ZazAPC013.hkx
+b -md KudasaiAPC015 YK_ZazAPC015.hkx
+b -md KudasaiAPC056 YK_ZazAPC056.hkx
+b -md KudasaiAPC057 YK_ZazAPC057.hkx
+b -md KudasaiAPC016 YK_ZazAPC016.hkx
+b -md KudasaiAPC018 YK_ZazAPC018.hkx
+b -md KudasaiAPC019 YK_ZazAPC019.hkx
+b -md KudasaiAPC058 YK_ZazAPC058.hkx
 
 ' Struggle
 s -a,Tn KudasaiHumanStruggleA1S1 HumanStruggleA1S1.hkx
