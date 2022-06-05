@@ -24,6 +24,11 @@ FadeToBlackImod.Apply()
 Utility.Wait(2)
 
 If(crimeF)
+  If(crimeF == CrimeFactionSons)
+    crimeF = CrimeFactionEastmarch
+  ElseIf(crimeF == CrimeFactionImperial)
+    crimeF = CrimeFactionHaafingar
+  EndIf
   crimeF.SendPlayerToJail()
 EndIf
 ;END CODE
@@ -50,3 +55,11 @@ Event OnUpdate()
 EndEvent
 
 ImageSpaceModifier Property FadeToBlackImod  Auto  
+
+Faction Property CrimeFactionSons  Auto  
+
+Faction Property CrimeFactionImperial  Auto  
+
+Faction Property CrimeFactionEastmarch  Auto  
+
+Faction Property CrimeFactionHaafingar  Auto  
