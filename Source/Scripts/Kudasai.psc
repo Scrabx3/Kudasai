@@ -17,20 +17,20 @@ bool Function IsPacified(Actor akActor) native global
 ; Invoked whenever an Actor is defeated
 Function RegisterForActorDefeated(Form akForm) native global
 Function UnregisterForActorDefeated(Form akForm) native global
-Function RegisterForActorDefeated_Alias(ActiveMagicEffect akEffect) native global
-Function UnregisterForActorDefeated_Alias(ActiveMagicEffect akEffect) native global
-Function RegisterForActorDefeated_MgEff(ReferenceAlias akAlias) native global
-Function UnregisterForActorDefeated_MgEff(ReferenceAlias akAlias) native global
+Function RegisterForActorDefeated_Alias(ReferenceAlias akAlias) native global
+Function UnregisterForActorDefeated_Alias(ReferenceAlias akAlias) native global
+Function RegisterForActorDefeated_MgEff(ActiveMagicEffect akEffect) native global
+Function UnregisterForActorDefeated_MgEff(ActiveMagicEffect akEffect) native global
 Event OnActorDefeated(Actor akVictim)
 EndEvent
 
 ; Invoked whenever an Actor is rescued
 Function RegisterForActorRescued(Form akForm) native global
 Function UnregisterForActorRescued(Form akForm) native global
-Function RegisterForActorRescued_Alias(ActiveMagicEffect akEffect) native global
-Function UnregisterForActorRescued_Alias(ActiveMagicEffect akEffect) native global
-Function RegisterForActorRescued_MgEff(ReferenceAlias akAlias) native global
-Function UnregisterForActorRescued_MgEff(ReferenceAlias akAlias) native global
+Function RegisterForActorRescued_Alias(ReferenceAlias akAlias) native global
+Function UnregisterForActorRescued_Alias(ReferenceAlias akAlias) native global
+Function RegisterForActorRescued_MgEff(ActiveMagicEffect akEffect) native global
+Function UnregisterForActorRescued_MgEff(ActiveMagicEffect akEffect) native global
 Event OnActorRescued(Actor akVictim)
 EndEvent
 
