@@ -25,7 +25,10 @@ Function OpenMenu(Actor victim)
   Potion hPotion = Kudasai.GetMostEfficientPotion(victim, PlayerRef)
   Debug.Trace("[Kudasai] Robbing, Worn Armor = " + worn)
   Debug.Trace("[Kudasai] Rescue, Potion = " + hPotion)
-  ; Open Menu
+  result = -2
+  RegisterForModEvent("YamMenu_Accept", "MenuAccept")
+  RegisterForModEvent("YamMenu_Cancel", "MenuCancel")
+  ; Prepare Args
   int[] args = new int[11]
   args[0] = 1 ; Tie Up
   args[1] = (worn.Length > 0) as int ; Strip
@@ -42,12 +45,20 @@ Function OpenMenu(Actor victim)
   args[8] = 1 ; Execute
   args[9] = -1 ; Nothin yet
   args[10] = Kudasaiinternal.IsAlternateVersion() as int
-  result = -2
-  RegisterForModEvent("YamMenu_Accept", "MenuAccept")
-  RegisterForModEvent("YamMenu_Cancel", "MenuCancel")
-  Debug.Trace("[Kudasai] Invoking Hunter Pride with args = " + args)
+  ; Open Menu
   UI.OpenCustomMenu("YameteKudasaiHunterPride")
-  UI.InvokeIntA("CustomMenu", "_root.YamMenu.OpenMenu", args)
+	int iHandle = UICallback.Create("CustomMenu", "_root.YamMenu.OpenMenu")
+  If(!iHandle)
+    Debug.MessageBox("Error opening Menu..")
+    return
+  EndIf
+  int n = 0
+  While(n < args.Length)
+    UICallback.PushInt(iHandle, args[n])
+    n += 1
+  EndWhile
+  ; KudasaiInternal.OpenHunterPrideMenu(1, (worn.Length > 0) as int, 1, (hPotion != none) as int,  PlayerRef.HasKeyword(Vampire) as int, ph, 1, MCM.FrameAny as int, 1, -1)
+  UICallback.Send(iHandle)
   ; Wait for Result..
   While(result == -2)
     Utility.Wait(0.1)
@@ -66,8 +77,8 @@ Function OpenMenu(Actor victim)
   - Nothing
   /;
   If(result == 0)
-    Debug.MessageBox(" --- TODO: ---\n\nTHIS MEANS THIS IS NOT YET IMPLEMENTED")
-    ; DoTieUp(victim)
+    ; Debug.MessageBox(" --- TODO: ---\n\nTHIS MEANS THIS IS NOT YET IMPLEMENTED")
+    DoTieUp(victim)
   ElseIf(result == 1)
     int i = 0
     While(i < worn.Length)
@@ -80,7 +91,12 @@ Function OpenMenu(Actor victim)
   ElseIf(result == 3)
     PlayerRef.RemoveItem(hPotion, 1, true, Victim)
     victim.EquipItem(hPotion, false, true)
-    Kudasai.RescueActor(victim, true)
+    Utility.Wait(0.2)
+    If(Kudasai.IsDefeated(victim))
+      victim.PlaceAtMe(HealTargetFX)
+      victim.RestoreActorValue("Health", 25.0)
+      Kudasai.RescueActor(victim, true)
+    EndIf
   ElseIf(result == 4)
     If(IsEssential(Victim))
       return
@@ -126,19 +142,19 @@ EndEvent
 
 Function DoTieUp(Actor victim)
   String[] options = new String[14]
-  options[0] = "TEST 0"
-  options[1] = "TEST 1"
-  options[2] = "TEST 2"
-  options[3] = "TEST 3"
-  options[4] = "TEST 4"
-  options[5] = "TEST 5"
-  options[6] = "TEST 6"
-  options[7] = "TEST 7"
-  options[8] = "TEST 8"
-  options[9] = "TEST 9"
-  options[10] = "TEST 10"
-  options[11] = "TEST 11"
-  options[12] = "TEST 12"
+  options[0] = "Sit: Relaxed"
+  options[1] = "Sit"
+  options[2] = "Lying: Face down"
+  options[3] = "Lying: Sideway, Relaxed"
+  options[4] = "Lying: Sideway"
+  options[5] = "Lying: Face up"
+  options[6] = "Hogtie: Relaxed"
+  options[7] = "Hogtie: legs open"
+  options[8] = "Hogtie: legs closed "
+  options[9] = "Captive"
+  options[10] = "Captive: Legs closed"
+  options[11] = "Captive: Legs open"
+  options[12] = "Captive: Relaxed"
   options[13] = "Reset"
   String[] animevents = new String[14]
   animevents[0] = "KudasaiAPC006" ; Sit, Relaxed
@@ -154,7 +170,7 @@ Function DoTieUp(Actor victim)
   animevents[10] = "KudasaiAPC018" ; Captive, Legs closed
   animevents[11] = "KudasaiAPC019" ; Captive, Legs open
   animevents[12] = "KudasaiAPC058" ; Captive, Relaxed
-  animevents[13] = "BleedoutStart" ; 
+  animevents[13] = "BleedoutStart"
   RegisterForModEvent("YKSelect_Accept", "SelectAccept")
   RegisterForModEvent("YKSelect_Cancel", "SelectCancel")
   result = -3
@@ -268,3 +284,5 @@ Armor Property RopeWrist Auto
 Armor Property RopeWElbow Auto
 
 Armor Property RopeAnkle Auto
+
+Activator Property HealTargetFX Auto
