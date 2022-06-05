@@ -463,9 +463,6 @@ Function QuitCycle(int ID)
     return
   ElseIf(GetStage() > 300)
     Debug.Trace("[Kudasai] <Assault> QuitCycle for ID = " + ID + " -> Stage > 300")
-    If(ID == 0)
-      Kudasai.DefeatActor(Game.GetPlayer())
-    EndIf
     return
   EndIf
   SetStage(stage)

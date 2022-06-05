@@ -15,27 +15,27 @@ int Property iAssaultKey = -1 Auto Hidden ; Player initiated Struggle Game
 int Property iCapturesKey = -1 Auto Hidden ; Access captured Targets
 
 bool Property bNotifyDefeat = false Auto Hidden
-bool Property bNotifyDestroy = false Auto Hidden ; TODO: implement this when doing the destruction stuff
+bool Property bNotifyDestroy = false Auto Hidden
 bool Property bNotifyColored = false Auto Hidden
 int iNotifyColorChoice = 0xFF0000
 String Property sNotifyColorChoice = "#FF0000" Auto Hidden
 
 ; ----------- Combat
 
-float Property fMidCombatBlackout = 10.0 Auto Hidden
-
-bool Property bNPCPostCombat = true Auto Hidden
-
-bool Property bStealArmor = true Auto Hidden
-
-int Property iMaxAssaults = 4 Auto Hidden
-float Property fRapistQuits = 35.0 Auto Hidden
-
-; ----------- Defeat
-
 bool Property bLethalEssential = true Auto Hidden
 float Property fLethalPlayer = 100.0 Auto Hidden
 float Property fLethalNPC = 100.0 Auto Hidden
+
+int Property iStripReq = 2 Auto Hidden
+float Property fStripReqChance = 75.0 Auto Hidden
+float Property fStripChance = 7.0 Auto Hidden
+float Property fStripDestroy = 5.0 Auto Hidden
+bool Property bStripDrop = false Auto Hidden
+
+float Property fMidCombatBlackout = 10.0 Auto Hidden
+bool Property bStealArmor = true Auto Hidden
+int Property iMaxAssaults = 4 Auto Hidden
+float Property fRapistQuits = 35.0 Auto Hidden
 
 ; ----------- NSFW
 
@@ -138,6 +138,12 @@ Event OnPageReset(string page)
     AddToggleoptionST("lethalessential", "$YK_LethalEssential", bLethalEssential)
     AddSliderOptionST("lethalplayer", "$YK_LethalPlayer", fLethalPlayer, "{1}%")
     AddSliderOptionST("lethalnpc", "$YK_LethalNPC", fLethalNPC, "{1}%")
+    AddHeaderOption("$YK_Exposed")
+    AddSliderOptionST("stripreq", "$YK_StripReq", iStripReq, "{0}")
+    AddSliderOptionST("stripreqchance", "$YK_StripReqChance", fStripReqChance, "{0}")
+    AddSliderOptionST("stripchance", "$YK_StripChance", fStripChance, "{1}%")
+    AddSliderOptionST("stripdstry", "$YK_StripDstry", fStripDestroy, "{1}%")
+    AddToggleoptionST("stripdrop", "$YK_StripDrop", bStripDrop)
 
     SetCursorPosition(1)
     AddHeaderOption("$YK_Resolution")
@@ -146,8 +152,6 @@ Event OnPageReset(string page)
     AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
     AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}", getFlagHidden(alternate))
     AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%", getFlagHidden(alternate))
-    AddEmptyOption()
-    AddEmptyOption()
 
   ElseIf (page == "$YK_NSFW")
 		bool SLThere = Game.GetModByName("SexLab.esm") != 255
@@ -239,12 +243,12 @@ Event OnSelectST()
     SetOptionFlagsST(getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored), false, "notifycolorchoice")
 
   ; --------------- Defeat
-  ElseIf(s[0] == "npcpostcombat")
-    bNPCPostCombat = !bNPCPostCombat
-    SetToggleOptionValueST(bNPCPostCombat)
   ElseIf(s[0] == "lethalessential")
     bLethalEssential = !bLethalEssential
     SetToggleOptionValueST(bLethalEssential)
+  ElseIf(s[0] == "stripdrop")
+    bStripDrop = !bStripDrop
+    SetToggleOptionValueST(bStripDrop)
   ElseIf(s[0] == "postcmbtkeeparmor")
     bStealArmor = !bStealArmor
     SetToggleOptionValueST(bStealArmor)
@@ -318,6 +322,26 @@ Event OnSliderOpenST()
 		SetSliderDialogDefaultValue(30)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.5)
+	ElseIf(s[0] == "stripchance")
+		SetSliderDialogStartValue(fStripChance)
+		SetSliderDialogDefaultValue(7)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.5)
+	ElseIf(s[0] == "stripdstry")
+		SetSliderDialogStartValue(fStripDestroy)
+		SetSliderDialogDefaultValue(5)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.5)
+	ElseIf(s[0] == "stripreq")
+		SetSliderDialogStartValue(iStripReq)
+		SetSliderDialogDefaultValue(2)
+		SetSliderDialogRange(0, 20)
+		SetSliderDialogInterval(1)
+	ElseIf(s[0] == "stripreqchance")
+		SetSliderDialogStartValue(fStripReqChance)
+		SetSliderDialogDefaultValue(75)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.5)
 	ElseIf(s[0] == "midcmbtblackout")
 		SetSliderDialogStartValue(fMidCombatBlackout)
 		SetSliderDialogDefaultValue(30)
@@ -381,6 +405,18 @@ Event OnSliderAcceptST(float value)
 	ElseIf(s[0] == "lethalnpc")
 		fLethalNPC = value
 		SetSliderOptionValueST(fLethalNPC, "{1}%")
+	ElseIf(s[0] == "stripchance")
+		fStripChance = value
+		SetSliderOptionValueST(fStripChance, "{1}%")
+	ElseIf(s[0] == "stripdstry")
+		fStripDestroy = value
+		SetSliderOptionValueST(fStripDestroy, "{1}%")
+	ElseIf(s[0] == "stripreq")
+		iStripReq = value as int
+		SetSliderOptionValueST(iStripReq, "{0}")   
+	ElseIf(s[0] == "stripreqchance")
+		fStripReqChance = value
+		SetSliderOptionValueST(fStripReqChance, "{1}%")    
 	ElseIf(s[0] == "midcmbtblackout")
 		fMidCombatBlackout = value
 		SetSliderOptionValueST(fMidCombatBlackout, "{1}%")
@@ -496,6 +532,16 @@ Event OnHighlightST()
     SetInfoText("$YK_LethalPlayerHighlight")
   ElseIf(s[0] == "lethalnpc")
     SetInfoText("$YK_LethalNPCHighlight")
+  ElseIf(s[0] == "stripchance")
+    SetInfoText("$YK_StripChanceHighlight")
+  ElseIf(s[0] == "stripdstry")
+    SetInfoText("$YK_StripDstryHighlight")
+  ElseIf(s[0] == "stripdrop")
+    SetInfoText("$YK_StripDropHighlight")
+  ElseIf(s[0] == "stripreq")
+    SetInfoText("$YK_StripReqHighlight")
+  ElseIf(s[0] == "stripreqchance")
+    SetInfoText("$YK_StripReqChanceHighlight")
   ElseIf(s[0] == "midcmbtblackout")
     SetInfoText("$YK_BlackoutHighlight")
   ElseIf(s[0] == "postcmbtkeeparmor")

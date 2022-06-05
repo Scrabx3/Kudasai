@@ -22,9 +22,6 @@ Function Maintenance()
     If(Game.GetModByName("OStim.esp") == 255)
       MCM.iOStimWeight = 0
     EndIf
-    If(!MCM.FrameAny)
-      MCM.bNPCPostCombat = false
-    EndIf
   Else
     MCM.iSLWeight = 0
     MCM.iOStimWeight = 0

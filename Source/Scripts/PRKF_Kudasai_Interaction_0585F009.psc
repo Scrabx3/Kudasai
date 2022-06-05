@@ -77,7 +77,6 @@ Function OpenMenu(Actor victim)
   - Nothing
   /;
   If(result == 0)
-    ; Debug.MessageBox(" --- TODO: ---\n\nTHIS MEANS THIS IS NOT YET IMPLEMENTED")
     DoTieUp(victim)
   ElseIf(result == 1)
     int i = 0

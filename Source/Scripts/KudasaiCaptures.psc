@@ -127,7 +127,7 @@ bool Function RescueActorByID(int index, ObjectReference whereto)
   float moveY = 50.0 * Math.Cos(Z)
   If(whereto)
     Kudasai.DefeatActor(ref, true)
-    FadeToBlackAndBackFast.Apply() ;TODO: Add FadeToBlackHoldImod.Apply() Spawning the NPC takes ~1 second, too long for the fast one
+    FadeToBlackAndBackFast.Apply()
     Utility.Wait(0.50)
     FadeToBlackAndBackFast.PopTo(FadeToBlackHoldImod)
     ref.MoveTo(whereto, moveX, moveY)

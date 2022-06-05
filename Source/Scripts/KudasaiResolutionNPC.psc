@@ -47,9 +47,6 @@ Function Init()
   EndWhile
   Victims = PapyrusUtil.RemoveActor(Victims, none)
   SetStage(10)
-  ; Print Info the Log. TODO: Remove when work
-  Debug.Trace("[Kudasai] Total Victoire Refs = " + i)
-  Debug.Trace("[Kudasai] Setup Completed -> Victims = " + Victims)
   int n = 0
   While(n < Aggressors.Length)
     Debug.Trace("[Kudasai] Aggressor Group " + n + " = " + Aggressors[n].ToArray())
