@@ -10,9 +10,7 @@ Scriptname KudasaiStruggle extends Quest
 ; positions: The Actors to create the Struggle with. position[0] will be Victim, all others aggressors
 ; difficulty: A number between 0 and 100 to describe the difficulty of the Struggle. The higher this is, the easier the struggle
 ;             - For NPC: This is equal the chance the Victim will succeed in struggling out
-;             - For Player: Described the average time the Player has to react -> Avg.Time = Sqrt(Difficulty)/4
-;                           The actual time is randomized and will go up or down by 30% with each individual event
-;                           A balanced difficulty would be 60~70, below 30 becomes impossibly difficult
+;             - For Player: See Kudasai.OpenQTEMenu in Kudasai.psc
 ; callback: A form to send the Callback to, the Callback Event is a Future_c Event, see Kudasai.psc for more Info
 ;           argActor = positions, argNum = if the victim won the struggle, argStr = empty
 ; duration: The time the struggle should last before the callback is invoked. Default 8 for values <= 0
@@ -61,9 +59,6 @@ String[] Function LookupKnockoutAnimations(Actor[] positions) native global
 Function SetPositions(Actor[] positions) native global
 Function ClearPositions(Actor[] positions) native global
 
-bool Function OpenQTEMenu(int difficulty, Form callback) native global
-Function CloseQTEMenu() native global
-
 Package Property BlankPackage Auto
 Actor[] _positions
 Form _callback
@@ -82,7 +77,7 @@ EndFunction
 Function EndStruggleAnimation(Actor[] positions, String[] animations)
   Debug.Trace("Struggle End -> Positions = " + positions + "Animations = " + animations)
   If(UI.IsMenuOpen("KudasaiQTE") && positions.Find(Game.GetPlayer()) > -1)
-    CloseQTEMenu()
+    Kudasai.CloseQTEMenu()
   EndIf
   int n = 0
   While(n < positions.Length)
@@ -140,7 +135,7 @@ bool Function CreateStruggleAnimationImpl(Actor[] positions, int difficulty, For
   ; Play QTE
   If(positions.Find(PlayerRef) > -1 && duration <= 0)
     Utility.Wait(2)
-    If(OpenQTEMenu(difficulty, self))
+    If(Kudasai.OpenQTEMenu(difficulty, self))
       _callback = callback
       ; Make a Copy of the array. Never thoght Papyrus would require me to use my brain here owo
       _positions = PapyrusUtil.RemoveActor(positions, none)

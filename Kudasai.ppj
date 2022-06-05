@@ -57,7 +57,7 @@
         </ZipFile>
         <ZipFile Name="@ModName - @Ver - Light" RootDir="@ThisProject" Compression="deflate">
         	<Include Path=".">_light/YameteKudasai.esp</Include>
-            <Include Path=".">_light/*.bsa</Include>
+            <Include Path=".">_light/YameteKudasai.bsa</Include>
             <Include>SKSE/Plugins</Include>
             <Include>SKSE/Kudasai/Exclusion</Include>
             <Include>SKSE/Kudasai/PostCombat/Example.yaml</Include>
