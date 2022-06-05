@@ -20,8 +20,8 @@ Selective:
     M<-M: true
 
 # Creatures
-# Creatures are grouped together based on a unique Identifier called "RaceKey". Similar to SexLab, similar Creatures will use
-# the same RaceKey. If you don't want a certain Creature Race to be part of Animations, simply disable them here.
+# Creatures are grouped together based on a unique Identifier called "RaceKey". Similar Creatures will use the same RaceKey
+# If you don't want a certain Creature Race to be excluded from Y. Kudasai, set them to 'false' here. Does NOT stop them from defeating you
 RaceKeys:
   AshHopper: true
   AtronachFlame: true
