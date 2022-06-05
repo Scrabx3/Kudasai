@@ -137,7 +137,7 @@ bool Function CreateStruggleAnimationImpl(Actor[] positions, int difficulty, For
     Utility.Wait(2)
     If(Kudasai.OpenQTEMenu(difficulty, self))
       _callback = callback
-      ; Make a Copy of the array. Never thoght Papyrus would require me to use my brain here owo
+      ; Make a Copy of the array. Never thoght Papyrus would require me to use my 2 brain cells here owo
       _positions = PapyrusUtil.RemoveActor(positions, none)
       return true
     EndIf

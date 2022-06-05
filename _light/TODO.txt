@@ -2,9 +2,7 @@
 	! This will also hide all adult related Settings from MCM & Hunter Pride
 - Delete SimpleSlavery Quest from esp
 - Delete *rNPC* Objects from esp
-(- Delete Adult Related Surrender Dialogue from ESP)
 
 Archive:
 - Dont Package Creature Struggles from the Archive
 - Dont Package Rope Meshes from the Archive
-- Remove Associated Scripts from the Archive (excl Fragment)
