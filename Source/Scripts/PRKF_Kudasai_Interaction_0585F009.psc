@@ -187,17 +187,17 @@ Function DoTieUp(Actor victim)
   FadeToBlackAndBackFastImod.Apply()
   Utility.Wait(0.5)
   Debug.SendAnimationEvent(victim, animevents[result])
-  If(result == 13)
-    RemoveAllRestraints(victim)
-  Else
-    EquipRestraint(victim, RopeWrist)
-    EquipRestraint(victim, RopeWElbow)
-    If(result == 6 || result == 7 || result == 8)
-      EquipRestraint(victim, RopeAnkle)
-    Else
-      RemoveRestraint(victim, RopeAnkle)
-    EndIf
-  EndIf
+  ; If(result == 13)
+  ;   RemoveAllRestraints(victim)
+  ; Else
+  ;   EquipRestraint(victim, RopeWrist)
+  ;   EquipRestraint(victim, RopeWElbow)
+  ;   If(result == 6 || result == 7 || result == 8)
+  ;     EquipRestraint(victim, RopeAnkle)
+  ;   Else
+  ;     RemoveRestraint(victim, RopeAnkle)
+  ;   EndIf
+  ; EndIf
 EndFunction
 
 Event SelectAccept(string asEventName, string optionname, float optionindex, form akSender)
