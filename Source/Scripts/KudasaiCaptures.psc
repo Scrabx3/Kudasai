@@ -10,6 +10,7 @@ ImageSpaceModifier Property FadeToBlackHoldBackFastImod Auto
 
 Cell Property HoldingCell Auto
 ObjectReference Property HoldingCellMarker Auto
+ObjectReference Property HoldingCellMarker2  Auto  
 Message Property _NoFreeSlot Auto
 
 int Property size = 0 Auto Hidden
@@ -76,10 +77,10 @@ bool Function Store(Actor subject)
     Kudasai.RescueActor(subject, true)
   Else
     victim = subject.PlaceAtMe(vicbase) as Actor
-    subject.MoveTo(HoldingCellMarker)
+    subject.MoveTo(HoldingCellMarker2)
   EndIf
   Location subloc = victim.GetCurrentLocation()
-  victim.MoveTo(HoldingCellMarker)
+  victim.MoveTo(HoldingCellMarker2)
   empty.ForceRefTo(victim)
   Kudasai.RemoveAllItems(victim, none)
   size += 1

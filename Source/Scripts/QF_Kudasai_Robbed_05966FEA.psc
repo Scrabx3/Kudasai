@@ -31,7 +31,7 @@ EndFunction
 ;BEGIN FRAGMENT Fragment_0
 Function Fragment_0()
 ;BEGIN CODE
-RobbedScene.Start()
+RegisterForSingleUpdate(0.5)
 ToMapEdge.Start()
 
 Actor robber = ALias_Robber.GetActorRef()
@@ -45,6 +45,8 @@ EndIf
 Alias_NewRobber.ForceRefTo(newRobber)
 
 KudasaiInternal.RobActor(Game.GetPlayer(), newRobber as Actor, false)
+; --- Follower Dismissal here ---
+; ---
 SetStage(10)
 ;END CODE
 EndFunction
@@ -71,6 +73,10 @@ EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
+
+Event OnUpdate()
+  RobbedScene.Start()
+EndEvent
 
 Event OnUpdateGameTime()
   SetStage(30)
