@@ -63,87 +63,87 @@ b KudasaiTraumeLie BaboDefeatTraumaLie.hkx
 b KudasaiTraumeStand BaboDefeatTraumaStand.hkx
 
 ' Bound Idles
-b -md KudasaiAPC006	YK_ZazAPC006.hkx
-b -md KudasaiAPC008 YK_ZazAPC008.hkx
-b -md KudasaiAPC011 YK_ZazAPC011.hkx
-b -md KudasaiAPC012 YK_ZazAPC012.hkx
-b -md KudasaiAPC014 YK_ZazAPC014.hkx
-b -md KudasaiAPC013 YK_ZazAPC013.hkx
-b -md KudasaiAPC015 YK_ZazAPC015.hkx
-b -md KudasaiAPC056 YK_ZazAPC056.hkx
-b -md KudasaiAPC057 YK_ZazAPC057.hkx
-b -md KudasaiAPC016 YK_ZazAPC016.hkx
-b -md KudasaiAPC018 YK_ZazAPC018.hkx
-b -md KudasaiAPC019 YK_ZazAPC019.hkx
-b -md KudasaiAPC058 YK_ZazAPC058.hkx
+b -md KudasaiAPC006	TieUp/YK_ZazAPC006.hkx
+b -md KudasaiAPC008 TieUp/YK_ZazAPC008.hkx
+b -md KudasaiAPC011 TieUp/YK_ZazAPC011.hkx
+b -md KudasaiAPC012 TieUp/YK_ZazAPC012.hkx
+b -md KudasaiAPC014 TieUp/YK_ZazAPC014.hkx
+b -md KudasaiAPC013 TieUp/YK_ZazAPC013.hkx
+b -md KudasaiAPC015 TieUp/YK_ZazAPC015.hkx
+b -md KudasaiAPC056 TieUp/YK_ZazAPC056.hkx
+b -md KudasaiAPC057 TieUp/YK_ZazAPC057.hkx
+b -md KudasaiAPC016 TieUp/YK_ZazAPC016.hkx
+b -md KudasaiAPC018 TieUp/YK_ZazAPC018.hkx
+b -md KudasaiAPC019 TieUp/YK_ZazAPC019.hkx
+b -md KudasaiAPC058 TieUp/YK_ZazAPC058.hkx
 
 ' Struggle
-s -a,Tn KudasaiHumanStruggleA1S1 HumanStruggleA1S1.hkx
-+ KudasaiHumanStruggleA1S2 HumanStruggleA1S2.hkx
-s -a,Tn KudasaiHumanStruggleA2S1 HumanStruggleA2S1.hkx
-+ KudasaiHumanStruggleA2S2 HumanStruggleA2S2.hkx
-b KudasaiHumanStruggleA1LieInstant HumanStruggleA1LieInstant.hkx
-b KudasaiHumanStruggleA2LieInstant HumanStruggleA2LieInstant.hkx
+s -a,Tn KudasaiHumanStruggleA1S1 Struggles/HumanStruggleA1S1.hkx
++ KudasaiHumanStruggleA1S2 Struggles/HumanStruggleA1S2.hkx
+s -a,Tn KudasaiHumanStruggleA2S1 Struggles/HumanStruggleA2S1.hkx
++ KudasaiHumanStruggleA2S2 Struggles/HumanStruggleA2S2.hkx
+b KudasaiHumanStruggleA1LieInstant Struggles/HumanStruggleA1LieInstant.hkx
+b KudasaiHumanStruggleA2LieInstant Struggles/HumanStruggleA2LieInstant.hkx
 
-b KudasaiWolfStruggle_A1_Start WolfStruggle_A1_Start.hkx
-b -a KudasaiWolfStruggle_A1_Stop WolfStruggle_A1_Stop.hkx
+b KudasaiWolfStruggle_A1_Start Struggles/WolfStruggle_A1_Start.hkx
+b -a KudasaiWolfStruggle_A1_Stop Struggles/WolfStruggle_A1_Stop.hkx
 
-b KudasaiDraugrStruggle_A1_Start DraugrStruggle_A1_Start.hkx
-b -a KudasaiDraugrStruggle_A1_Stop DraugrStruggle_A1_Stop.hkx
+b KudasaiDraugrStruggle_A1_Start Struggles/DraugrStruggle_A1_Start.hkx
+b -a KudasaiDraugrStruggle_A1_Stop Struggles/DraugrStruggle_A1_Stop.hkx
 
-b KudasaiSkeeverStruggle_A1_Start SkeeverStruggle_A1_Start.hkx
-b -a KudasaiSkeeverStruggle_A1_Stop SkeeverStruggle_A1_Stop.hkx
+b KudasaiSkeeverStruggle_A1_Start Struggles/SkeeverStruggle_A1_Start.hkx
+b -a KudasaiSkeeverStruggle_A1_Stop Struggles/SkeeverStruggle_A1_Stop.hkx
 
-b KudasaiFalmerStruggle_A1_Start FalmerStruggle_A1_Start.hkx
-b -a KudasaiFalmerStruggle_A1_Stop FalmerStruggle_A1_Stop.hkx
+b KudasaiFalmerStruggle_A1_Start Struggles/FalmerStruggle_A1_Start.hkx
+b -a KudasaiFalmerStruggle_A1_Stop Struggles/FalmerStruggle_A1_Stop.hkx
 
-b KudasaiGiantStruggle_A1_Start GiantStruggle_A1_Start.hkx
+b KudasaiGiantStruggle_A1_Start Struggles/GiantStruggle_A1_Start.hkx
 b -a KudasaiGiantStruggle_A1_Stop GiantStruggle_A1_Stop.hkx
 
-b KudasaiRieklingStruggle_A1_Start RieklingStruggle_A1_Start.hkx
-b -a KudasaiRieklingStruggle_A1_Stop RieklingStruggle_A1_Stop.hkx
+b KudasaiRieklingStruggle_A1_Start Struggles/RieklingStruggle_A1_Start.hkx
+b -a KudasaiRieklingStruggle_A1_Stop Struggles/RieklingStruggle_A1_Stop.hkx
 
-b KudasaiSabrecatStruggle_A1_Start SabrecatStruggle_A1_Start.hkx
-b -a KudasaiSabrecatStruggle_A1_Stop SabrecatStruggle_A1_Stop.hkx
+b KudasaiSabrecatStruggle_A1_Start Struggles/SabrecatStruggle_A1_Start.hkx
+b -a KudasaiSabrecatStruggle_A1_Stop Struggles/SabrecatStruggle_A1_Stop.hkx
 
-b KudasaiTrollStruggle_A1_Start TrollStruggle_A1_Start.hkx
-b -a KudasaiTrollStruggle_A1_Stop TrollStruggle_A1_Stop.hkx
+b KudasaiTrollStruggle_A1_Start Struggles/TrollStruggle_A1_Start.hkx
+b -a KudasaiTrollStruggle_A1_Stop Struggles/TrollStruggle_A1_Stop.hkx
 
-b KudasaiBearStruggle_A1_Start BearStruggle_A1_Start.hkx
-b -a KudasaiBearStruggle_A1_Stop BearStruggle_A1_Stop.hkx
+b KudasaiBearStruggle_A1_Start Struggles/BearStruggle_A1_Start.hkx
+b -a KudasaiBearStruggle_A1_Stop Struggles/BearStruggle_A1_Stop.hkx
 
-b KudasaiChaurusStruggle_A1_Start ChaurusStruggle_A1_Start.hkx
-b -a KudasaiChaurusStruggle_A1_Stop ChaurusStruggle_A1_Stop.hkx
+b KudasaiChaurusStruggle_A1_Start Struggles/ChaurusStruggle_A1_Start.hkx
+b -a KudasaiChaurusStruggle_A1_Stop Struggles/ChaurusStruggle_A1_Stop.hkx
 
-b KudasaiChaurusReaperStruggle_A1_Start ChaurusReaperStruggle_A1_Start.hkx
-b -a KudasaiChaurusReaperStruggle_A1_Stop ChaurusReaperStruggle_A1_Stop.hkx
+b KudasaiChaurusReaperStruggle_A1_Start Struggles/ChaurusReaperStruggle_A1_Start.hkx
+b -a KudasaiChaurusReaperStruggle_A1_Stop Struggles/ChaurusReaperStruggle_A1_Stop.hkx
 
-b KudasaiChaurusHunterStruggle_A1_Start ChaurusHunterStruggle_A1_Start.hkx
-b -a KudasaiChaurusHunterStruggle_A1_Stop ChaurusHunterStruggle_A1_Stop.hkx
+b KudasaiChaurusHunterStruggle_A1_Start Struggles/ChaurusHunterStruggle_A1_Start.hkx
+b -a KudasaiChaurusHunterStruggle_A1_Stop Struggles/ChaurusHunterStruggle_A1_Stop.hkx
 
-b KudasaiDwarvenSpiderStruggle_A1_Start DwarvenSpiderStruggle_A1_Start.hkx
-b -a KudasaiDwarvenSpiderStruggle_A1_Stop DwarvenSpiderStruggle_A1_Stop.hkx
+b KudasaiDwarvenSpiderStruggle_A1_Start Struggles/DwarvenSpiderStruggle_A1_Start.hkx
+b -a KudasaiDwarvenSpiderStruggle_A1_Stop Struggles/DwarvenSpiderStruggle_A1_Stop.hkx
 
-b KudasaiGargoyleStruggle_A1_Start GargoyleStruggle_A1_Start.hkx
-b -a KudasaiGargoyleStruggle_A1_Stop GargoyleStruggle_A1_Stop.hkx
+b KudasaiGargoyleStruggle_A1_Start Struggles/GargoyleStruggle_A1_Start.hkx
+b -a KudasaiGargoyleStruggle_A1_Stop Struggles/GargoyleStruggle_A1_Stop.hkx
 
-b KudasaiSpiderStruggle_A1_Start SpiderStruggle_A1_Start.hkx
-b -a KudasaiSpiderStruggle_A1_Stop SpiderStruggle_A1_Stop.hkx
+b KudasaiSpiderStruggle_A1_Start Struggles/SpiderStruggle_A1_Start.hkx
+b -a KudasaiSpiderStruggle_A1_Stop Struggles/SpiderStruggle_A1_Stop.hkx
 
-b KudasaiWerewolfStruggle_A1_Start WerewolfStruggle_A1_Start.hkx 
-b -a KudasaiWerewolfStruggle_A1_Stop WerewolfStruggle_A1_Stop.hkx
+b KudasaiWerewolfStruggle_A1_Start Struggles/WerewolfStruggle_A1_Start.hkx 
+b -a KudasaiWerewolfStruggle_A1_Stop Struggles/WerewolfStruggle_A1_Stop.hkx
 
-b KudasaiDwarvenCenturionStruggle_A1_Start DwarvenCenturionStruggle_A1_Start.hkx 
-b -a KudasaiDwarvenCenturionStruggle_A1_Stop DwarvenCenturionStruggle_A1_Stop.hkx
+b KudasaiDwarvenCenturionStruggle_A1_Start Struggles/DwarvenCenturionStruggle_A1_Start.hkx 
+b -a KudasaiDwarvenCenturionStruggle_A1_Stop Struggles/DwarvenCenturionStruggle_A1_Stop.hkx
 
-b KudasaiAshHopperStruggle_A1_Start AshHopperStruggle_A1_Start.hkx 
-b -a KudasaiAshHopperStruggle_A1_Stop AshHopperStruggle_A1_Stop.hkx
+b KudasaiAshHopperStruggle_A1_Start Struggles/AshHopperStruggle_A1_Start.hkx 
+b -a KudasaiAshHopperStruggle_A1_Stop Struggles/AshHopperStruggle_A1_Stop.hkx
 
-b KudasaiGiantSpiderStruggle_A1_Start GiantSpiderStruggle_A1_Start.hkx 
-b -a KudasaiGiantSpiderStruggle_A1_Stop GiantSpiderStruggle_A1_Stop.hkx
+b KudasaiGiantSpiderStruggle_A1_Start Struggles/GiantSpiderStruggle_A1_Start.hkx 
+b -a KudasaiGiantSpiderStruggle_A1_Stop Struggles/GiantSpiderStruggle_A1_Stop.hkx
 
-b KudasaiNetchStruggle_A1_Start NetchStruggle_A1_Start.hkx 
-b -a KudasaiNetchStruggle_A1_Stop NetchStruggle_A1_Stop.hkx
+b KudasaiNetchStruggle_A1_Start Struggles/NetchStruggle_A1_Start.hkx 
+b -a KudasaiNetchStruggle_A1_Stop Struggles/NetchStruggle_A1_Stop.hkx
 
-b KudasaiBoarMountedStruggle_A1_Start BoarMountedStruggle_A1_Start.hkx 
-b -a KudasaiBoarMountedStruggle_A1_Stop BoarMountedStruggle_A1_Stop.hkx
+b KudasaiBoarMountedStruggle_A1_Start Struggles/BoarMountedStruggle_A1_Start.hkx 
+b -a KudasaiBoarMountedStruggle_A1_Stop Struggles/BoarMountedStruggle_A1_Stop.hkx

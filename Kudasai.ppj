@@ -40,7 +40,8 @@
     <Packages Output="@ThisProject/_light">
         <Package Name="@ModName" RootDir="@ThisProject">
             <Include>Interface</Include>
-            <Include>meshes/actors/character</Include>
+            <Include Path="meshes/actors/character">_light/meshes</Include>
+            <Include NoRecurse="true" Exclude="*.txt">meshes/actors/character/animations/Kudasai</Include>
             <Include>Scripts</Include>
             <Include>Seq</Include>
         </Package>
@@ -63,6 +64,7 @@
             <Include>SKSE/Kudasai/PostCombat/Example.yaml</Include>
             <Include>SKSE/Kudasai/PostCombat/Hostile/Robbed.yaml</Include>
             <Include NoRecurse="true">SKSE/Kudasai/</Include>
+            <Include>Source/Scripts/Kudasai.psc</Include>
         </ZipFile>
     </ZipFiles>
 </PapyrusProject>
