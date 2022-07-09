@@ -51,7 +51,7 @@ Function RobActor(Actor victim, Actor robber, bool animation = true) global
 EndFunction
 
 Armor[] Function GetWornArmor_Filtered(Actor subject) global
-  Armor[] worn = Kudasai.GetWornArmor(subject, true)
+  Armor[] worn = Kudasai.GetWornArmor(subject)
   Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
   If(SexLabNoStrip)
     Kudasai.RemoveArmorByKeyword(worn, SexLabNoStrip)

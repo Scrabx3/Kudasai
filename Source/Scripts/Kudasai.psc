@@ -45,7 +45,7 @@ Function RemoveAllItems(ObjectReference from, ObjectReference to, bool excludewo
 
 ; ================================ Actor
 ; ignore_config: true returns all worn armor, false excludes the slots the player doesn't want to be stripped
-Armor[] Function GetWornArmor(Actor akActor, bool ignore_config = true) native global
+Armor[] Function GetWornArmor(Actor akActor) native global
 ; Get the most efficien Potion (= the Potion which gets the Hp closest to max) for this subject from the given container
 ; The function recognizes all Healing Potions in the container inventory which are pure beneficial
 Potion Function GetMostEfficientPotion(Actor akActor, ObjectReference akContainer) native global
