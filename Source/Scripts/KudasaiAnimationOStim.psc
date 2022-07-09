@@ -30,7 +30,13 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor prim, Actor[] secundi, Actor 
   OStim.AddSceneMetadata("or_npc_nocheat")
 
   If(hasPlayer)
-    If(OStim.StartScene(secundi[0], prim, false, false, false, zThirdActor = third, aggressive = (aggressor != none), AggressingActor = aggressor))
+    String startanim
+    If(secundi[0].GetLeveledActorBase().GetSex() == 0)
+      startanim = "OpS|Sta!Sit|Ap|ColiseumMaleStart"
+    Else
+      startanim = "OpS|LyB!Sta|Ap|ColiseumFemaleStart"
+    EndIf
+    If(OStim.StartScene(secundi[0], prim, false, false, false, startanim, zThirdActor = third, aggressive = (aggressor != none), AggressingActor = aggressor))
       return 29
     EndIf
   Else
