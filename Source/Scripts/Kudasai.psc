@@ -57,7 +57,8 @@ String Function GetRaceKey(Actor akActor) native global
 Actor[] Function GetFollowers() native global
 
 ; ================================ Config
-; Checks for the actors RaceKey. Always returns true for NPC
+; The Following functions will always return 'false' in the censored version
+; Checks if the Actors racekey is excluded
 bool Function ValidRace(Actor akActor) native global
 ; Check if Actor is valid based on their 'sexuality', ie if 'partner' is interested in 'subject'. Subject preference is ignored
 bool Function IsInterested(Actor akActor, Actor akPartner) native global
@@ -68,7 +69,7 @@ bool Function IsInterested(Actor akActor, Actor akPartner) native global
 ; difficulty: The average time the Player has to react -> Avg.Time = Sqrt(Difficulty)/4
 ;             The actual time is randomized and will go up or down by 30% with each individual event
 ;             A balanced difficulty would be 60~70, below 30 becomes impossibly difficult
-; callback: A callback func to send the result of the Struggle to. You do not have to register for this Event
+; callback: A callback form to send the result of the Struggle to (OnQTEEnd_c). You do not have to register for this Event
 ; --- Return
 ; If the QTE successfully started
 bool Function OpenQTEMenu(int difficulty, Form callback) native global

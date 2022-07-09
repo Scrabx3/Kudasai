@@ -123,15 +123,14 @@ EndFunction
 bool Function RescueActorByID(int index, ObjectReference whereto)
   ReferenceAlias akAlias = GetNthAlias(index) as ReferenceAlias
   Actor ref = akAlias.GetReference() as Actor
-  float Z = whereto.GetAngleZ()
-  float moveX = 50.0 * Math.Sin(Z)
-  float moveY = 50.0 * Math.Cos(Z)
   If(whereto)
     Kudasai.DefeatActor(ref, true)
     FadeToBlackAndBackFast.Apply()
     Utility.Wait(0.50)
+    Actor PlayerRef = Game.GetPlayer()
     FadeToBlackAndBackFast.PopTo(FadeToBlackHoldImod)
-    ref.MoveTo(whereto, moveX, moveY)
+    float Z = PlayerRef.GetAngleZ()
+    ref.MoveTo(PlayerRef, 120.0 * Math.Sin(Z), 120.0 * Math.Cos(Z), PlayerRef.GetHeight() - 35.0)
     Debug.SendAnimationEvent(ref, "BleedoutStart")
     Utility.Wait(0.4)
     FadeToBlackHoldImod.PopTo(FadeToBlackHoldBackFastImod)
@@ -222,10 +221,10 @@ String Function CreateGameTimeString()
     ret += "of Evening Star "
   EndIf
   ret += "4E " + GameYear.GetValueInt() + " / "
-  float hour = GameHour.Value
-  ret += (hour as int) + ":"
-  int minute = ((GameHour.Value - hour) * 60) as int
-  ret += minute
+  int hour = GameHour.GetValueInt()
+  ret += hour + ":"
+  float minute = (GameHour.Value - hour)
+  ret += (minute * 60) as int
   Debug.Trace("[Kudasai] Returning Date = " + ret)
   return ret
 EndFunction
