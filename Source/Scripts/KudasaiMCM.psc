@@ -8,6 +8,7 @@ String green = "<font color = '#32d12a'>"
 ; ----------- General
 
 bool Property bEnabled = true Auto Hidden
+bool Property bCreatureDefeat = false Auto Hidden
 
 int Property iSurrenderKey = -1 Auto Hidden ; Surrender
 int Property iHunterPrideKey = -1 Auto Hidden ; Allowing Player to defeat through Combat
@@ -120,6 +121,7 @@ Event OnPageReset(string page)
   EndIf
   If (page == "$YK_General")
     AddToggleOptionST("enabled", "$YK_Enabled", bEnabled)
+    AddToggleOptionST("creatures", "$YK_Creatures", bCreatureDefeat)
     AddHeaderOption("$YK_Hotkeys")
     AddKeyMapOptionST("surrenderkey", "$YK_SurrenderKey", iSurrenderKey)
     AddKeyMapOptionST("hunterpridekey", "$YK_HunterPrideKey", iHunterPrideKey)
@@ -140,7 +142,7 @@ Event OnPageReset(string page)
     AddSliderOptionST("lethalnpc", "$YK_LethalNPC", fLethalNPC, "{1}%")
     AddHeaderOption("$YK_Exposed")
     AddSliderOptionST("stripreq", "$YK_StripReq", iStripReq, "{0}")
-    AddSliderOptionST("stripreqchance", "$YK_StripReqChance", fStripReqChance, "{0}")
+    AddSliderOptionST("stripreqchance", "$YK_StripReqChance", fStripReqChance, "{1}%")
     AddSliderOptionST("stripchance", "$YK_StripChance", fStripChance, "{1}%")
     AddSliderOptionST("stripdstry", "$YK_StripDstry", fStripDestroy, "{1}%")
     AddToggleoptionST("stripdrop", "$YK_StripDrop", bStripDrop)
@@ -219,6 +221,18 @@ Event OnPageReset(string page)
     AddTextOptionST("undopacify_0", "$YK_UndoPacify_0", "", getFlag(Kudasai.IsPacified(Game.GetPlayer()) && !pldefeated))
     AddTextOptionST("rescuedebug_1", "$YK_Rescue_1", "", getFlag(IsCrosshairRefDefeated()))
     AddTextOptionST("undopacify_1", "$YK_UndoPacify_1", "", getFlag(IsCrosshairRefPacified()))
+
+    SetCursorPosition(1)
+    AddHeaderOption("$YK_DefeatedFollowers")
+    Actor[] Followers = Kudasai.GetFollowers()
+    int i = 0
+    While(i < Followers.Length)
+      If(Kudasai.IsDefeated(Followers[i]))
+        AddTextOptionST("rescuefol_" + Followers[i].GetFormID() as String, Followers[i].GetLeveledActorBase().GetName(), "", getFlag(Followers[i] != none))
+      EndIf
+      i += 1
+    EndWhile
+    AddHeaderOption("")
   EndIf
 EndEvent
 
@@ -230,6 +244,9 @@ Event OnSelectST()
   If(s[0] == "enabled")
     bEnabled = !bEnabled
     SetToggleOptionValueST(bEnabled)
+  ElseIf(s[0] == "creatures")
+    bCreatureDefeat = !bCreatureDefeat
+    SetToggleOptionValueST(bCreatureDefeat)
   ElseIf(s[0] == "notifydefeat")
     bNotifyDefeat = !bNotifyDefeat
     SetToggleOptionValueST(bNotifyDefeat, true)
@@ -274,7 +291,7 @@ Event OnSelectST()
     iStrips = Math.LogicalXor(iStrips, bit)
     SetToggleOptionValueST(Math.LogicalAnd(iStrips, bit))
 
-  ; --------------- Stripping
+  ; --------------- Debug
   ElseIf(s[0] == "rescuedebug")
     int i = s[1] as int
     Actor rescue
@@ -307,6 +324,9 @@ Event OnSelectST()
         return
       EndIf
       rescue = ref
+    ElseIf(s[0] == "rescuefol")
+      Actor follower = Game.GetForm(s[1] as int) as Actor
+      ShowMessage("$YK_PrintFollowerInfo{" + follower.GetLeveledActorBase().GetName() + "}{" + follower.GetCurrentLocation().GetName() + "}", false, "$YK_Ok")
     EndIf
     Kudasai.UndoPacify(rescue)
   EndIf
@@ -509,7 +529,9 @@ EndEvent
 Event OnHighlightST()
   String[] s = StringUtil.Split(GetState(), "_")
   ; --------------- General
-  If(s[0] == "surrenderkey")
+  If(s[0] == "creatures")
+    SetInfoText("$YK_CreaturesHighlight")
+  ElseIf(s[0] == "surrenderkey")
     SetInfoText("$YK_SurrenderKeyHighlight")
   ElseIf(s[0] == "hunterpridekey")
     SetInfoText("$YK_HunterPrideKeyHighlight")
