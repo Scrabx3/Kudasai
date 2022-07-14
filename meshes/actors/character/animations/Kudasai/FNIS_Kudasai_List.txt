@@ -98,7 +98,7 @@ b KudasaiFalmerStruggle_A1_Start Struggles/FalmerStruggle_A1_Start.hkx
 b -a KudasaiFalmerStruggle_A1_Stop Struggles/FalmerStruggle_A1_Stop.hkx
 
 b KudasaiGiantStruggle_A1_Start Struggles/GiantStruggle_A1_Start.hkx
-b -a KudasaiGiantStruggle_A1_Stop GiantStruggle_A1_Stop.hkx
+b -a KudasaiGiantStruggle_A1_Stop Struggles/GiantStruggle_A1_Stop.hkx
 
 b KudasaiRieklingStruggle_A1_Start Struggles/RieklingStruggle_A1_Start.hkx
 b -a KudasaiRieklingStruggle_A1_Stop Struggles/RieklingStruggle_A1_Stop.hkx
