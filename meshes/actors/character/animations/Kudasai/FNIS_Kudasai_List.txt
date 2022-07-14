@@ -1,4 +1,4 @@
-Version V2.0
+Version V4.1
 
 ' Format:
 '			<type> [-<option,option,...>] <AnimEvent> <AnimFile> [<AnimObject> ...]		(FNIS Animation)

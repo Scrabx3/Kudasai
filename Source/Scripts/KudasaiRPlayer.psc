@@ -384,7 +384,7 @@ Function CreateNewCycle(int ID, Actor victim, Actor[] oldpositions, bool firstcy
   If(!firstcycle) ; Stack up Scene Counter & Checkout previously animated Actors
     scenecounter[ID] = scenecounter[ID] + 1
     Debug.Trace("[Kudasai] <Assault> " + ID + ": Completed Cycles = " + scenecounter[ID] + "/" + MCM.iMaxAssaults)
-    If(scenecounter[ID] == MCM.iMaxAssaults)
+    If(MCM.iMaxAssaults <= scenecounter[ID])
       QuitCycle(ID)
       return
     ElseIf(ID == 0)
