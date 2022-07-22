@@ -1,6 +1,11 @@
 Scriptname Kudasai Hidden
 {Native API for Yamete Kudasai}
 
+; Disable/Enable hit processing, including protection of defeated victims
+Function DisableProcessing(bool abDisable) native global
+; Disable/Enable Consequence selection, including Blackout Events
+Function DisableConsequence(bool abDisable) native global
+
 ; ================================ Defeat
 ; A defeated Actor is bleeding out and immune to damage
 ; A defeated Actor is always pacified
@@ -39,9 +44,9 @@ EndEvent
 
 ; ================================ ObjectReference
 ; Link source to target with the given keyword. Setting 'target' to 'none' unsets the Link
-Function SetLinkedRef(ObjectReference source, ObjectReference target, Keyword link = none) native global
+Function SetLinkedRef(ObjectReference akSource, ObjectReference akTarget, Keyword akLink = none) native global
 ; Similar to ObjectRef.RemoveAll but will always skip quest items & can be set to ignore worn armor
-Function RemoveAllItems(ObjectReference from, ObjectReference to, bool excludeworn = true) native global
+Function RemoveAllItems(ObjectReference akTransferFrom, ObjectReference akTransferTo, bool abExcludeWorn = true) native global
 
 ; ================================ Actor
 ; ignore_config: true returns all worn armor, false excludes the slots the player doesn't want to be stripped
@@ -51,14 +56,15 @@ Armor[] Function GetWornArmor(Actor akActor) native global
 Potion Function GetMostEfficientPotion(Actor akActor, ObjectReference akContainer) native global
 ; Get the Template ActorBase of this Actor, none if the Actor isnt leveled
 ActorBase Function GetTemplateBase(Actor akActor) native global
-; Return this actors RaceKey
+; Return this actors RaceKey. Returns an empty string if the Actors race isnt recognized
 String Function GetRaceKey(Actor akActor) native global
 ; Return all of the Players current Followers
 Actor[] Function GetFollowers() native global
 
 ; ================================ Config
-; The Following functions will always return 'false' in the censored version
-; Checks if the Actors racekey is excluded
+; The following two functions represent the players choices as given in the Validation.yaml file
+; You arent required to respect those, they are just.. "guidelines"
+; Checks if the Actors racekey is excluded, e.g. if the player is int erested in seeing struggle motions with this Creature. Returns true for human NPC
 bool Function ValidRace(Actor akActor) native global
 ; Check if Actor is valid based on their 'sexuality', ie if 'partner' is interested in 'subject'. Subject preference is ignored
 bool Function IsInterested(Actor akActor, Actor akPartner) native global
@@ -72,15 +78,15 @@ bool Function IsInterested(Actor akActor, Actor akPartner) native global
 ; callback: A callback form to send the result of the Struggle to (OnQTEEnd_c). You do not have to register for this Event
 ; --- Return
 ; If the QTE successfully started
-bool Function OpenQTEMenu(int difficulty, Form callback) native global
-Event OnQTEEnd_c(bool victory)
+bool Function OpenQTEMenu(int aiDifficulty, Form callback) native global
+Event OnQTEEnd_c(bool abVictory)
 EndEvent
 ; Forcefully close/stop the QTE Event, invoking the callback. This is treated as the player losing the game
 Function CloseQTEMenu() native global
 
 ; ================================ Utility
 ; Remove all Entries in the Array which have the specified Keyword
-Function RemoveArmorByKeyword(Armor[] array, Keyword filter) native global
+Function RemoveArmorByKeyword(Armor[] array, Keyword akFilter) native global
 ; Create a Future object which sends the passed in value to the callback Form after <duration> seconds have passed
 ; Use "OnFuture_c" to receive the passed values. You do not need to register for this Event
 Function CreateFuture(float duration, Form callback, Actor[] argActor, int argNum = 0, string argStr = "") native global
