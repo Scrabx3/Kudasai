@@ -302,6 +302,9 @@ Event OnSelectST()
       rescue = Game.GetPlayer()
     ElseIf(i == 1)
       Actor ref = Game.GetCurrentCrosshairRef() as Actor
+      If(!ref)
+        ref = Game.GetCurrentConsoleRef() as Actor
+      EndIf
       String name = ref.GetLeveledActorBase().GetName()
       If(!ShowMessage("$YK_RescueBleedoutMsg{" + name + "}"))
         return
@@ -319,6 +322,9 @@ Event OnSelectST()
       rescue = Game.GetPlayer()
     ElseIf(i == 1)
       Actor ref = Game.GetCurrentCrosshairRef() as Actor
+      If(!ref)
+        ref = Game.GetCurrentConsoleRef() as Actor
+      EndIf
       String name = ref.GetLeveledActorBase().GetName()
       If(!ShowMessage("$YK_UndoPacifyMsg{" + name + "}"))
         return
@@ -638,7 +644,10 @@ EndState
 bool Function IsCrosshairRefDefeated()
   Actor ref = Game.GetCurrentCrosshairRef() as Actor
   If(!ref)
-    return false
+    ref = Game.GetCurrentConsoleRef() as Actor
+    If(!ref)
+      return false
+    EndIf
   Else
     return Kudasai.IsDefeated(ref)
   EndIf
@@ -647,7 +656,10 @@ EndFunction
 bool Function IsCrosshairRefPacified()
   Actor ref = Game.GetCurrentCrosshairRef() as Actor
   If(!ref)
-    return false
+    ref = Game.GetCurrentConsoleRef() as Actor
+    If(!ref)
+      return false
+    EndIf
   Else
     return Kudasai.IsPacified(ref) && !Kudasai.IsDefeated(ref)
   EndIf
