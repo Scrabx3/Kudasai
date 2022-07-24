@@ -11,9 +11,13 @@ bool Property bEnabled = true Auto Hidden
 bool Property bCreatureDefeat = false Auto Hidden
 
 int Property iSurrenderKey = -1 Auto Hidden ; Surrender
+int Property iSurrenderKeyM = -1 Auto Hidden
 int Property iHunterPrideKey = -1 Auto Hidden ; Allowing Player to defeat through Combat
+int Property iHunterKeyM = -1 Auto Hidden
 int Property iAssaultKey = -1 Auto Hidden ; Player initiated Struggle Game
+int Property iAssaultKeyM = -1 Auto Hidden
 int Property iCapturesKey = -1 Auto Hidden ; Access captured Targets
+int Property iCapturesKeyM = -1 Auto Hidden
 
 bool Property bNotifyDefeat = false Auto Hidden
 bool Property bNotifyDestroy = false Auto Hidden
@@ -120,20 +124,28 @@ Event OnPageReset(string page)
     page = "$YK_General"
   EndIf
   If (page == "$YK_General")
+    AddHeaderOption("$YK_Status")
     AddToggleOptionST("enabled", "$YK_Enabled", bEnabled)
     AddToggleOptionST("creatures", "$YK_Creatures", bCreatureDefeat)
-    AddHeaderOption("$YK_Hotkeys")
-    AddKeyMapOptionST("surrenderkey", "$YK_SurrenderKey", iSurrenderKey)
-    AddKeyMapOptionST("hunterpridekey", "$YK_HunterPrideKey", iHunterPrideKey)
-    AddKeyMapOptionST("assaultkey", "$YK_AssaultKey", iAssaultKey, getFlagHidden(alternate))
-    AddKeyMapOptionST("huntercaptureskey", "$YK_CapturesKey", iCapturesKey, getFlagHidden(alternate))
-
-    SetCursorPosition(1)
     AddHeaderOption("$YK_Notification")
     AddToggleOptionST("notifydefeat", "$YK_NotifyDefeat", bNotifyDefeat)
     AddToggleOptionST("notifydestroy", "$YK_NotifyDestry", bNotifyDestroy) ; as in item destruction
 		AddToggleOptionST("notifycolored", "$YK_NotifyColored", bNotifyColored, getFlag(bNotifyDefeat || bNotifyDestroy))
     AddColorOptionST("notifycolorchoice", "$YK_NotifyColorChoice", iNotifyColorChoice, getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored))
+
+    SetCursorPosition(1)
+    AddHeaderOption("$YK_SurrenderKey")
+    AddKeyMapOptionST("surrenderkey", "$YK_Hotkey", iSurrenderKey)
+    AddKeyMapOptionST("surrendermodkey", "$YK_ModifierKey", iSurrenderKeyM)
+    AddHeaderOption("$YK_HunterPrideKey")
+    AddKeyMapOptionST("hunterpridekey", "$YK_Hotkey", iHunterPrideKey)
+    AddKeyMapOptionST("hunterpridemodkey", "$YK_ModifierKey", iHunterKeyM)
+    AddHeaderOption("$YK_AssaultKey")
+    AddKeyMapOptionST("assaultkey", "$YK_Hotkey", iAssaultKey, getFlagHidden(alternate))
+    AddKeyMapOptionST("assaultmodkey", "$YK_ModifierKey", iAssaultKeyM, getFlagHidden(alternate))
+    AddHeaderOption("$YK_CapturesKey")
+    AddKeyMapOptionST("huntercaptureskey", "$YK_Hotkey", iCapturesKey, getFlagHidden(alternate))
+    AddKeyMapOptionST("huntercapturesmodkey", "$YK_ModifierKey", iCapturesKeyM, getFlagHidden(alternate))
 
   ElseIf (page == "$YK_Defeat")
     AddHeaderOption("$YK_Lethal")
@@ -502,15 +514,27 @@ Event OnKeyMapChangeST(int newKeyCode, string conflictControl, string conflictNa
   If(s[0] == "surrenderkey")
     iSurrenderKey = newKeyCode
     SetKeyMapOptionValueST(iSurrenderKey)
+  ElseIf(s[0] == "surrendermodkey")
+    iSurrenderKeyM = newKeyCode
+    SetKeyMapOptionValueST(iSurrenderKeyM)
   ElseIf(s[0] == "hunterpridekey")
     iHunterPrideKey = newKeyCode
     SetKeyMapOptionValueST(iHunterPrideKey)
+  ElseIf(s[0] == "hunterpridemodkey")
+    iHunterKeyM = newKeyCode
+    SetKeyMapOptionValueST(iHunterKeyM)
   ElseIf(s[0] == "assaultkey")
     iAssaultKey = newKeyCode
     SetKeyMapOptionValueST(iAssaultKey)
+  ElseIf(s[0] == "assaultmodkey")
+    iAssaultKeyM = newKeyCode
+    SetKeyMapOptionValueST(iAssaultKeyM)
   ElseIf(s[0] == "huntercaptureskey")
     iCapturesKey = newKeyCode
     SetKeyMapOptionValueST(iCapturesKey)
+  ElseIf(s[0] == "huntercapturesmodkey")
+    iCapturesKeyM = newKeyCode
+    SetKeyMapOptionValueST(iCapturesKeyM)
   EndIf
   ((Self as Quest) as KudasaiMain).RegisterKeys()
 EndEvent
@@ -537,6 +561,8 @@ Event OnHighlightST()
   ; --------------- General
   If(s[0] == "creatures")
     SetInfoText("$YK_CreaturesHighlight")
+  ElseIf(s[0] == "surrendermodkey" || s[0] == "hunterpridemodkey" || s[0] == "assaultmodkey" || s[0] == "huntercapturesmodkey")
+    SetInfoText("$YK_ModifierKeyHighlight")
   ElseIf(s[0] == "surrenderkey")
     SetInfoText("$YK_SurrenderKeyHighlight")
   ElseIf(s[0] == "hunterpridekey")

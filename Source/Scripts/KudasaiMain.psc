@@ -47,15 +47,23 @@ Event OnKeyDown(int keyCode)
     EndIf
 	EndIf
   If(keyCode == MCM.iSurrenderKey)
-    If (!SurrenderQuest.Start())
-      SurrenderQFailure.Show()
+    If(MCM.iSurrenderKeyM == -1 || Input.IsKeyPressed(MCM.iSurrenderKeyM))
+      If (!SurrenderQuest.Start())
+        SurrenderQFailure.Show()
+      EndIf
     EndIf
   ElseIf(keyCode == MCM.iHunterPrideKey)
-    ToggleHunterPride()
+    If(MCM.iHunterKeyM == -1 || Input.IsKeyPressed(MCM.iHunterKeyM))
+      ToggleHunterPride()
+    EndIf
   ElseIf(keyCode == MCM.iAssaultKey)
-    CreateAssault()
+    If(MCM.iAssaultKeyM == -1 || Input.IsKeyPressed(MCM.iAssaultKeyM))
+      CreateAssault()
+    EndIf
   ElseIf(keyCode == MCM.iCapturesKey)
-    ViewCaptures()
+    If(MCM.iCapturesKeyM == -1 || Input.IsKeyPressed(MCM.iCapturesKeyM))
+      ViewCaptures()
+    EndIf
   EndIf
 EndEvent
 
