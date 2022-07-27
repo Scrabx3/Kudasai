@@ -3,8 +3,10 @@ Scriptname Kudasai Hidden
 
 ; Disable/Enable hit processing, including protection of defeated victims
 Function DisableProcessing(bool abDisable) native global
+bool Function IsProcessingDisabled() native global
 ; Disable/Enable Consequence selection, including Blackout Events
 Function DisableConsequence(bool abDisable) native global
+bool Function IsConsequenceDisabled() native global
 
 ; ================================ Defeat
 ; A defeated Actor is bleeding out and immune to damage
@@ -62,9 +64,7 @@ String Function GetRaceKey(Actor akActor) native global
 Actor[] Function GetFollowers() native global
 
 ; ================================ Config
-; The following two functions represent the players choices as given in the Validation.yaml file
-; You arent required to respect those, they are just.. "guidelines"
-; Checks if the Actors racekey is excluded, e.g. if the player is int erested in seeing struggle motions with this Creature. Returns true for human NPC
+; Checks if the Actors racekey is excluded
 bool Function ValidRace(Actor akActor) native global
 ; Check if Actor is valid based on their 'sexuality', ie if 'partner' is interested in 'subject'. Subject preference is ignored
 bool Function IsInterested(Actor akActor, Actor akPartner) native global
