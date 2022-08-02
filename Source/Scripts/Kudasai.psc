@@ -14,8 +14,8 @@ bool Function IsConsequenceDisabled() native global
 ; A pacified Actor is ignoring & ignored by Combat
 ; All defeated Actors carry the "Kudasai_Defeated" Keyword
 ; All pacified Actors carry the "Kudasai_Pacified" Keyword
-Function DefeatActor(Actor akActor, bool skip_animation = false) native global
-Function RescueActor(Actor akActor, bool undo_pacify, bool skip_animation = false) native global
+Function DefeatActor(Actor akActor, bool abSkipAnimation = false) native global
+Function RescueActor(Actor akActor, bool abUndoPacify, bool abSkipAnimation = false) native global
 Function PacifyActor(Actor akActor) native global
 Function UndoPacify(Actor akActor) native global
 bool Function IsDefeated(Actor akActor) native global
