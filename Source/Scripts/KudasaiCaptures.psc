@@ -67,19 +67,18 @@ bool Function Store(Actor subject)
     return false
   EndIf
   ReferenceAlias empty = GetNthAlias(emptyID) as ReferenceAlias
-  ; Returns none if Actor isnt leveled (i.e. unique)
-  ActorBase vicbase = Kudasai.GetTemplateBase(subject)
+  ActorBase base = subject.GetLeveledActorBase().GetTemplate()
+  Location subloc = subject.GetCurrentLocation()
   Actor victim
   FadeToBlackAndBackFast.Apply()
   Utility.Wait(0.5)
-  If(!vicbase)
+  If(!base)
     victim = subject
     Kudasai.RescueActor(subject, true)
   Else
-    victim = subject.PlaceAtMe(vicbase) as Actor
+    victim = subject.PlaceAtMe(base) as Actor
     subject.MoveTo(HoldingCellMarker2)
   EndIf
-  Location subloc = victim.GetCurrentLocation()
   victim.MoveTo(HoldingCellMarker2)
   empty.ForceRefTo(victim)
   Kudasai.RemoveAllItems(victim, none)
@@ -87,7 +86,6 @@ bool Function Store(Actor subject)
   ; Create Flash Entry
   ActorBase sbase = subject.GetLeveledActorBase()
   ; Cant do this in the original split cause time
-  
   StorageUtil.SetStringValue(victim, "YK_CapturesName", sbase.GetName())
   StorageUtil.SetStringValue(victim, "YK_CapturesLevel", " Lv. " + subject.GetLevel())
   If(sbase.GetSex() == 1)

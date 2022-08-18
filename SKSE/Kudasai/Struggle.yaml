@@ -97,13 +97,6 @@ Giant:
     Victim: KudasaiGiantStruggle_A1_Stop
     Aggressor: KudasaiGiantStruggle_A2_Stop
 
-BoarMounted:
-  Victim: KudasaiBoarMountedStruggle_A1_Start
-  Aggressor: KudasaiBoarMountedStruggle_A2_Start
-  Breakfree:
-    Victim: KudasaiBoarMountedStruggle_A1_Stop
-    Aggressor: KudasaiBoarMountedStruggle_A2_Stop
-
 Netch:
   Victim: KudasaiNetchStruggle_A1_Start
   Aggressor: KudasaiNetchStruggle_A2_Start
@@ -117,6 +110,13 @@ Riekling:
   Breakfree:
     Victim: KudasaiRieklingStruggle_A1_Stop
     Aggressor: KudasaiRieklingStruggle_A2_Stop
+    
+MountedRiekling:
+  Victim: KudasaiBoarRieklingStruggle_A1_Start
+  Aggressor: KudasaiBoarRieklingStruggle_A2_Start
+  Breakfree:
+    Victim: KudasaiBoarRieklingStruggle_A1_Stop
+    Aggressor: KudasaiBoarRieklingStruggle_A2_Stop
 
 SabreCat:
   Victim: KudasaiSabrecatStruggle_A1_Start
