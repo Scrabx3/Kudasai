@@ -82,7 +82,6 @@ Function OpenMenu(Actor victim)
     int i = 0
     While(i < worn.Length)
       victim.UnequipItem(worn[i])
-      victim.AddItem(worn[i])
       i += 1
     EndWhile
   ElseIf(result == 2)
