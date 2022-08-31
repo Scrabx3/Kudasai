@@ -10,7 +10,8 @@ State Exhausted
 		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> Enter State = Exhausted")
 		Kudasai.RescueActor(Game.GetPlayer(), false)
     ; IDEA: Add an "exhausted" movement Idle here
-
+		
+		RegisterForSingleUpdate(11)	; Time to escape
 		RegisterForActorAction(8) ; Drawing Weapon
 		RegisterForMenu("ContainerMenu") ; "Looting near Victoires"
 	EndEvent
@@ -31,7 +32,7 @@ State Exhausted
 	EndEvent
 
 	Event OnEndState()
-    GetOwningQuest().Stop()
+		(GetOwningQuest() as KudasaiRPlayer).CompletePlayerCycle()
 	EndEvent
 EndState
 

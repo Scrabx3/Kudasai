@@ -63,6 +63,18 @@ String Function GetRaceKey(Actor akActor) native global
 ; Return all of the Players current Followers
 Actor[] Function GetFollowers() native global
 
+; ================================ Utility
+; Remove all Entries in the Array which have the specified Keyword
+Function RemoveArmorByKeyword(Armor[] akArray, Keyword akFilter) native global
+; Create a Future object which sends the passed in value to the callback Form after <duration> seconds have passed
+; Use "OnFuture_c" to receive the passed values. You do not need to register for this Event
+Function CreateFuture(float afDuration, Form akCallback, Actor[] argActor, int argNum = 0, string argStr = "") native global
+Event OnFuture_c(Actor[] argActor, int argNum, string argStr)  
+EndEvent
+; Sort the given Array based on distance to center
+Function SortByDistance(Actor[] akArray, ObjectReference akCenter) native global
+Function SortByDistanceRef(ObjectReference[] akArray, ObjectReference akCenter) native global
+
 ; ================================ Config
 ; Checks if the Actors racekey is excluded
 bool Function ValidRace(Actor akActor) native global
@@ -83,12 +95,3 @@ Event OnQTEEnd_c(bool abVictory)
 EndEvent
 ; Forcefully close/stop the QTE Event, invoking the callback. This is treated as the player losing the game
 Function CloseQTEMenu() native global
-
-; ================================ Utility
-; Remove all Entries in the Array which have the specified Keyword
-Function RemoveArmorByKeyword(Armor[] array, Keyword akFilter) native global
-; Create a Future object which sends the passed in value to the callback Form after <duration> seconds have passed
-; Use "OnFuture_c" to receive the passed values. You do not need to register for this Event
-Function CreateFuture(float duration, Form callback, Actor[] argActor, int argNum = 0, string argStr = "") native global
-Event OnFuture_c(Actor[] argActor, int argNum, string argStr)  
-EndEvent
