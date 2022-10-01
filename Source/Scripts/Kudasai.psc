@@ -51,16 +51,13 @@ Function SetLinkedRef(ObjectReference akSource, ObjectReference akTarget, Keywor
 Function RemoveAllItems(ObjectReference akTransferFrom, ObjectReference akTransferTo, bool abExcludeWorn = true) native global
 
 ; ================================ Actor
-; return all armor this actor is currently wearing
-Armor[] Function GetWornArmor(Actor akActor) native global
-; strip all worn armor from this actor, ignoring strip protected and armor using ignored slot masks
-; return an array of all stripped items | Armor ArmorForm = ObjectRef[i].GetBaseObject() as Armor
+; return all armor this actor is currently wearing, excluding those only using ignored slot masks
+Armor[] Function GetWornArmor(Actor akActor, int aiIgnoredMasks = 0) native global
+; strip all of this actors worn armor, excluding strip protected items and those only using ignored slot masks
 Armor[] Function StripActor(Actor akActor, int aiIgnoredFlags = 0) global native
 ; Get the most efficien Potion (= the Potion which gets the Hp closest to max) for this subject from the given container
 ; The function recognizes all Healing Potions in the container inventory which are pure beneficial
 Potion Function GetMostEfficientPotion(Actor akActor, ObjectReference akContainer) native global
-; Get the Template ActorBase of this Actor, none if the Actor isnt leveled
-ActorBase Function GetTemplateBase(Actor akActor) native global
 ; Return this actors RaceKey. Returns an empty string if the Actors race isnt recognized
 String Function GetRaceType(Actor akActor) native global
 ; Return all of the Players currently loaded Followers
