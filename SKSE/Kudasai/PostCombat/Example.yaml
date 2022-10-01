@@ -1,14 +1,39 @@
-Name: Example # The name of the Event, as seen in the MCM
-Data: # Information to access the Quest which is to start
-  ESP_Name: Mod_0.esp
+Name: Example
+Description: <Optional> Example Description
+Data:
+  ESP_Name: Mod.esp
   FormID: 0x123456
-Blackout: false # Is Blackout Event? Blackouts should port the Player away from combat, i.e. "Capturing the Player" in some way. Missing => false
-DoesTeleport: true # Does this Event teleport the Player at any point in time? Used to filter out Events in TP-Prohibited areas. Missing => true
-Requirements: # Requirements for this Event to be valid. All of the below keys are optional
-  Mods: # Required mods, which need to be present alongside the Event Quest itself
-    - Mod_1.esp
-    - Mod_2.esp
-  RaceKey: # The victoires group needs to include members whichs RaceKey matches with the given RaceKeys
+## ----------------------
+HoursUntilReset: 0    # Amount of time (in InGame days) that should pass before this Event is played again
+HideFromPlayer: false # Should the quest NOT be displayed in the MCM
+IsBlackout: false     # Can this Event start while combat is still ongoing?
+IsTeleport: true      # Does this Event teleport the player away from the current Location?
+## ----------------------
+Requirements:
+  Priority: 0 # between 0 and 10, if two or more events can be started, the one with higher Priority is used
+  Masters:    # Required Masters for this Event, to create dependency on internal soft requirements
+    - Master.esp
+
+  # Requirements put on the winning party of the encounter
+  RaceType:     # ALL
     - Human
     - Wolf
-  RaceKey_All: true # If all of the given RaceKeys have need to be present in the victoires group. Missing => true
+  ActorBase:    # ANY
+    - Mod.esp|0x3456
+    - Wood.esp|0xABC
+  Reference:    # ANY
+    - Mod.esp|0x4C70
+  Faction:      # ALL
+    - Skyrim.esm|0x2BF9B      # Stormcloaks
+
+  # Requirements put on the player specifically
+  PlayerInFaction:      # ALL
+    - Skyrim.esm|0x2BF9A      # Imperial Soldiers
+  PlayerHasMagicEffect: # ALL
+    - Mod.esp|0x746
+  
+  # Requirements on story progress
+  QuestCompleted:   # ANY
+    - Skyrim.esm|0x3372B      # MQ101 "Unbound"
+  QuestRunning:     # ANY
+    - Mod.esp|0x1D6AF
