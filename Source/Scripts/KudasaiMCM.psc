@@ -74,7 +74,7 @@ int Property iStrips = 1066390941 Auto Hidden
 ; ----------- Consequences
 
 String[] Property ConTitle Auto Hidden
-String[] Property ConDesc Auto Hidden
+String[] Property ConDescription Auto Hidden
 Int[] Property ConWeight Auto Hidden
 
 ; --------------------- Menu
@@ -216,6 +216,8 @@ Event OnPageReset(string page)
 
   ElseIf(page == "$YK_Consequences")
     SetCursorFillMode(LEFT_TO_RIGHT)
+    AddHeaderOption("")
+    AddTextOptionST("consequenceREADME", "$YK_ReadMe", "")
     int i = 0
     While(i < ConTitle.Length)
       int val = ConWeight[i]
@@ -236,11 +238,11 @@ Event OnPageReset(string page)
 
     SetCursorPosition(1)
     AddHeaderOption("$YK_DefeatedFollowers")
-    Actor[] Followers = Kudasai.GetFollowers()
+    Actor[] defeated = Kudasai.GetDefeated()
     int i = 0
-    While(i < Followers.Length)
-      If(Kudasai.IsDefeated(Followers[i]))
-        AddTextOptionST("rescuefol_" + Followers[i].GetFormID() as String, Followers[i].GetLeveledActorBase().GetName(), "", getFlag(Followers[i] != none))
+    While(i < defeated.Length)
+      If(defeated[i].IsPlayerTeammate())
+        AddTextOptionST("rescuefol_" + defeated[i].GetFormID() as String, defeated[i].GetLeveledActorBase().GetName(), "", getFlag(defeated[i] != none))
       EndIf
       i += 1
     EndWhile
@@ -302,6 +304,9 @@ Event OnSelectST()
     int bit = Math.LeftShift(1, i)
     iStrips = Math.LogicalXor(iStrips, bit)
     SetToggleOptionValueST(Math.LogicalAnd(iStrips, bit))
+
+  ElseIf(s[0] == "consequenceREADME")
+    ShowMessage("$YK_ConsequenceReadMe", false, "$YK_Ok")
 
   ; --------------- Debug
   ElseIf(s[0] == "rescuedebug")
@@ -608,11 +613,16 @@ Event OnHighlightST()
   ElseIf(s[0] == "postcmbtrapiststays")
     SetInfoText("$YK_RapistQuitsHighlight")
 
+  ; --------------- Consequences
+  ElseIf(s[0] == "Con")
+    int i = s[1] as int
+    SetInfoText(ConDescription[i])
+
   ; --------------- NSFW
   ElseIf(s[0] == "sexlabweight")
-    SetInfoText("$YK_SexLabWeighthighlightHighlight")
+    SetInfoText("$YK_SexLabWeightHighlight")
   ElseIf(s[0] == "ostimweight")
-    SetInfoText("$YK_OStimWeighhighlightHighlight")
+    SetInfoText("$YK_OStimWeigHighlight")
   ElseIf(s[0] == "scenetype")
     SetInfoText("$YK_SceneTypeHighlight")    
   ElseIf(s[0] == "ostimdurmin")

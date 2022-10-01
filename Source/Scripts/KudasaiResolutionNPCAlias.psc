@@ -29,7 +29,7 @@ Function StopQ()
     Utility.Wait(0.5)
   EndWhile
   Actor me = GetReference() as Actor
-  If(me.IsDead() || me.IsInCombat())
+  If(me && (me.IsDead() || me.IsInCombat()))
     q.SetStage(50)
   EndIf
 EndFunction
