@@ -54,11 +54,11 @@ Armor[] Function GetWornArmor_Filtered(Actor subject) global
   Armor[] worn = Kudasai.GetWornArmor(subject)
   Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
   If(SexLabNoStrip)
-    Kudasai.RemoveArmorByKeyword(worn, SexLabNoStrip)
+    worn = Kudasai.RemoveArmorByKeyword(worn, SexLabNoStrip)
   EndIf
   Keyword ToysToy = Keyword.GetKeyword("ToysToy")
   If(ToysToy)
-    Kudasai.RemoveArmorByKeyword(worn, ToysToy)
+    worn = Kudasai.RemoveArmorByKeyword(worn, ToysToy)
   EndIf
   return worn
 EndFunction

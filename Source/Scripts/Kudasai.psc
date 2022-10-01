@@ -51,21 +51,24 @@ Function SetLinkedRef(ObjectReference akSource, ObjectReference akTarget, Keywor
 Function RemoveAllItems(ObjectReference akTransferFrom, ObjectReference akTransferTo, bool abExcludeWorn = true) native global
 
 ; ================================ Actor
-; ignore_config: true returns all worn armor, false excludes the slots the player doesn't want to be stripped
+; return all armor this actor is currently wearing
 Armor[] Function GetWornArmor(Actor akActor) native global
+; strip all worn armor from this actor, ignoring strip protected and armor using ignored slot masks
+; return an array of all stripped items | Armor ArmorForm = ObjectRef[i].GetBaseObject() as Armor
+Armor[] Function StripActor(Actor akActor, int aiIgnoredFlags = 0) global native
 ; Get the most efficien Potion (= the Potion which gets the Hp closest to max) for this subject from the given container
 ; The function recognizes all Healing Potions in the container inventory which are pure beneficial
 Potion Function GetMostEfficientPotion(Actor akActor, ObjectReference akContainer) native global
 ; Get the Template ActorBase of this Actor, none if the Actor isnt leveled
 ActorBase Function GetTemplateBase(Actor akActor) native global
 ; Return this actors RaceKey. Returns an empty string if the Actors race isnt recognized
-String Function GetRaceKey(Actor akActor) native global
-; Return all of the Players current Followers
+String Function GetRaceType(Actor akActor) native global
+; Return all of the Players currently loaded Followers
 Actor[] Function GetFollowers() native global
 
 ; ================================ Utility
-; Remove all Entries in the Array which have the specified Keyword
-Function RemoveArmorByKeyword(Armor[] akArray, Keyword akFilter) native global
+; Remove all Entries in the Array which have the specified Keyword, return the new array
+Armor[] Function RemoveArmorByKeyword(Armor[] akArray, Keyword akFilter) native global
 ; Create a Future object which sends the passed in value to the callback Form after <duration> seconds have passed
 ; Use "OnFuture_c" to receive the passed values. You do not need to register for this Event
 Function CreateFuture(float afDuration, Form akCallback, Actor[] argActor, int argNum = 0, string argStr = "") native global

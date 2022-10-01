@@ -153,7 +153,7 @@ Function EndStruggleImpl(Actor[] positions, bool victory) global
     If(positions[1] == Game.GetPlayer()) ; Dont ragdoll the player..
       return
     EndIf
-    String rk = Kudasai.GetRaceKey(positions[1])
+    String rk = Kudasai.GetRaceType(positions[1])
     If(rk == "Human")
       return
     ElseIf(rk == "Skeever" || rk == "Wolf")

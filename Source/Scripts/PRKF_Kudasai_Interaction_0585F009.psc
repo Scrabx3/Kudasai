@@ -21,9 +21,7 @@ int result
 Function OpenMenu(Actor victim)
   Actor PlayerRef = Game.GetPlayer()
   ; Validate Menu Options
-  Armor[] worn = KudasaiInternal.GetWornArmor_Filtered(victim)
   Potion hPotion = Kudasai.GetMostEfficientPotion(victim, PlayerRef)
-  Debug.Trace("[Kudasai] Robbing, Worn Armor = " + worn)
   Debug.Trace("[Kudasai] Rescue, Potion = " + hPotion)
   result = -2
   RegisterForModEvent("YamMenu_Accept", "MenuAccept")
@@ -31,7 +29,7 @@ Function OpenMenu(Actor victim)
   ; Prepare Args
   int[] args = new int[11]
   args[0] = 1 ; Tie Up
-  args[1] = (worn.Length > 0) as int ; Strip
+  args[1] = 1 ; Strip
   args[2] = 1 ; Rob
   args[3] = (hPotion != none) as int ; Rescue
   args[4] = PlayerRef.HasKeyword(Vampire) as int ; Feed
@@ -79,11 +77,7 @@ Function OpenMenu(Actor victim)
   If(result == 0)
     DoTieUp(victim)
   ElseIf(result == 1)
-    int i = 0
-    While(i < worn.Length)
-      victim.UnequipItem(worn[i])
-      i += 1
-    EndWhile
+    Kudasai.StripActor(victim)
   ElseIf(result == 2)
     Victim.OpenInventory(true)
     Victim.SendAssaultAlarm()

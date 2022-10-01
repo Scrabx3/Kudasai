@@ -13,16 +13,16 @@
 #   F<-F: true    -> A female is allowed to assault another female (same as if you didnt set anything)
 #   C<-*: false   -> A Creature will never be assaulted by anyone
 #   Follower:
-#     M<-M: true  -> A male follower will assault another male (despite M<-M being disabled)
+#     M<-M: true  -> A male follower will be assaulted by another male (despite M<-M being disabled)
 Selective:
   C<-*: false
   Follower:
     M<-M: true
 
 # Creatures
-# Creatures are grouped together based on a unique Identifier called "RaceKey". Similar Creatures will use the same RaceKey
+# Creatures are grouped together based on their "RaceType". This Type is used to group similar creatures together, such as Dogs and Wolves
 # If you don't want a certain Creature Race to be excluded from Y. Kudasai, set them to 'false' here. Does NOT stop them from defeating you
-RaceKeys:
+RaceTypes:
   AshHopper: true
   AtronachFlame: true
   AtronachFrost: true

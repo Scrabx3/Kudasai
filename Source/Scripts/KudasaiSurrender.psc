@@ -264,42 +264,27 @@ Function Imprison(Faction crimefaction)
   FadeToBlackImod.PopTo(FadeToBlackBackImod)
 EndFunction
 
-Function Strip(Actor stripper)
-  Armor[] wornz = KudasaiInternal.GetWornArmor_Filtered(stripper)
-  Debug.Trace("[Kudasai] <Strip> Subject = " + stripper + " Worn Armor = " + wornz)
-  int i = 0
-  While (i < wornz.length)
-    stripper.UnequipItem(wornz[i], abSilent = true)
-    i += 1
-  EndWhile
+Armor[] Function Strip(Actor stripper)
+  Armor[] stripped = Kudasai.StripActor(stripper)
+  Debug.Trace("[Kudasai] Surrender | Stripped Items = " + stripped)
+  return stripped
 EndFunction
 Function StripAndHandOver(Actor tostrip, Actor handover)
-  Armor[] wornz = KudasaiInternal.GetWornArmor_Filtered(tostrip)
-  Debug.Trace("[Kudasai] <StripAndHandOver> Subject = " + tostrip + " Worn Armor = " + wornz)
+  Armor[] items = Strip(tostrip)
   int i = 0
-  While (i < wornz.length)
-    tostrip.UnequipItem(wornz[i], abSilent = true)
-    tostrip.RemoveItem(wornz[i], 1, true, handover)
+  While (i < items.length)
+    tostrip.RemoveItem(items[i], 1, true, handover)
     i += 1
   EndWhile
 EndFunction
 Function StripAndHandOverAll(Actor handover)
   Actor target = Game.GetPlayer()
   int n = Followers.Length
-  While(true)
-    If (target)
-      Armor[] wornz = KudasaiInternal.GetWornArmor_Filtered(target)
-      Debug.Trace("[Kudasai] <StripAndHandOver> Subject = " + target + " Worn Armor = " + wornz)
-      int i = 0
-      While (i < wornz.length)
-        target.UnequipItem(wornz[i], abSilent = true)
-        target.RemoveItem(wornz[i], 1, true, handover)
-        i += 1
-      EndWhile
-    EndIf
-    If (n == 0)
+  While(target)
+    StripAndHandOver(target, handover)
+    If(!n)
       return
-    Endif
+    EndIf
     n -= 1
     target = Followers[n].GetReference() as Actor
   EndWhile
