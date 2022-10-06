@@ -2,7 +2,7 @@ Name: Simple Slavery
 Data:
   ESP_Name: YameteKudasai.esp
   FormID: 0x8DDA8C
-Blackout: true
+IsBlackout: true
 Requirements:
   Mods:
     - SimpleSlavery.esp

@@ -2,6 +2,6 @@ Name: Assault
 Data:
   ESP_Name: YameteKudasai.esp
   FormID: 0x808E86
-Blackout: false
-DoesTeleport: false
+IsBlackout: false
+IsTeleport: false
 Weight: 50

@@ -11,7 +11,7 @@ IsTeleport: true      # Does this Event teleport the player away from the curren
 ## ----------------------
 Requirements:
   Priority: 0 # between 0 and 10, if two or more events can be started, the one with higher Priority is used
-  Masters:    # Required Masters for this Event, to create dependency on internal soft requirements
+  Mods:    # Required Masters for this Event, to create dependency on internal soft requirements
     - Master.esp
 
   # Requirements put on the winning party of the encounter
