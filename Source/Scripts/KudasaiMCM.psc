@@ -7,7 +7,7 @@ String green = "<font color = '#32d12a'>"
 
 ; ----------- General
 
-bool Property bEnabled = true Auto Hidden
+bool Property bEnabled = true Auto Hidden ; Depreciated
 bool Property bCreatureDefeat = false Auto Hidden
 
 int Property iSurrenderKey = -1 Auto Hidden ; Surrender
@@ -32,8 +32,8 @@ float Property fLethalPlayer = 100.0 Auto Hidden
 float Property fLethalNPC = 100.0 Auto Hidden
 
 int Property iStripReq = 2 Auto Hidden
-float Property fStripReqChance = 75.0 Auto Hidden
-float Property fStripChance = 7.0 Auto Hidden
+float Property fStripReqChance = 0.0 Auto Hidden
+float Property fStripChance = 0.0 Auto Hidden
 float Property fStripDestroy = 5.0 Auto Hidden
 bool Property bStripDrop = false Auto Hidden
 
@@ -125,7 +125,7 @@ Event OnPageReset(string page)
   EndIf
   If (page == "$YK_General")
     AddHeaderOption("$YK_Status")
-    AddToggleOptionST("enabled", "$YK_Enabled", bEnabled)
+    AddToggleOptionST("enabled", "$YK_Enabled", !Kudasai.IsProcessingDisabled())
     AddToggleOptionST("creatures", "$YK_Creatures", bCreatureDefeat)
     AddHeaderOption("$YK_Notification")
     AddToggleOptionST("notifydefeat", "$YK_NotifyDefeat", bNotifyDefeat)
@@ -256,8 +256,13 @@ Event OnSelectST()
   String[] s = StringUtil.Split(GetState(), "_")
   ; --------------- General
   If(s[0] == "enabled")
-    bEnabled = !bEnabled
-    SetToggleOptionValueST(bEnabled)
+    bool enabled = !Kudasai.IsProcessingDisabled()
+    SetToggleOptionValueST(enabled)
+    Kudasai.DisableProcessing(enabled)
+  ; ElseIf(s[0] == "consequence")
+  ;   bool enabled = !Kudasai.IsConsequenceDisabled()
+  ;   SetToggleOptionValueST(enabled)
+  ;   Kudasai.DisableConsequence(enabled)
   ElseIf(s[0] == "creatures")
     bCreatureDefeat = !bCreatureDefeat
     SetToggleOptionValueST(bCreatureDefeat)

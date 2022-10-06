@@ -124,7 +124,7 @@ EndFunction
 
 
 Event MenuAccept(string asEventName, string menu_name, float menu_id, form akSender)
-  Debug.Trace("[Kudasai] HUNTER PRIDE: Menu Acceot with Option = " + menu_name)
+  Debug.Trace("[Kudasai] HUNTER PRIDE: Menu Acceot with Option = " + menu_name + " | ID = " + menu_id as int)
   result = menu_id as int
 EndEvent
 Event MenuCancel(string asEventName, string asStringArg, float afNumArg, form akSender)

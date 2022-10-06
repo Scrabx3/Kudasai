@@ -50,19 +50,6 @@ Function RobActor(Actor victim, Actor robber, bool animation = true) global
   Kudasai.RemoveAllItems(victim, robber, !GetMCM().bStealArmor)
 EndFunction
 
-Armor[] Function GetWornArmor_Filtered(Actor subject) global
-  Armor[] worn = Kudasai.GetWornArmor(subject)
-  Keyword SexLabNoStrip = Keyword.GetKeyword("SexLabNoStrip")
-  If(SexLabNoStrip)
-    worn = Kudasai.RemoveArmorByKeyword(worn, SexLabNoStrip)
-  EndIf
-  Keyword ToysToy = Keyword.GetKeyword("ToysToy")
-  If(ToysToy)
-    worn = Kudasai.RemoveArmorByKeyword(worn, ToysToy)
-  EndIf
-  return worn
-EndFunction
-
 ; Called by the .dll, never called for subject == Player
 Function FinalizeDefeat(Actor subject) global
   Package p = Game.GetFormFromFile(0x88782C, "YameteKudasai.esp") as Package
