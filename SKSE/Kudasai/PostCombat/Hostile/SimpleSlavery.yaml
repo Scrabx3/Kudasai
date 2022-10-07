@@ -6,6 +6,6 @@ IsBlackout: true
 Requirements:
   Mods:
     - SimpleSlavery.esp
-  RaceKey:
+  RaceType:
     - Human
-Weight: -1
+Weight: 50

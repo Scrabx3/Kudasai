@@ -6,4 +6,4 @@ IsBlackout: true
 Requirements:
   RaceType:
     - Human
-Weight: 0
+Weight: 50
