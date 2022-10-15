@@ -78,17 +78,18 @@ bool Function Store(Actor subject)
   Else
     victim = subject.PlaceAtMe(base) as Actor
     subject.MoveTo(HoldingCellMarker2)
+    If(!subject.GetActorBase().IsEssential() && !subject.GetActorBase().IsProtected())
+      subject.KillSilent(Game.GetPlayer())
+    EndIf
   EndIf
   victim.MoveTo(HoldingCellMarker2)
   empty.ForceRefTo(victim)
   Kudasai.RemoveAllItems(victim, none)
   size += 1
   ; Create Flash Entry
-  ActorBase sbase = subject.GetLeveledActorBase()
-  ; Cant do this in the original split cause time
-  StorageUtil.SetStringValue(victim, "YK_CapturesName", sbase.GetName())
+  StorageUtil.SetStringValue(victim, "YK_CapturesName", base.GetName())
   StorageUtil.SetStringValue(victim, "YK_CapturesLevel", " Lv. " + subject.GetLevel())
-  If(sbase.GetSex() == 1)
+  If(base.GetSex() == 1)
     StorageUtil.SetStringValue(victim, "YK_CapturesSex", "Female")
   Else
     StorageUtil.SetStringValue(victim, "YK_CapturesSex", "Male")
@@ -133,9 +134,8 @@ bool Function RescueActorByID(int index, ObjectReference whereto)
     Utility.Wait(0.4)
     FadeToBlackHoldImod.PopTo(FadeToBlackHoldBackFastImod)
   Else
-    ActorBase refbase = ref.GetLeveledActorBase()
-    If(refbase.IsEssential())
-      refbase.SetEssential(false)
+    If(ref.IsEssential())
+      ref.GetActorBase().SetEssential(false)
     EndIf
     ref.Kill(Game.GetPlayer())
   EndIf

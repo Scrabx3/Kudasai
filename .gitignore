@@ -3,4 +3,6 @@
 *.lib
 *.pdb
 *.exp
+*.dll
 ChangeLog.txt
+meta.ini
