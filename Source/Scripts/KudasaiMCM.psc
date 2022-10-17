@@ -2,8 +2,7 @@ Scriptname KudasaiMCM extends SKI_ConfigBase
 
 ; --------------------- Properties
 
-String red = "<font color = '#c70700'>"
-String green = "<font color = '#32d12a'>"
+KudasaiTrackingAlias Property TrackingAlias Auto
 
 ; ----------- General
 
@@ -25,7 +24,7 @@ bool Property bNotifyColored = false Auto Hidden
 int iNotifyColorChoice = 0xFF0000
 String Property sNotifyColorChoice = "#FF0000" Auto Hidden
 
-; ----------- Combat
+; ----------- Defeat
 
 bool Property bLethalEssential = true Auto Hidden
 float Property fLethalPlayer = 100.0 Auto Hidden
@@ -41,6 +40,12 @@ float Property fMidCombatBlackout = 10.0 Auto Hidden
 bool Property bStealArmor = true Auto Hidden
 int Property iMaxAssaults = 4 Auto Hidden
 float Property fRapistQuits = 35.0 Auto Hidden
+
+; ----------- Followers
+
+bool Property bFollowerHunterPride = true Auto Hidden
+String[] FollowerRescueList
+int Property iFollowerRescue Auto Hidden
 
 ; ----------- NSFW
 
@@ -87,6 +92,11 @@ Event OnConfigInit()
   SLTags = new String[6]
   SLTags[2] = "femdom"
 
+  FollowerRescueList = new String[3]
+  FollowerRescueList[0] = "$YK_FollowerRescueList_0"  ; never
+  FollowerRescueList[1] = "$YK_FollowerRescueList_1"  ; delayed
+  FollowerRescueList[2] = "$YK_FollowerRescueList_2"  ; instantly
+
   iSceneTypeWeight = new int[4]
   iSceneTypeWeight[0] = 75 
   iSceneTypeWeight[1] = 60
@@ -126,7 +136,11 @@ Event OnPageReset(string page)
   If (page == "$YK_General")
     AddHeaderOption("$YK_Status")
     AddToggleOptionST("enabled", "$YK_Enabled", !Kudasai.IsProcessingDisabled())
+    ; AddToggleOptionST("consequence", "$YK_Enabled_C", !Kudasai.IsConsequenceDisabled())
     AddToggleOptionST("creatures", "$YK_Creatures", bCreatureDefeat)
+    ; AddHeaderOption("$YK_Followers")
+    ; AddToggleOptionST("followerhunterpride", "$YK_FollowerHunterPride", bFollowerHunterPride)
+    ; AddMenuOptionST("followerrescuedelay", "$YK_FollowerRescueDelay", FollowerRescueList[iFollowerRescue])
     AddHeaderOption("$YK_Notification")
     AddToggleOptionST("notifydefeat", "$YK_NotifyDefeat", bNotifyDefeat)
     AddToggleOptionST("notifydestroy", "$YK_NotifyDestry", bNotifyDestroy) ; as in item destruction
@@ -256,13 +270,13 @@ Event OnSelectST()
   String[] s = StringUtil.Split(GetState(), "_")
   ; --------------- General
   If(s[0] == "enabled")
-    bool enabled = !Kudasai.IsProcessingDisabled()
-    SetToggleOptionValueST(enabled)
-    Kudasai.DisableProcessing(enabled)
-  ; ElseIf(s[0] == "consequence")
-  ;   bool enabled = !Kudasai.IsConsequenceDisabled()
-  ;   SetToggleOptionValueST(enabled)
-  ;   Kudasai.DisableConsequence(enabled)
+    bool disabled = Kudasai.IsProcessingDisabled()
+    Kudasai.DisableProcessing(!disabled)
+    SetToggleOptionValueST(disabled)
+  ElseIf(s[0] == "consequence")
+    bool disabled = Kudasai.IsConsequenceDisabled()
+    Kudasai.DisableConsequence(!disabled)
+    SetToggleOptionValueST(disabled)
   ElseIf(s[0] == "creatures")
     bCreatureDefeat = !bCreatureDefeat
     SetToggleOptionValueST(bCreatureDefeat)
@@ -291,6 +305,22 @@ Event OnSelectST()
   ElseIf(s[0] == "postcmbtkeeparmor")
     bStealArmor = !bStealArmor
     SetToggleOptionValueST(bStealArmor)
+
+  ; --------------- Follower
+  ElseIf(s[0] == "followerhunterpride")
+    bFollowerHunterPride = !bFollowerHunterPride
+    SetToggleOptionValueST(bFollowerHunterPride)
+  ElseIf(s[0] == "rescuefol")
+    Actor follower = Game.GetForm(s[1] as int) as Actor
+    If(TrackingAlias.IsTracked(follower))
+      If(ShowMessage("$YK_FollowerTrackingStop{" + follower.GetLeveledActorBase().GetName() + "}"))
+        TrackingAlias.UntrackMe()
+      EndIf
+    Else
+      If(ShowMessage("$YK_FollowerTracking{" + follower.GetLeveledActorBase().GetName() + "}"))
+        TrackingAlias.TrackMe(follower)
+      EndIf
+    EndIf
 
   ; --------------- NSFW
   ElseIf(s[0] == "sltagsreadme")
@@ -352,9 +382,6 @@ Event OnSelectST()
         return
       EndIf
       rescue = ref
-    ElseIf(s[0] == "rescuefol")
-      Actor follower = Game.GetForm(s[1] as int) as Actor
-      ShowMessage("$YK_PrintFollowerInfo{" + follower.GetLeveledActorBase().GetName() + "}{" + follower.GetCurrentLocation().GetName() + "}", false, "$YK_Ok")
     EndIf
     Kudasai.UndoPacify(rescue)
   EndIf
@@ -504,47 +531,64 @@ Event OnSliderAcceptST(float value)
   EndIf
 EndEvent
 
+Event OnMenuOpenST()
+  String[] s = StringUtil.Split(GetState(), "_")
+  If(s[0] == "followerrescuedelay")
+		SetMenuDialogStartIndex(iFollowerRescue)
+		SetMenuDialogDefaultIndex(0)
+		SetMenuDialogOptions(FollowerRescueList)
+		ForcePageReset()
+  EndIf
+EndEvent
+
+Event OnMenuAcceptST(int a_index)
+  String[] s = StringUtil.Split(GetState(), "_")
+  If(s[0] == "followerrescuedelay")
+		iFollowerRescue = a_index
+		SetMenuOptionValueST(FollowerRescueList[iFollowerRescue])
+  EndIf
+EndEvent
+
 Event OnKeyMapChangeST(int newKeyCode, string conflictControl, string conflictName)
   String[] s = StringUtil.Split(GetState(), "_")
   If(newKeyCode == 1)
     newKeyCode = -1
-  Else
-    If(conflictControl != "")
-			string msg
-			If(conflictName != "")
-				msg = "$YK_ConflictControl{" + conflictControl + "}{" + conflictName + "}"
-      Else
-				msg = "$YK_ConflictControl{" + conflictControl + "}"
-			EndIf
-			If(!ShowMessage(msg, true, "$Yes", "$No"))
-        return
-      EndIf
-		EndIf
   EndIf
-  If(s[0] == "surrenderkey")
-    iSurrenderKey = newKeyCode
-    SetKeyMapOptionValueST(iSurrenderKey)
-  ElseIf(s[0] == "surrendermodkey")
+  If(s[0] == "surrendermodkey")
     iSurrenderKeyM = newKeyCode
     SetKeyMapOptionValueST(iSurrenderKeyM)
-  ElseIf(s[0] == "hunterpridekey")
-    iHunterPrideKey = newKeyCode
-    SetKeyMapOptionValueST(iHunterPrideKey)
   ElseIf(s[0] == "hunterpridemodkey")
     iHunterKeyM = newKeyCode
     SetKeyMapOptionValueST(iHunterKeyM)
-  ElseIf(s[0] == "assaultkey")
-    iAssaultKey = newKeyCode
-    SetKeyMapOptionValueST(iAssaultKey)
   ElseIf(s[0] == "assaultmodkey")
     iAssaultKeyM = newKeyCode
     SetKeyMapOptionValueST(iAssaultKeyM)
-  ElseIf(s[0] == "huntercaptureskey")
-    iCapturesKey = newKeyCode
-    SetKeyMapOptionValueST(iCapturesKey)
   ElseIf(s[0] == "huntercapturesmodkey")
     iCapturesKeyM = newKeyCode
     SetKeyMapOptionValueST(iCapturesKeyM)
+  ElseIf(newKeyCode != -1 && conflictControl != "")
+		string msg
+		If(conflictName != "")
+			msg = "$YK_ConflictControl{" + conflictControl + "}{" + conflictName + "}"
+    Else
+			msg = "$YK_ConflictControl{" + conflictControl + "}"
+		EndIf
+		If(!ShowMessage(msg, true, "$Yes", "$No"))
+      return
+    EndIf
+	EndIf
+  If(s[0] == "surrenderkey")
+    iSurrenderKey = newKeyCode
+    SetKeyMapOptionValueST(iSurrenderKey)
+  ElseIf(s[0] == "hunterpridekey")
+    iHunterPrideKey = newKeyCode
+    SetKeyMapOptionValueST(iHunterPrideKey)
+  ElseIf(s[0] == "assaultkey")
+    iAssaultKey = newKeyCode
+    SetKeyMapOptionValueST(iAssaultKey)
+  ElseIf(s[0] == "huntercaptureskey")
+    iCapturesKey = newKeyCode
+    SetKeyMapOptionValueST(iCapturesKey)
   EndIf
   ((Self as Quest) as KudasaiMain).RegisterKeys()
 EndEvent
@@ -581,6 +625,10 @@ Event OnHighlightST()
     SetInfoText("$YK_AssaultKeyHighlight")
   ElseIf(s[0] == "huntercaptureskey")
     SetInfoText("$YK_CapturesKeyHighlight")
+  ElseIf(s[0] == "followerhunterpride")
+    SetInfoText("$YK_FollowerHunterPrideHighlight")
+  ElseIf(s[0] == "followerrescuedelay")
+    SetInfoText("$YK_FollowerRescueDelayHighlight")
   ElseIf(s[0] == "notifydefeat")
     SetInfoText("$YK_NotifyDefeatHighlight")
   ElseIf(s[0] == "notifydestroy")
@@ -617,6 +665,16 @@ Event OnHighlightST()
     SetInfoText("$YK_MaxAssaultsHighlight")
   ElseIf(s[0] == "postcmbtrapiststays")
     SetInfoText("$YK_RapistQuitsHighlight")
+
+  ; --------------- Follower
+  ElseIf(s[0] == "rescuefol")
+    Actor follower = Game.GetForm(s[1] as int) as Actor
+    Location loc = follower.GetCurrentLocation()
+    String locname = "NULL"
+    If(loc)
+      locname = loc.GetName()
+    EndIf
+    SetInfoText("$YK_FollowerInfo{" + locname + "}")
 
   ; --------------- Consequences
   ElseIf(s[0] == "Con")
