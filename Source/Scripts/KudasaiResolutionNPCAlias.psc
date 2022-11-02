@@ -6,13 +6,6 @@ KudasaiResolutionNPC Property Res
   EndFunction
 EndProperty
 
-Event OnInit()
-  Actor me = GetActorReference()
-  If(me)
-    me.EvaluatePackage()
-  EndIf
-EndEvent
-
 Event OnUpdate()
   Actor me = GetReference() as Actor
   If (Kudasai.IsDefeated(me))
@@ -20,22 +13,29 @@ Event OnUpdate()
   EndIf
 EndEvent
 
+Function Clear()
+  Kudasai.SetLinkedRef(GetReference(), none, Res.LinkKW)
+  Parent.Clear()
+EndFunction
+
 ; =====================
 
 Function StopQ()
   Quest q = GetOwningQuest()
-  Utility.Wait(1)
   While(!q.GetStageDone(10))
     Utility.Wait(0.5)
   EndWhile
   Actor me = GetReference() as Actor
-  If(me && (me.IsDead() || me.IsInCombat()))
-    q.SetStage(50)
+  If(!me) ; || Kudasai.IsDefeated(me))
+    return
+  ElseIf(me.IsDead() || me.IsInCombat())
+    Debug.Trace("[Kudasai] <NPC Resolution> StopQ() on " + self + " | " + me)
+    q.SetStage(100)
   EndIf
 EndFunction
 
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
-  If(aeCombatState == 1)
+  If(aeCombatState == 1 && !Kudasai.IsDefeated(akTarget))
     StopQ()
   EndIf
 EndEvent
@@ -49,5 +49,6 @@ EndEvent
 ; =====================
 
 Event OnUnload()
+  Debug.Trace("[Kudasai] <NPC Resolution> OnUnload() on " + self + " | " + GetReference())
   GetOwningQuest().SetStage(100)
 EndEvent

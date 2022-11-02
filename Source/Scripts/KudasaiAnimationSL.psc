@@ -219,3 +219,8 @@ EndFunction
 bool Function AllowCreatures() global
   return SexLabUtil.GetAPI().AllowCreatures
 EndFunction
+
+String Function GetRaceType(Actor akActor) global
+  String raceID = MiscUtil.GetActorRaceEditorID(akActor)               
+  return sslCreatureAnimationSlots.GetRaceKeyByID(raceID)
+EndFunction

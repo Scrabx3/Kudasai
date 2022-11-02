@@ -32,9 +32,8 @@ int Function GetFromWeight(int[] weights) global
   return n
 EndFunction
 
-bool Function IsRadiant(Actor subject) global
-  int formID = subject.GetFormID()
-  return formID <= -16777216
+bool Function IsRadiant(Form akForm) global
+  return akForm.GetFormID() <= -16777216  ; 0xFF000000 as signed integer in decimal
 EndFunction
 
 Function RobActor(Actor victim, Actor robber, bool animation = true) global
@@ -48,6 +47,26 @@ Function RobActor(Actor victim, Actor robber, bool animation = true) global
     Utility.Wait(1.5)
   EndIf
   Kudasai.RemoveAllItems(victim, robber, !GetMCM().bStealArmor)
+EndFunction
+
+ObjectReference[] Function GetReferences(ReferenceAlias[] akAliases) global
+  ObjectReference[] ret = PapyrusUtil.ObjRefArray(akAliases.Length)
+  int i = 0
+  While(i < akAliases.Length)
+    ret[i] = akAliases[i].GetReference()
+    i += 1
+  EndWhile
+  return PapyrusUtil.RemoveObjRef(ret, none)
+EndFunction
+
+Actor[] Function GetActorReferences(ReferenceAlias[] akAliases) global
+  Actor[] ret = PapyrusUtil.ActorArray(akAliases.Length)
+  int i = 0
+  While(i < akAliases.Length)
+    ret[i] = akAliases[i].GetReference() as Actor
+    i += 1
+  EndWhile
+  return PapyrusUtil.RemoveActor(ret, none)
 EndFunction
 
 ; Called by the .dll, never called for subject == Player

@@ -113,3 +113,11 @@ int Function HookIfAnimating(Actor subject, KudasaiMCM MCM, String hook) global
   EndIf
   return -1
 EndFunction
+
+String Function GetRaceType(Actor akActor) global
+  KudasaiMCM MCM = KudasaiInternal.GetMCM()
+  If(MCM.iSLWeight > 0)
+    return KudasaiAnimationSL.GetRaceType(akActor)
+  EndIf
+  return ""
+EndFunction
