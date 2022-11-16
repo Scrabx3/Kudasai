@@ -145,5 +145,5 @@ b -a KudasaiGiantSpiderStruggle_A1_Stop Struggles/GiantSpiderStruggle_A1_Stop.hk
 b KudasaiNetchStruggle_A1_Start Struggles/NetchStruggle_A1_Start.hkx 
 b -a KudasaiNetchStruggle_A1_Stop Struggles/NetchStruggle_A1_Stop.hkx
 
-b KudasaiRieklingStruggle_A1_Start Struggles/BoarRieklingStruggle_A1_Start.hkx 
-b -a KudasaiRieklingStruggle_A1_Stop Struggles/BoarRieklingStruggle_A1_Stop.hkx
+b KudasaiBoarRieklingStruggle_A1_Start Struggles/BoarRieklingStruggle_A1_Start.hkx 
+b -a KudasaiBoarRieklingStruggle_A1_Stop Struggles/BoarRieklingStruggle_A1_Stop.hkx
