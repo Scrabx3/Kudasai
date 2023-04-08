@@ -1,2 +1,0 @@
-b KudasaiAshHopperStruggle_A2_Start AshHopperStruggle_A2_Start.hkx 
-b -a KudasaiAshHopperStruggle_A2_Stop AshHopperStruggle_A2_Stop.hkx

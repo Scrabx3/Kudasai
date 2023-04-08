@@ -1,5 +1,0 @@
-b KudasaiChaurusStruggle_A2_Start ChaurusStruggle_A2_Start.hkx 
-b -a KudasaiChaurusStruggle_A2_Stop ChaurusStruggle_A2_Stop.hkx
-
-b KudasaiChaurusReaperStruggle_A2_Start ChaurusReaperStruggle_A2_Start.hkx 
-b -a KudasaiChaurusReaperStruggle_A2_Stop ChaurusReaperStruggle_A2_Stop.hkx 

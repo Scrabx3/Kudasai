@@ -1,2 +1,0 @@
-b KudasaiBearStruggle_A2_Start BearStruggle_A2_Start.hkx 
-b -a KudasaiBearStruggle_A2_Stop BearStruggle_A2_Stop.hkx 

@@ -1,2 +1,0 @@
-b KudasaiGargoyleStruggle_A2_Start GargoyleStruggle_A2_Start.hkx 
-b -a KudasaiGargoyleStruggle_A2_Stop GargoyleStruggle_A2_Stop.hkx 
