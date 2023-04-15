@@ -4,18 +4,20 @@
     Output="Scripts" 
     Optimize="true" 
     Anonymize="true" 
-    Package="true"
+    Package="false"
     Zip="true">
     <Variables>
         <Variable Name="ModName" Value="YameteKudasai"/>
         <Variable Name="ThisProject" Value="."/>
         <Variable Name="Rel" Value=".\.release"/>
         <Variable Name="MO2" Value=".."/>
-        <Variable Name="Ver" Value="1.3 __ TMP"/>
+        <Variable Name="Ver" Value="2.0"/>
     </Variables>
     <Imports>
         <Import>@ThisProject\Source\Scripts</Import>
         <!-- Misc Sources -->
+        <Import>@MO2\Acheron\Source\Scripts\</Import>
+        <Import>@MO2\Acheron Extension Library\Source\Scripts\</Import>
         <Import>@MO2\PapyrusUtil SE - Modders Scripting Utility Functions\Source\Scripts</Import>
         <Import>@MO2\Fores New Idles in Skyrim SE - FNIS SE\Source\Scripts</Import>
         <Import>@MO2\FNIS Creature Pack SE\Source\Scripts</Import>
@@ -26,7 +28,7 @@
         <!-- Adult Frameworks -->
         <Import>@MO2\SexLab Framework\Source\Scripts</Import>
         <Import>@MO2\SexLab Aroused\Source\Scripts</Import>
-        <Import>@MO2\OStim\Scripts\Source</Import>
+        <Import>@MO2\OStim\Source\Scripts</Import>
         <Import>@MO2\OSA - Skyrim Ascendancy Engine\Source\Scripts</Import>
         <Import>@MO2\OAroused\source\scripts</Import>
         <!-- Soft Integrations -->
@@ -37,14 +39,6 @@
     <Folders>
         <Folder>.\Source\Scripts</Folder>
     </Folders>
-    <Packages Output="@ThisProject/_light">
-        <Package Name="@ModName" RootDir="@ThisProject">
-            <Include>Interface</Include>
-            <Include>meshes</Include>
-            <Include>Scripts</Include>
-            <Include>Seq</Include>
-        </Package>
-    </Packages>
     <ZipFiles Output="@Rel">
         <ZipFile Name="@ModName - @Ver" RootDir="@ThisProject" Compression="deflate">
         	<Include NoRecurse="true">YameteKudasai.esp</Include>
@@ -54,18 +48,6 @@
             <Include>Seq</Include>
             <Include>SKSE</Include>
             <Include>Source</Include>
-        </ZipFile>
-        <ZipFile Name="@ModName - @Ver - Light" RootDir="@ThisProject" Compression="deflate">
-        	<Include Path=".">_light/YameteKudasai.esp</Include>
-            <Include Path=".">_light/YameteKudasai.bsa</Include>
-            <Include>SKSE/Plugins</Include>
-            <Include>SKSE/Kudasai/Flash.yaml</Include>
-            <Include>SKSE/Kudasai/Struggle.yaml</Include>
-            <Include>SKSE/Kudasai/Exclusion</Include>
-            <Include>SKSE/Kudasai/PostCombat/Example.yaml</Include>
-            <Include>SKSE/Kudasai/PostCombat/Hostile/Robbed.yaml</Include>
-            <Include>Source/Scripts/Kudasai.psc</Include>
-            <Include>Source/Scripts/KudasaiStruggle.psc</Include>
         </ZipFile>
     </ZipFiles>
 </PapyrusProject>
