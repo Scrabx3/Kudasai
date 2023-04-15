@@ -1,18 +1,7 @@
 Scriptname KudasaiInternal Hidden
 
-Function UpdateSettings() native global
-bool Function IsAlternateVersion() native global
-
 KudasaiMCM Function GetMCM() global
   return Game.GetFormFromFile(0x7853F1, "YameteKudasai.esp") as KudasaiMCM
-EndFunction
-
-bool Function HasSchlong(Actor subject) global
-  If (Game.GetModByName("Schlongs of Skyrim.esp") != 255)
-    Faction SchlongFac = Game.GetFormFromFile(0x00AFF8, "Schlongs of Skyrim.esp") as Faction
-		return subject.IsInFaction(SchlongFac)
-  EndIf
-  return false 
 EndFunction
 
 int Function GetFromWeight(int[] weights) global
@@ -46,7 +35,7 @@ Function RobActor(Actor victim, Actor robber, bool animation = true) global
     Debug.SendAnimationEvent(robber, "KudasaiSearchBleedout")
     Utility.Wait(1.5)
   EndIf
-  Kudasai.RemoveAllItems(victim, robber, !GetMCM().bStealArmor)
+  Acheron.RemoveAllItems(victim, robber, !GetMCM().bStealArmor)
 EndFunction
 
 ObjectReference[] Function GetReferences(ReferenceAlias[] akAliases) global
@@ -67,17 +56,4 @@ Actor[] Function GetActorReferences(ReferenceAlias[] akAliases) global
     i += 1
   EndWhile
   return PapyrusUtil.RemoveActor(ret, none)
-EndFunction
-
-; Called by the .dll, never called for subject == Player
-Function FinalizeDefeat(Actor subject) global
-  Package p = Game.GetFormFromFile(0x88782C, "YameteKudasai.esp") as Package
-  ActorUtil.AddPackageOverride(subject, p, 100)
-  subject.EvaluatePackage()
-EndFunction
-
-Function FinalizeRescue(Actor subject) global
-  Package p = Game.GetFormFromFile(0x88782C, "YameteKudasai.esp") as Package
-  ActorUtil.RemovePackageOverride(subject, p)
-  subject.EvaluatePackage()
 EndFunction

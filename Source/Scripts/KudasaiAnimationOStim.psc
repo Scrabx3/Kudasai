@@ -14,35 +14,38 @@ bool Function FindActor(Actor subject, int ID) global
   return false
 EndFunction
 
-int Function CreateAnimation(KudasaiMCM MCM, Actor prim, Actor[] secundi, Actor aggressor) global
+int Function CreateAnimation(Actor[] akPositions, Actor akVictim) global
   OSexIntegrationMain OStim = OUtils.GetOStim()
-  If(secundi.length < 1)
-    Debug.Trace("[Kudasai] No enough Actors", 1)
-    return -1
-  EndIf
-  Actor Player = Game.GetPlayer()
-	bool hasPlayer = (prim == Player || secundi.find(Player) > -1)
-  Actor third = none
-  If(secundi.length > 1)
-    third = secundi[1]
-  EndIf
   OStim.AddSceneMetadata("or_player_nocheat")
   OStim.AddSceneMetadata("or_npc_nocheat")
 
-  If(hasPlayer)
-    String startanim
-    If(secundi[0].GetLeveledActorBase().GetSex() == 0)
-      startanim = "OpS|Sta!Sit|Ap|ColiseumMaleStart"
-    Else
-      startanim = "OpS|LyB!Sta|Ap|ColiseumFemaleStart"
-    EndIf
-    If(OStim.StartScene(secundi[0], prim, false, false, false, startanim, zThirdActor = third, aggressive = (aggressor != none), AggressingActor = aggressor))
+  int w = -1
+  If(akVictim)
+    w = akPositions.Find(akVictim)
+  EndIf
+  Actor[] p = new Actor[3]
+  If(w <= 0)
+    p[0] = akPositions[0]
+    p[1] = akPositions[1]
+    p[1] = akPositions[2]
+  ElseIf(w == 1)
+    p[0] = akPositions[1]
+    p[1] = akPositions[0]
+    p[1] = akPositions[2]
+  Else
+    p[0] = akPositions[w]
+    p[1] = akPositions[0]
+    p[1] = akPositions[1]
+  EndIf
+
+  If(akPositions.Find(Game.GetPlayer()) > -1)
+    If(OStim.StartScene(p[1], p[0], false, false, false, "", zThirdActor = p[2], aggressive = w > -1, AggressingActor = p[0]))
       return 29
     EndIf
   Else
     OStimSubthread st = OStim.GetUnusedSubthread()
-    float timer = Utility.RandomFloat(MCM.fOStimDurMin, MCM.fOStimDurMax)
-    If(st.StartScene(secundi[0], prim, third, timer, isaggressive = (aggressor != none), AggressingActor = aggressor))
+    float timer = Utility.RandomFloat(30, 60)
+    If(st.StartScene(p[1], p[0], p[2], timer, isaggressive = w > -1, AggressingActor = p[0]))
       return Math.Floor(timer)
     EndIf
   EndIf

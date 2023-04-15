@@ -1,0 +1,1 @@
+Scriptname KudasaiAssaultAlias extends ReferenceAlias  

@@ -8,13 +8,13 @@ EndProperty
 
 Event OnUpdate()
   Actor me = GetReference() as Actor
-  If (Kudasai.IsDefeated(me))
-    Kudasai.RescueActor(me, true)
+  If (Acheron.IsDefeated(me))
+    Acheron.RescueActor(me, true)
   EndIf
 EndEvent
 
 Function Clear()
-  Kudasai.SetLinkedRef(GetReference(), none, Res.LinkKW)
+  Acheron.SetLinkedRef(GetReference(), none, Res.LinkKW)
   Parent.Clear()
 EndFunction
 
@@ -26,7 +26,7 @@ Function StopQ()
     Utility.Wait(0.5)
   EndWhile
   Actor me = GetReference() as Actor
-  If(!me) ; || Kudasai.IsDefeated(me))
+  If(!me) ; || Acheron.IsDefeated(me))
     return
   ElseIf(me.IsDead() || me.IsInCombat())
     Debug.Trace("[Kudasai] <NPC Resolution> StopQ() on " + self + " | " + me)
@@ -35,7 +35,7 @@ Function StopQ()
 EndFunction
 
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
-  If(aeCombatState == 1 && !Kudasai.IsDefeated(akTarget))
+  If(aeCombatState == 1 && !Acheron.IsDefeated(akTarget))
     StopQ()
   EndIf
 EndEvent

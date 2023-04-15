@@ -6,9 +6,10 @@ Scriptname TIF_YK_057A3A29 Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
+Actor Player = Game.GetPlayer()
 KudasaiSurrender Sur = GetOwningQuest() as KudasaiSurrender
-Sur.StripAndHandOver(Game.GetPlayer(), akSpeaker)
-Sur.StartSceneCustom(Game.GetPlayer(), akSpeaker, "oral")
+Sur.Strip(Player, akSpeaker)
+Sur.StartScene(akSpeaker, Player, "oral")
 ;END CODE
 EndFunction
 ;END FRAGMENT

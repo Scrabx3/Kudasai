@@ -1,2 +1,0 @@
-- Delte *Adult* Entries
-- *Assault* disables Adult Content on the dll

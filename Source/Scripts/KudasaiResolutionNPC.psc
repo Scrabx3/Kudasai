@@ -9,8 +9,40 @@ FormList[] Property VictoireRefs Auto
 Actor[] VictimRefs
 
 Keyword Property LinkKW Auto
-Keyword Property Defeated Auto
 Keyword Property ActorTypeNPC Auto
+
+;/  SETUP  /;
+
+Function Init()
+  Debug.Trace("[Kudasai] <NPC Resolution> START")
+  VictimRefs = GetActorReferences(Victims)
+  ; Assign a Victoire to every Victim
+  int i = 0
+  While(i < Victoires.Length)
+    Actor victoire = Victoires[i].GetReference() as Actor
+    If(victoire)
+      If(CheckAssignement(VictimRefs, victoire))
+        If(Acheron.IsDefeated(victoire))
+          Victoires[i].RegisterForSingleUpdate(Utility.RandomFloat(4, 17))
+        Else  ; ensure this victoire walks towards their target
+          victoire.EvaluatePackage()
+        EndIf
+      Else
+        Victoires[i].Clear()
+      EndIf
+    EndIf
+    i += 1
+  EndWhile
+  SetStage(10)
+  int n = 0
+  While(n < VictimRefs.Length)
+    Debug.Trace("[Kudasai] <NPC Resolution> Aggressor Group " + n + " = " + VictoireRefs[n].ToArray())
+    n += 1
+  EndWhile
+  RegisterForSingleUpdate(2)
+  RegisterForModEvent("ostim_end", "PostSceneOStim")
+  RegisterForModEvent("HookAnimationEnd_Kudasai_rNPC", "PostSceneSL")
+EndFunction
 
 Actor[] Function GetActorReferences(KudasaiResolutionNPCAlias[] akAliases)
   Actor[] ret = PapyrusUtil.ActorArray(akAliases.Length)
@@ -28,49 +60,44 @@ bool Function CheckAssignement(Actor[] akVictims, Actor akAggressor)
   int i = 0
   While(i < akVictims.Length)
     float distance = akVictims[i].GetDistance(akAggressor)
-    If(distance < currentdistane && (i == 0 || Utility.RandomInt(0, 99) < 30) && Kudasai.IsInterested(akVictims[0], akAggressor))  ; TODO: move into Papyrus stuff
-      Kudasai.SetLinkedRef(akAggressor, akVictims[i], LinkKW)
+    If(distance < currentdistane && (i == 0 || Utility.RandomInt(0, 99) < 30) && IsInterested(akVictims[0], akAggressor))
+      Acheron.SetLinkedRef(akAggressor, akVictims[i], LinkKW)
       currentdistane = distance
       ii = i
     EndIf
     i += 1
   EndWhile
-  VictoireRefs[ii].AddForm(akAggressor)
-  return ii > -1
+  If(ii > -1)
+    VictoireRefs[ii].AddForm(akAggressor)
+    return true
+  EndIf
+  return false
 EndFunction
 
-Function Init()
-  Debug.Trace("[Kudasai] <NPC Resolution> START")
-  VictimRefs = GetActorReferences(Victims)
-  ; Assign a Victoire to every Victim
-  int i = 0
-  While(i < Victoires.Length)
-    Actor victoire = Victoires[i].GetReference() as Actor
-    If(victoire)
-      If(CheckAssignement(VictimRefs, victoire))
-        If(Kudasai.IsDefeated(victoire))
-          Victoires[i].RegisterForSingleUpdate(Utility.RandomFloat(4, 17))
-        Else  ; to ensure this victoire walks towards their target
-          victoire.EvaluatePackage()
-        EndIf
-      Else
-        Victoires[i].Clear()
-      EndIf
+bool Function IsInterested(Actor akVictim, Actor akAggressor)
+  String rt = KudasaiAnimation.GetRaceType(akAggressor)
+  If(rt == "")
+    return false
+  ElseIf(rt == "Human")
+    int sexV = akVictim.GetActorBase().GetSex()
+    If(akAggressor.GetActorBase().GetSex() != sexV)
+      return true
+    ElseIf(sexV == 0)
+      return MCM.bAllowMM
+    Else
+      return MCM.bAllowFF
     EndIf
-    i += 1
-  EndWhile
-  SetStage(10)
-  ; This only for logging >w<
-  int n = 0
-  While(n < VictimRefs.Length)
-    Debug.Trace("[Kudasai] <NPC Resolution> Aggressor Group " + n + " = " + VictoireRefs[n].ToArray())
-    n += 1
-  EndWhile
-  ; 7 second delay before starting adult scenes
-  RegisterForSingleUpdate(7)
-  RegisterForModEvent("ostim_end", "PostSceneOStim")
-  RegisterForModEvent("HookAnimationEnd_Kudasai_rNPC", "PostSceneSL")
+  ElseIf(!MCM.AllowedRaceType(rt))
+    return false
+  ElseIf(akVictim.GetActorBase().GetSex() == 0)
+    return MCM.bAllowFC
+  Else
+    return MCM.bAllowMC
+  EndIf
 EndFunction
+
+;/  CYCLE  /;
+
 Event OnUpdate()
   If(GetStage() > 10)
     return
@@ -81,18 +108,25 @@ Event OnUpdate()
       Debug.Trace("[Kudasai] <NPC Resolution> Scene Nr. " + i + " for Victim = " + VictimRefs[i] + " has no victoires assigned")
     Else
       Debug.Trace("[Kudasai] <NPC Resolution> Creating Scene " + i + " for Victim = " + VictimRefs[i])
-      Actor[] partners = CreateNewPartners(VictoireRefs[i])
-      If (!partners.length) ; Only happens if all actors in this group are defeated
-        Actor rescue = VictoireRefs[i].GetAt(0) as Actor
-        Kudasai.RescueActor(rescue, true)
-        partners = new Actor[1]
-        partners[0] = rescue
-        Debug.Trace("[Kudasai] <NPC Resolution> Not enough Actors found. Fallback Partners = " + partners)
+      Actor[] positions = CreatePositions(VictimRefs[i], VictoireRefs[i])
+      If (positions.Find(none) == 1)
+        ; Only happens if all actors in this group are defeated or animating
+        Actor it = VictoireRefs[i].GetAt(0) as Actor
+        If(KudasaiAnimation.IsAnimating(it))
+          KudasaiAnimation.StopAnimating(it)
+        EndIf
+        If(Acheron.IsDefeated(it))
+          Acheron.RescueActor(it, true)
+        EndIf
+        positions = new Actor[2]
+        positions[0] = VictimRefs[i]
+        positions[1] = it
+        Debug.Trace("[Kudasai] <NPC Resolution> Not enough Actors found. Fallback Partners = " + positions)
       EndIf
 
-      If(KudasaiAnimation.CreateAssault(VictimRefs[i], partners, "Kudasai_rNPC") == -1)
-        Debug.Trace("[Kudasai] <NPC Resolution> Failed to start Scene " + i)
-        ; HandlePostScene(i, true)
+      If(KudasaiAnimation.CreateAssault(positions, VictimRefs[i], "Kudasai_rNPC") == -1)
+        Debug.Trace("[Kudasai] <NPC Resolution> Failed to start intro scene " + i)
+        ClearGroup(i)
       EndIf
     EndIf
     i += 1
@@ -105,6 +139,31 @@ EndEvent
 Event PostSceneOStim(string eventName, string strArg, float numArg, Form sender)
   HandlePostScene(KudasaiAnimationOStim.GetPositions(numArg as int))
 EndEvent
+
+Function HandlePostScene(Actor[] akOldPositions, bool abLooping = false)
+  int idx = GetSceneID(akOldPositions)
+  If(idx < 0)
+    return
+  EndIf
+  Debug.Trace("[Kudasai] <NPC Resolution> Post Scene " + idx)
+  If(GetStage() > 10 || CheckoutAggressors(akOldPositions, idx) == 0)
+    Debug.Trace("[Kudasai] <NPC Resolution> Canceling Cycle " + idx)
+    Debug.SendAnimationEvent(VictimRefs[idx], "bleedoutstart")
+    ClearGroup(idx)
+    return
+  ElseIf(!abLooping)
+    ; Debug.SendAnimationEvent(VictimRefs[idx], "KudasaiTraumeLie")
+    Debug.SendAnimationEvent(VictimRefs[idx], "bleedoutstart")
+  EndIf
+  Utility.Wait(Utility.RandomFloat(3, 7))
+  
+  Actor[] positions = CreatePositions(VictimRefs[idx], VictoireRefs[idx])
+  Debug.Trace("[Kudasai] <NPC Resolution> Starting new Scene with partners " + positions)
+  If(!positions.Length || KudasaiAnimation.CreateAssault(positions, VictimRefs[idx], "Kudasai_rNPC") == -1)
+    Debug.Trace("[Kudasai] <NPC Resolution> Failed to start Scene")
+    HandlePostScene(akOldPositions, true)
+  EndIf
+EndFunction
 
 int Function GetSceneID(Actor[] akPositions)
   int i = 0
@@ -134,63 +193,35 @@ int Function CheckoutAggressors(Actor[] akOldPositions, int n)
   return VictoireRefs[n].GetSize()
 EndFunction
 
-Function HandlePostScene(Actor[] akOldPositions, bool abLooping = false)
-  int idx = GetSceneID(akOldPositions)
-  Debug.Trace("[Kudasai] <NPC Resolution> Post Scene " + idx)
-  If(GetStage() > 10 || CheckoutAggressors(akOldPositions, idx) == 0)
-    Debug.Trace("[Kudasai] <NPC Resolution> Canceling Cycle " + idx)
-    Debug.SendAnimationEvent(VictimRefs[idx], "bleedoutstart")
-    ClearGroup(idx)
-    return
-  ElseIf(!abLooping)
-    ; Debug.SendAnimationEvent(VictimRefs[idx], "KudasaiTraumeLie")
-    Debug.SendAnimationEvent(VictimRefs[idx], "bleedoutstart")
-  EndIf
-  Utility.Wait(Utility.RandomFloat(3, 7))
-  
-  Actor[] partners = CreateNewPartners(VictoireRefs[idx])
-  Debug.Trace("[Kudasai] <NPC Resolution> Starting new Scene with partners " + partners)
-  If(!partners.Length || KudasaiAnimation.CreateAssault(VictimRefs[idx], partners, "Kudasai_rNPC") == -1)
-    Debug.Trace("[Kudasai] <NPC Resolution> Failed to start Scene")
-    HandlePostScene(akOldPositions, true)
-  EndIf
-EndFunction
-
-; Build new Array for animation. Array does not include Victim
-Actor[] Function CreateNewPartners(FormList akAggressorList)
+Actor[] Function CreatePositions(Actor akVictim, FormList akAggressorList)
   Form[] potentials = akAggressorList.ToArray()
-  int max = KudasaiAnimation.GetAllowedParticipants(potentials.Length + 1) - 1
-  Actor[] ret = PapyrusUtil.ActorArray(max)
+  Actor[] ret = new Actor[5]
+  ret[0] = akVictim
   String racetype = ""
-  int timeout = 50
-  While(timeout)
-    timeout -= 1
+  int i = 0
+  int ii = 1
+  int max = KudasaiAnimation.GetAllowedParticipants(potentials.Length + 1) - 1
+  While(i < 50 && ii < max)
     int where = Utility.RandomInt(0, potentials.Length - 1)
     Actor it = potentials[where] as Actor
-    If(it && !Kudasai.IsDefeated(it) && !KudasaiAnimation.IsAnimating(it, MCM))
-      bool bValid
+    If(it && !Acheron.IsDefeated(it) && !KudasaiAnimation.IsAnimating(it))
       If(racetype == "")
-        If(it.HasKeyword(ActorTypeNPC))
-          racetype = "human"
-        Else
-          racetype = KudasaiAnimation.GetRaceType(it)
-        EndIf
-        bValid = racetype != ""
-      Else
-        bValid = racetype == "human" && it.HasKeyword(ActorTypeNPC) || racetype == KudasaiAnimation.GetRaceType(it)
-      EndIf
-      If(bValid)
-        int j = ret.RFind(none)
-        ret[j] = it
-        If(j == 0)
-          return ret
-        EndIf
+        ; Cant be empty or invalid, see 'CheckAssignement'
+        racetype = KudasaiAnimation.GetRaceType(it)
+        ret[ii] = it
+        ii += 1
+      ElseIf(KudasaiAnimation.GetRaceType(it) == racetype)
+        ret[ii] = it
+        ii += 1
       EndIf
     EndIf
     potentials[where] = none
+    i += 1
   EndWhile
-  return PapyrusUtil.RemoveActor(ret, none)
+  return ret
 EndFunction
+
+;/  CLEANUP  /;
 
 Function ClearAlias(ObjectReference akRef)
   int i = 0
@@ -203,7 +234,7 @@ Function ClearAlias(ObjectReference akRef)
   EndWhile
 EndFunction
 
-Function ClearGroup(int n, bool abCheckStop = true)
+Function ClearGroup(int n)
   Debug.Trace("[Kudasai] <NPC Resolution> Clearing assault group " + n + " | Victims Array = " + VictimRefs)
   If(VictimRefs[n] == none)
     return
@@ -216,7 +247,7 @@ Function ClearGroup(int n, bool abCheckStop = true)
     i += 1
   EndWhile
   VictoireRefs[n].Revert()
-  If(abCheckStop && PapyrusUtil.CountActor(VictimRefs, none) == VictimRefs.Length)
+  If(PapyrusUtil.CountActor(VictimRefs, none) == VictimRefs.Length)
     Debug.Trace("[Kudasai] <NPC Resolution> All groups cleared")
     Stop()
   EndIf
@@ -227,7 +258,7 @@ Function ForceStopScenes()
   int i = 0
   While(i < VictimRefs.length)
     If(VictimRefs[i])
-      KudasaiAnimation.StopAnimating(VictimRefs[i], MCM)
+      KudasaiAnimation.StopAnimating(VictimRefs[i])
     EndIf
     i += 1
   EndWhile
@@ -238,7 +269,7 @@ Function Cleanup()
   ForceStopScenes()
   int i = 0
   While(i < VictimRefs.Length)
-    ClearGroup(i, false)
+    ClearGroup(i)
     i += 1
   EndWhile
   Debug.Trace("[Kudasai] <NPC Resolution> STOP")

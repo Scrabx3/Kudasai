@@ -2,100 +2,71 @@ Scriptname KudasaiAnimationSL Hidden
 
 ; Expecting this to never be called with more than 5 Actors in array. Array may be unsorted
 ; Assume the victim to never be a creature
-int Function CreateAnimation(KudasaiMCM MCM, Actor[] positions, Actor victim, String hook) global
-  Debug.Trace("[Kudasai] SL Scene called with Actors = " + positions + " ;; Victim = " + victim + " >> hook = " + hook)
-  If(positions.length < 2)
-    Debug.Trace("[Kudasai] Not enough Actors", 1)
-    return -1
-  EndIf
+int Function CreateAnimation(KudasaiMCM MCM, Actor[] akPositions, Actor akVictim, String asTags, String asHook) global
+  Debug.Trace("[Kudasai] SL Scene called with Actors = " + akPositions + " ;; Victim = " + akVictim + " >> hook = " + asHook)
   SexLabFramework SL = SexLabUtil.GetAPI()
   If(!SL.Enabled)
     return -1
   EndIf
-  int v = ValidateArray(positions)
-  If(v > -1)
-    Debug.Trace("[Kudasai] Actor at " + v + "(" + positions[v] + ") is invalid, aborting", 2)
-    return -1
+  int lead = 0
+  If(akVictim)
+    lead = akPositions.Find(akVictim)
   EndIf
-  SortActors(positions)
-  int vpos = positions.find(victim)
-  int[] genders = Utility.CreateIntArray(positions.length)
-  int i = 0
-  While(i < genders.length)
-    genders[i] = SL.GetGender(positions[i])
-    i += 1
-  EndWhile
-  sslBaseAnimation[] anims
-	bool breakLoop = false
-	While(!breakLoop)
-    bool creatures = genders.find(3) > -1 || genders.find(4) > -1
-    int n
-    If(positions.length == 2 && !creatures)
-	    int males = SL.MaleCount(positions)
-	    If(genders[0] == 1 && males == 1) ; F<-M
-        n = 0
-      Else ; F<-F // M<-F // M<-M
-        n = 1 + males
-      EndIf
-	  Else
-      If(genders[0] == 0 || victim && SL.GetGender(victim) == 0)
-        n = 4
+  int genderV = SL.GetGender(akPositions[lead])
+  int[] genders = SL.GenderCount(akPositions)
+
+  While(true)
+    bool creatures = genders[2] || genders[3]
+    sslBaseAnimation[] animations
+    String[] tags
+    If(asTags == "UseConfig")
+      ; 0: F<-M | 1: M<-M | 2: M<-F | 3: F<-F | 4: M<-* | 5: F<-*
+      int n
+      If(akPositions.Length == 2 && !creatures)
+        If(genderV == 1 && genders[0] == 1) ; F<-M
+          n = 0
+        Else ; F<-F // M<-F // M<-M
+          n = 1 + genders[1]
+        EndIf
       Else
-        n = 5
+        n = 4 + genderV
       EndIf
-	  EndIf
-    String[] tags = GetTags(MCM.SLTags[n])
-    If (creatures)
-      anims = SL.GetCreatureAnimationsByRaceTags(positions.Length, positions[positions.Length - 1].GetRace(), tags[0], tags[1])
+      tags = GetTags(MCM.SLTags[n])
     Else
-      anims = SL.GetAnimationsByTags(positions.length, tags[0], tags[1])
+      tags = GetTags(asTags)
     EndIf
-		If(anims.Length)
-      Debug.Trace("[Kudasai] Found Animations = " + anims.Length)
-			breakLoop = true
-		Else
-      If(positions.length <= 2) ; Didnt find an animation with 2 or less actors
-        Debug.Trace("[Kudasai] No Animations found", 2)
+    If(creatures)
+      animations = SL.GetCreatureAnimationsByActorsTags(akPositions.Length, akPositions, tags[0], tags[1])
+    Else
+      animations = SL.GetAnimationsByTags(akPositions.length, tags[0], tags[1])
+    EndIf
+    If(!animations.Length)
+      If(creatures)
+        animations = SL.GetCreatureAnimationsByActors(akPositions.Length, akPositions)
+      Else
+        animations = SL.PickAnimationsByActors(akPositions, Aggressive = akVictim != none)
+      EndIf
+    EndIf
+    If(!animations.Length)
+      If(akPositions.Length <= 2)
+        Debug.Trace("[Kudasai] Unable to find valid animations", 2)
         return -1
       EndIf
-      Debug.Trace("[Kudasai] No Animations found, reducing Array size from size = " + positions.length)
-      int j = positions.Length
-      While(j > 0)
-        j -= 1
-        If(positions[j] != victim)
-          positions = PapyrusUtil.RemoveActor(positions, positions[j])
-          genders = Utility.CreateIntArray(positions.length)
-          int k = 0
-          While(k < genders.length)
-            genders[k] = SL.GetGender(positions[k])
-            k += 1
-          EndWhile
+      Debug.Trace("[Kudasai] No Animations found, reducing Array size from size = " + akPositions.Length)
+      Actor preserve = akPositions[lead]
+      int i = 0
+      While(i < akPositions.Length)
+        If(akPositions[i] != preserve)
+          akPositions = PapyrusUtil.RemoveActor(akPositions, akPositions[i])
+          genders = SL.GenderCount(akPositions)
+          lead = akPositions.Find(preserve)
         EndIf
+        i += 1
       EndWhile
+    Else
+      return SL.StartSex(akPositions, animations, akVictim, hook = asHook)
     EndIf
-	EndWhile
-  return SL.StartSex(positions, anims, victim, hook = hook)
-EndFunction
-
-int Function ValidateArray(Actor[] array) global
-  SexLabFramework SL = SexLabUtil.GetAPI()
-  Keyword ActorTypeNPC = Keyword.GetKeyword("ActorTypeNPC")
-  String racetag = ""
-  int i = 0
-  While(i < array.Length)
-    If(SL.IsValidActor(array[i]) == false)
-      return i
-    ElseIf(array[i].HasKeyword(ActorTypeNPC) == false)
-      String raceID = MiscUtil.GetActorRaceEditorID(array[i])
-      If(racetag == "")
-        racetag = sslCreatureAnimationSlots.GetRaceKeyByID(raceID)
-      ElseIf(sslCreatureAnimationSlots.GetRaceKeyByID(raceID) != racetag)
-        return i
-      EndIf
-    EndIf
-    i += 1
   EndWhile
-  return -1
 EndFunction
 
 String[] Function GetTags(String str) global
@@ -158,7 +129,7 @@ EndFunction
 Actor Function GetVictim(int tid) global
   SexLabFramework SL = SexLabUtil.GetAPI()
   sslThreadController Controller = SL.GetController(tid)
-  return Controller.VictimRef
+  return Controller.GetVictim()
 EndFunction
 
 ; returns true if prim < sec
@@ -223,4 +194,8 @@ EndFunction
 String Function GetRaceType(Actor akActor) global
   String raceID = MiscUtil.GetActorRaceEditorID(akActor)               
   return sslCreatureAnimationSlots.GetRaceKeyByID(raceID)
+EndFunction
+
+String[] Function GetAllRaceKeys() global
+  return sslCreatureAnimationSlots.GetAllRaceKeys()
 EndFunction

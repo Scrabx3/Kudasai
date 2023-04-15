@@ -1,86 +1,51 @@
 Scriptname KudasaiMCM extends SKI_ConfigBase
 
-; --------------------- Properties
-
-KudasaiTrackingAlias Property TrackingAlias Auto
-
 ; ----------- General
-
-bool Property bEnabled = true Auto Hidden ; Depreciated
-bool Property bCreatureDefeat = false Auto Hidden
 
 int Property iSurrenderKey = -1 Auto Hidden ; Surrender
 int Property iSurrenderKeyM = -1 Auto Hidden
-int Property iHunterPrideKey = -1 Auto Hidden ; Allowing Player to defeat through Combat
-int Property iHunterKeyM = -1 Auto Hidden
 int Property iAssaultKey = -1 Auto Hidden ; Player initiated Struggle Game
 int Property iAssaultKeyM = -1 Auto Hidden
-int Property iCapturesKey = -1 Auto Hidden ; Access captured Targets
-int Property iCapturesKeyM = -1 Auto Hidden
-
-bool Property bNotifyDefeat = false Auto Hidden
-bool Property bNotifyDestroy = false Auto Hidden
-bool Property bNotifyColored = false Auto Hidden
-int iNotifyColorChoice = 0xFF0000
-String Property sNotifyColorChoice = "#FF0000" Auto Hidden
 
 ; ----------- Defeat
 
-bool Property bLethalEssential = true Auto Hidden
-float Property fLethalPlayer = 100.0 Auto Hidden
-float Property fLethalNPC = 100.0 Auto Hidden
-
-int Property iStripReq = 2 Auto Hidden
-float Property fStripReqChance = 0.0 Auto Hidden
-float Property fStripChance = 0.0 Auto Hidden
-float Property fStripDestroy = 5.0 Auto Hidden
-bool Property bStripDrop = false Auto Hidden
-
-float Property fMidCombatBlackout = 10.0 Auto Hidden
 bool Property bStealArmor = true Auto Hidden
+
 int Property iMaxAssaults = 4 Auto Hidden
 float Property fRapistQuits = 35.0 Auto Hidden
 
-; ----------- Followers
-
-bool Property bFollowerHunterPride = true Auto Hidden
-String[] FollowerRescueList
-int Property iFollowerRescue Auto Hidden
-
 ; ----------- NSFW
-
-bool Property FrameAny Hidden
-  bool Function Get()
-    return iSLWeight > 0 || iOStimWeight > 0
-  EndFunction
-EndProperty
 
 bool Property FrameCreature Hidden
   bool Function Get()
-    return iSLWeight > 0 && KudasaiAnimationSL.AllowCreatures()
+    return iFrameSL > 0 && KudasaiAnimationSL.AllowCreatures()
   EndFunction
 EndProperty
 
-int Property iSLWeight = 100 Auto Hidden
-int Property iOStimWeight = 0 Auto Hidden
+bool Property bAllowCreatures = false Auto Hidden
+bool Property bAllowFF = true Auto Hidden
+bool Property bAllowMM = true Auto Hidden
+bool Property bAllowMC = false Auto Hidden
+bool Property bAllowFC = false Auto Hidden
+
+int Property iFrameSL = 100 Auto Hidden
 
 int[] Property iSceneTypeWeight Auto Hidden
 
 String[] Property SLTags Auto Hidden
 {F<-M // M<-M // M<-F // F<-F // M<-* // F<-*}
 
-float Property fOStimDurMin = 30.0 Auto Hidden
-float Property fOStimDurMax = 60.0 Auto Hidden
+; ----------- Race
 
-; ----------- Stripping
-
-int Property iStrips = 1066390941 Auto Hidden
-
-; ----------- Consequences
-
-String[] Property ConTitle Auto Hidden
-String[] Property ConDescription Auto Hidden
-Int[] Property ConWeight Auto Hidden
+String[] sRaceKeys
+bool Function AllowedRaceType(String asRaceKey)
+  If(asRaceKey == "Human")
+    return true
+  ElseIf(iFrameSL <= 0 || !bAllowCreatures)
+    return false
+  EndIf
+  return sRaceKeys.Find(asRaceKey) > -1
+EndFunction
 
 ; --------------------- Menu
 
@@ -89,13 +54,14 @@ int Function GetVersion()
 endFunction
 
 Event OnConfigInit()
+  Pages = new String[6]
+  Pages[0] = "$YK_General"
+  Pages[1] = "$YK_Defeat"
+  Pages[2] = "$YK_NSFW"
+  Pages[2] = "$YK_Race"
+
   SLTags = new String[6]
   SLTags[2] = "femdom"
-
-  FollowerRescueList = new String[3]
-  FollowerRescueList[0] = "$YK_FollowerRescueList_0"  ; never
-  FollowerRescueList[1] = "$YK_FollowerRescueList_1"  ; delayed
-  FollowerRescueList[2] = "$YK_FollowerRescueList_2"  ; instantly
 
   iSceneTypeWeight = new int[4]
   iSceneTypeWeight[0] = 75 
@@ -104,163 +70,60 @@ Event OnConfigInit()
   iSceneTypeWeight[3] = 20
 EndEvent
 
-Function SetPages()
-  If(KudasaiInternal.IsAlternateVersion())
-    Pages = new String[6]
-    Pages[0] = "$YK_General"
-    Pages[1] = "$YK_Defeat"
-    Pages[2] = "$YK_NSFW"
-    Pages[3] = "$YK_Stripping"
-    Pages[4] = "$YK_Consequences"
-    Pages[5] = "$YK_Debug"
-  Else
-    Pages = new String[5]
-    Pages[0] = "$YK_General"
-    Pages[1] = "$YK_Defeat"
-    Pages[2] = "$YK_Stripping"
-    Pages[3] = "$YK_Consequences"
-    Pages[4] = "$YK_Debug"
-  EndIf
-EndFunction
-
 Event OnConfigClose()
-  KudasaiInternal.UpdateSettings()
 EndEvent
 
 Event OnPageReset(string page)
   SetCursorFillMode(TOP_TO_BOTTOM)
-  bool alternate = KudasaiInternal.IsAlternateVersion()
   If (page == "")
     page = "$YK_General"
   EndIf
   If (page == "$YK_General")
-    AddHeaderOption("$YK_Status")
-    AddToggleOptionST("enabled", "$YK_Enabled", !Kudasai.IsProcessingDisabled())
-    ; AddToggleOptionST("consequence", "$YK_Enabled_C", !Kudasai.IsConsequenceDisabled())
-    AddToggleOptionST("creatures", "$YK_Creatures", bCreatureDefeat)
-    ; AddHeaderOption("$YK_Followers")
-    ; AddToggleOptionST("followerhunterpride", "$YK_FollowerHunterPride", bFollowerHunterPride)
-    ; AddMenuOptionST("followerrescuedelay", "$YK_FollowerRescueDelay", FollowerRescueList[iFollowerRescue])
-    AddHeaderOption("$YK_Notification")
-    AddToggleOptionST("notifydefeat", "$YK_NotifyDefeat", bNotifyDefeat)
-    AddToggleOptionST("notifydestroy", "$YK_NotifyDestry", bNotifyDestroy) ; as in item destruction
-		AddToggleOptionST("notifycolored", "$YK_NotifyColored", bNotifyColored, getFlag(bNotifyDefeat || bNotifyDestroy))
-    AddColorOptionST("notifycolorchoice", "$YK_NotifyColorChoice", iNotifyColorChoice, getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored))
-
     SetCursorPosition(1)
     AddHeaderOption("$YK_SurrenderKey")
     AddKeyMapOptionST("surrenderkey", "$YK_Hotkey", iSurrenderKey)
     AddKeyMapOptionST("surrendermodkey", "$YK_ModifierKey", iSurrenderKeyM)
-    AddHeaderOption("$YK_HunterPrideKey")
-    AddKeyMapOptionST("hunterpridekey", "$YK_Hotkey", iHunterPrideKey)
-    AddKeyMapOptionST("hunterpridemodkey", "$YK_ModifierKey", iHunterKeyM)
     AddHeaderOption("$YK_AssaultKey")
-    AddKeyMapOptionST("assaultkey", "$YK_Hotkey", iAssaultKey, getFlagHidden(alternate))
-    AddKeyMapOptionST("assaultmodkey", "$YK_ModifierKey", iAssaultKeyM, getFlagHidden(alternate))
-    AddHeaderOption("$YK_CapturesKey")
-    AddKeyMapOptionST("huntercaptureskey", "$YK_Hotkey", iCapturesKey, getFlagHidden(alternate))
-    AddKeyMapOptionST("huntercapturesmodkey", "$YK_ModifierKey", iCapturesKeyM, getFlagHidden(alternate))
+    AddKeyMapOptionST("assaultkey", "$YK_Hotkey", iAssaultKey)
+    AddKeyMapOptionST("assaultmodkey", "$YK_ModifierKey", iAssaultKeyM)
 
   ElseIf (page == "$YK_Defeat")
-    AddHeaderOption("$YK_Lethal")
-    AddToggleoptionST("lethalessential", "$YK_LethalEssential", bLethalEssential)
-    AddSliderOptionST("lethalplayer", "$YK_LethalPlayer", fLethalPlayer, "{1}%")
-    AddSliderOptionST("lethalnpc", "$YK_LethalNPC", fLethalNPC, "{1}%")
-    AddHeaderOption("$YK_Exposed")
-    AddSliderOptionST("stripreq", "$YK_StripReq", iStripReq, "{0}")
-    AddSliderOptionST("stripreqchance", "$YK_StripReqChance", fStripReqChance, "{1}%")
-    AddSliderOptionST("stripchance", "$YK_StripChance", fStripChance, "{1}%")
-    AddSliderOptionST("stripdstry", "$YK_StripDstry", fStripDestroy, "{1}%")
-    AddToggleoptionST("stripdrop", "$YK_StripDrop", bStripDrop)
-
-    SetCursorPosition(1)
-    AddHeaderOption("$YK_Resolution")
-    AddSliderOptionST("midcmbtblackout", "$YK_Blackout", fMidCombatBlackout, "{1}%")
-    AddEmptyOption()
     AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
-    AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}", getFlagHidden(alternate))
-    AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%", getFlagHidden(alternate))
+    AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}")
+    AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%")
 
   ElseIf (page == "$YK_NSFW")
-		bool SLThere = Game.GetModByName("SexLab.esm") != 255
-		bool OStimThere = Game.GetModByName("OStim.esp") != 255
     AddHeaderOption("$YK_AdultFrames")
-    AddSliderOptionST("sexlabweight", "$YK_SexLabWeight", iSLWeight, "{0}", getFlag(SLThere))
-    AddSliderOptionST("ostimweight", "$YK_OStimWeight", iOStimWeight, "{0}", getFlag(OStimThere))
+    AddSliderOptionST("sexlabweight", "$YK_SexLabWeight", iFrameSL, "{0}", getFlag(iFrameSL == -1))
     AddEmptyOption()
-    ; AddEmptyOption()
-    ; AddEmptyOption()
-    ; AddEmptyOption()
     AddHeaderOption("$YK_SceneTypes")
     int n = 0
     While(n < iSceneTypeWeight.Length)
-      AddSliderOptionST("scenetype_" + n, "$YK_SceneType_" + n, iSceneTypeWeight[n], "{0}", getFlag(SLThere || OStimThere))
+      AddSliderOptionST("scenetype_" + n, "$YK_SceneType_" + n, iSceneTypeWeight[n], "{0}")
       n += 1
     EndWhile
 
     SetCursorPosition(1)
     AddHeaderOption("$YK_SexLab")
-    AddTextOptionST("sltagsreadme", "", "$YK_AboutTags", getFlag(SLThere))
+    AddTextOptionST("sltagsreadme", "", "$YK_AboutTags", getFlag(iFrameSL == -1))
     int i = 0
     While(i < SLTags.Length)
-      AddInputOptionST("sltags_" + i, "$YK_SLTags_" + i, SLTags[i], getFlag(SLThere))
+      AddInputOptionST("sltags_" + i, "$YK_SLTags_" + i, SLTags[i], getFlag(iFrameSL == -1))
       i += 1
     EndWhile
-    AddEmptyOption()
-    AddHeaderOption("$YK_OStim")
-    AddSliderOptionST("ostimdurmin", "$YK_OStimDurMin", fOStimDurMin, "{1}s", getFlag(OStimThere))
-    AddSliderOptionST("ostimdurmax", "$YK_OStimDurMax", fOStimDurMax, "{1}s", getFlag(OStimThere))
 
-  ElseIf (page == "$YK_Stripping")
+  ElseIf(page == "$YK_Race")
+    If(iFrameSL <= 0 || !bAllowCreatures)
+      AddTextOption("$YK_RaceDisallowed", "", OPTION_FLAG_DISABLED)
+      return
+    EndIf
     SetCursorFillMode(LEFT_TO_RIGHT)
-    AddTextOptionST("stripsreadme", "$YK_ReadMe", "")
-    AddTextOptionST("stripsdefaults", "$YK_RestoreDefaults", "")
-    AddHeaderOption("$YK_Stripping")
-    AddHeaderOption("")
+    String[] keys = KudasaiAnimationSL.GetAllRaceKeys()
     int i = 0
-    While(i < 32)
-      int flag = OPTION_FLAG_NONE
-      If(i == 9 || i == 20 || i == 21 || i == 31)
-        flag = OPTION_FLAG_DISABLED
-      EndIf
-      int bit = Math.LeftShift(1, i)
-      AddToggleOptionST("strips_" + i, "$YK_Strips_" + i, Math.LogicalAnd(iStrips, bit), flag)
+    While(i < keys.Length)
+      AddToggleOptionST("racekey_" + keys[i], keys[i], sRaceKeys.Find(keys[i]) > -1)
       i += 1
     EndWhile
-
-  ElseIf(page == "$YK_Consequences")
-    SetCursorFillMode(LEFT_TO_RIGHT)
-    AddHeaderOption("")
-    AddTextOptionST("consequenceREADME", "$YK_ReadMe", "")
-    int i = 0
-    While(i < ConTitle.Length)
-      int val = ConWeight[i]
-      If(val == -1)
-        val = 0
-      EndIf
-      AddSliderOptionST("Con_" + i, ConTitle[i], val, "{0}", getFlag(ConWeight[i] > -1))
-      i += 1
-    EndWhile
-
-  ElseIf (page == "$YK_Debug")
-    AddHeaderOption("$YK_Defeat")
-    bool pldefeated = Kudasai.IsDefeated(Game.GetPlayer())
-    AddTextOptionST("rescuedebug_0", "$YK_Rescue_0", "", getFlag(pldefeated))
-    AddTextOptionST("undopacify_0", "$YK_UndoPacify_0", "", getFlag(Kudasai.IsPacified(Game.GetPlayer()) && !pldefeated))
-    AddTextOptionST("rescuedebug_1", "$YK_Rescue_1", "", getFlag(IsCrosshairRefDefeated()))
-    AddTextOptionST("undopacify_1", "$YK_UndoPacify_1", "", getFlag(IsCrosshairRefPacified()))
-
-    SetCursorPosition(1)
-    AddHeaderOption("$YK_DefeatedFollowers")
-    Actor[] defeated = Kudasai.GetDefeated()
-    int i = 0
-    While(i < defeated.Length)
-      If(defeated[i].IsPlayerTeammate())
-        AddTextOptionST("rescuefol_" + defeated[i].GetFormID() as String, defeated[i].GetLeveledActorBase().GetName(), "", getFlag(defeated[i] != none))
-      EndIf
-      i += 1
-    EndWhile
-    AddHeaderOption("")
   EndIf
 EndEvent
 
@@ -268,164 +131,29 @@ EndEvent
 
 Event OnSelectST()
   String[] s = StringUtil.Split(GetState(), "_")
-  ; --------------- General
-  If(s[0] == "enabled")
-    bool disabled = Kudasai.IsProcessingDisabled()
-    Kudasai.DisableProcessing(!disabled)
-    SetToggleOptionValueST(disabled)
-  ElseIf(s[0] == "consequence")
-    bool disabled = Kudasai.IsConsequenceDisabled()
-    Kudasai.DisableConsequence(!disabled)
-    SetToggleOptionValueST(disabled)
-  ElseIf(s[0] == "creatures")
-    bCreatureDefeat = !bCreatureDefeat
-    SetToggleOptionValueST(bCreatureDefeat)
-  ElseIf(s[0] == "notifydefeat")
-    bNotifyDefeat = !bNotifyDefeat
-    SetToggleOptionValueST(bNotifyDefeat, true)
-    SetOptionFlagsST(getFlag(bNotifyDefeat || bNotifyDestroy), true, "notifycolored")
-    SetOptionFlagsST(getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored), false, "notifycolorchoice")
-  ElseIf(s[0] == "notifydestroy")
-    bNotifyDestroy = !bNotifyDestroy
-    SetToggleOptionValueST(bNotifyDestroy, true)
-    SetOptionFlagsST(getFlag(bNotifyDefeat || bNotifyDestroy), true, "notifycolored")
-    SetOptionFlagsST(getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored), false, "notifycolorchoice")
-  ElseIf(s[0] == "notifycolored")
-    bNotifyColored = !bNotifyColored
-    SetToggleOptionValueST(bNotifyColored, true)
-    SetOptionFlagsST(getFlag((bNotifyDefeat || bNotifyDestroy) && bNotifyColored), false, "notifycolorchoice")
-
-  ; --------------- Defeat
-  ElseIf(s[0] == "lethalessential")
-    bLethalEssential = !bLethalEssential
-    SetToggleOptionValueST(bLethalEssential)
-  ElseIf(s[0] == "stripdrop")
-    bStripDrop = !bStripDrop
-    SetToggleOptionValueST(bStripDrop)
-  ElseIf(s[0] == "postcmbtkeeparmor")
+  If(s[0] == "postcmbtkeeparmor")
     bStealArmor = !bStealArmor
     SetToggleOptionValueST(bStealArmor)
-
-  ; --------------- Follower
-  ElseIf(s[0] == "followerhunterpride")
-    bFollowerHunterPride = !bFollowerHunterPride
-    SetToggleOptionValueST(bFollowerHunterPride)
-  ElseIf(s[0] == "rescuefol")
-    Actor follower = Game.GetForm(s[1] as int) as Actor
-    If(TrackingAlias.IsTracked(follower))
-      If(ShowMessage("$YK_FollowerTrackingStop{" + follower.GetLeveledActorBase().GetName() + "}"))
-        TrackingAlias.UntrackMe()
-      EndIf
-    Else
-      If(ShowMessage("$YK_FollowerTracking{" + follower.GetLeveledActorBase().GetName() + "}"))
-        TrackingAlias.TrackMe(follower)
-      EndIf
-    EndIf
 
   ; --------------- NSFW
   ElseIf(s[0] == "sltagsreadme")
     ShowMessage("$YK_AboutTagsMsg", false, "$YK_Ok")
 
-  ; --------------- Stripping
-  ElseIf(s[0] == "stripsreadme")
-    ShowMessage("$YK_StripReadMe", false, "$YK_Ok")
-  ElseIf(s[0] == "stripsdefaults")
-    If(ShowMessage("$YK_StripsDefaultsMsg"))
-      iStrips = 1066390941
-      ForcePageReset()
+  ElseIf(s[0] == "racekey")
+    bool includes = sRaceKeys.Find(s[1]) > -1
+    If(includes)
+      sRaceKeys = PapyrusUtil.RemoveString(sRaceKeys, s[1])
+    Else
+      sRaceKeys = PapyrusUtil.PushString(sRaceKeys, s[1])
     EndIf
-  ElseIf(s[0] == "strips")
-    int i = s[1] as int
-    int bit = Math.LeftShift(1, i)
-    iStrips = Math.LogicalXor(iStrips, bit)
-    SetToggleOptionValueST(Math.LogicalAnd(iStrips, bit))
-
-  ElseIf(s[0] == "consequenceREADME")
-    ShowMessage("$YK_ConsequenceReadMe", false, "$YK_Ok")
-
-  ; --------------- Debug
-  ElseIf(s[0] == "rescuedebug")
-    int i = s[1] as int
-    Actor rescue
-    If(i == 0)
-      If(!ShowMessage("$YK_RescueBleedoutMsg"))
-        return
-      EndIf
-      rescue = Game.GetPlayer()
-    ElseIf(i == 1)
-      Actor ref = Game.GetCurrentCrosshairRef() as Actor
-      If(!ref)
-        ref = Game.GetCurrentConsoleRef() as Actor
-      EndIf
-      String name = ref.GetLeveledActorBase().GetName()
-      If(!ShowMessage("$YK_RescueBleedoutMsg{" + name + "}"))
-        return
-      EndIf
-      rescue = ref
-    EndIf
-    Kudasai.RescueActor(rescue, true)
-  ElseIf(s[0] == "undopacify")
-    int i = s[1] as int
-    Actor rescue
-    If(i == 0)
-      If(!ShowMessage("$YK_UndoPacifyMsg"))
-        return
-      EndIf
-      rescue = Game.GetPlayer()
-    ElseIf(i == 1)
-      Actor ref = Game.GetCurrentCrosshairRef() as Actor
-      If(!ref)
-        ref = Game.GetCurrentConsoleRef() as Actor
-      EndIf
-      String name = ref.GetLeveledActorBase().GetName()
-      If(!ShowMessage("$YK_UndoPacifyMsg{" + name + "}"))
-        return
-      EndIf
-      rescue = ref
-    EndIf
-    Kudasai.UndoPacify(rescue)
+    SetToggleOptionValueST(!includes)
   EndIf
 EndEvent
 
 Event OnSliderOpenST()
 	String[] s = StringUtil.Split(GetState(), "_")
   ; --------------- Defeat
-	If(s[0] == "lethalplayer")
-		SetSliderDialogStartValue(fLethalPlayer)
-		SetSliderDialogDefaultValue(100)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(0.5)
-	ElseIf(s[0] == "lethalnpc")
-		SetSliderDialogStartValue(fLethalNPC)
-		SetSliderDialogDefaultValue(30)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(0.5)
-	ElseIf(s[0] == "stripchance")
-		SetSliderDialogStartValue(fStripChance)
-		SetSliderDialogDefaultValue(7)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(0.5)
-	ElseIf(s[0] == "stripdstry")
-		SetSliderDialogStartValue(fStripDestroy)
-		SetSliderDialogDefaultValue(5)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(0.5)
-	ElseIf(s[0] == "stripreq")
-		SetSliderDialogStartValue(iStripReq)
-		SetSliderDialogDefaultValue(2)
-		SetSliderDialogRange(0, 20)
-		SetSliderDialogInterval(1)
-	ElseIf(s[0] == "stripreqchance")
-		SetSliderDialogStartValue(fStripReqChance)
-		SetSliderDialogDefaultValue(75)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(0.5)
-	ElseIf(s[0] == "midcmbtblackout")
-		SetSliderDialogStartValue(fMidCombatBlackout)
-		SetSliderDialogDefaultValue(30)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(0.5)
-	ElseIf(s[0] == "postcmbtmaxassaults")
+  If(s[0] == "postcmbtmaxassaults")
 		SetSliderDialogStartValue(iMaxAssaults)
 		SetSliderDialogDefaultValue(4)
 		SetSliderDialogRange(0, 25)
@@ -438,36 +166,13 @@ Event OnSliderOpenST()
 
   ; --------------- NSFW
 	ElseIf(s[0] == "sexlabweight")
-		SetSliderDialogStartValue(iSLWeight)
-		SetSliderDialogDefaultValue(100)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(1)
-	ElseIf(s[0] == "ostimweight")
-		SetSliderDialogStartValue(iOStimWeight)
+		SetSliderDialogStartValue(iFrameSL)
 		SetSliderDialogDefaultValue(100)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
 	ElseIf(s[0] == "scenetype")
     int i = s[1] as int
 		SetSliderDialogStartValue(iSceneTypeWeight[i])
-		SetSliderDialogDefaultValue(50)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(1)    
-	ElseIf(s[0] == "ostimdurmin")
-		SetSliderDialogStartValue(fOStimDurMin)
-		SetSliderDialogDefaultValue(20)
-		SetSliderDialogRange(10, fOStimDurMax)
-		SetSliderDialogInterval(0.5)
-	ElseIf(s[0] == "ostimdurmax")
-		SetSliderDialogStartValue(fOStimDurMax)
-		SetSliderDialogDefaultValue(60)
-		SetSliderDialogRange(fOStimDurMin, 600)
-		SetSliderDialogInterval(0.5)
-
-  ; --------------- Consequence
-  ElseIf(s[0] == "Con")
-    int i = s[1] as int
-		SetSliderDialogStartValue(ConWeight[i])
 		SetSliderDialogDefaultValue(50)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
@@ -477,28 +182,7 @@ EndEvent
 Event OnSliderAcceptST(float value)
 	string[] s = StringUtil.Split(GetState(), "_")
   ; --------------- Defeat
-	If(s[0] == "lethalplayer")
-		fLethalPlayer = value
-		SetSliderOptionValueST(fLethalPlayer, "{1}%")
-	ElseIf(s[0] == "lethalnpc")
-		fLethalNPC = value
-		SetSliderOptionValueST(fLethalNPC, "{1}%")
-	ElseIf(s[0] == "stripchance")
-		fStripChance = value
-		SetSliderOptionValueST(fStripChance, "{1}%")
-	ElseIf(s[0] == "stripdstry")
-		fStripDestroy = value
-		SetSliderOptionValueST(fStripDestroy, "{1}%")
-	ElseIf(s[0] == "stripreq")
-		iStripReq = value as int
-		SetSliderOptionValueST(iStripReq, "{0}")   
-	ElseIf(s[0] == "stripreqchance")
-		fStripReqChance = value
-		SetSliderOptionValueST(fStripReqChance, "{1}%")    
-	ElseIf(s[0] == "midcmbtblackout")
-		fMidCombatBlackout = value
-		SetSliderOptionValueST(fMidCombatBlackout, "{1}%")
-	ElseIf(s[0] == "postcmbtmaxassaults")
+	If(s[0] == "postcmbtmaxassaults")
 		iMaxAssaults = value as int
 		SetSliderOptionValueST(iMaxAssaults, "{0}")
 	ElseIf(s[0] == "postcmbtrapiststays")
@@ -507,45 +191,12 @@ Event OnSliderAcceptST(float value)
 
   ; --------------- NSFW
 	ElseIf(s[0] == "sexlabweight")
-		iSLWeight = value as int
-		SetSliderOptionValueST(iSLWeight, "{0}")
-	ElseIf(s[0] == "ostimweight")
-		iOStimWeight = value as int
-		SetSliderOptionValueST(iOStimWeight, "{0}")
+		iFrameSL = value as int
+		SetSliderOptionValueST(iFrameSL, "{0}")
 	ElseIf(s[0] == "scenetype")
     int i = s[1] as int
 		iSceneTypeWeight[i] = value as int
 		SetSliderOptionValueST(iSceneTypeWeight[i], "{1}")
-	ElseIf(s[0] == "ostimdurmin")
-		fOStimDurMin = value
-		SetSliderOptionValueST(fOStimDurMin, "{1}s")
-	ElseIf(s[0] == "ostimdurmax")
-		fOStimDurMax = value
-		SetSliderOptionValueST(fOStimDurMax, "{1}s")
-    
-  ; --------------- Consequence
-  ElseIf(s[0] == "Con")
-    int i = s[1] as int
-		ConWeight[i] = value as int
-		SetSliderOptionValueST(ConWeight[i], "{0}")
-  EndIf
-EndEvent
-
-Event OnMenuOpenST()
-  String[] s = StringUtil.Split(GetState(), "_")
-  If(s[0] == "followerrescuedelay")
-		SetMenuDialogStartIndex(iFollowerRescue)
-		SetMenuDialogDefaultIndex(0)
-		SetMenuDialogOptions(FollowerRescueList)
-		ForcePageReset()
-  EndIf
-EndEvent
-
-Event OnMenuAcceptST(int a_index)
-  String[] s = StringUtil.Split(GetState(), "_")
-  If(s[0] == "followerrescuedelay")
-		iFollowerRescue = a_index
-		SetMenuOptionValueST(FollowerRescueList[iFollowerRescue])
   EndIf
 EndEvent
 
@@ -557,15 +208,9 @@ Event OnKeyMapChangeST(int newKeyCode, string conflictControl, string conflictNa
   If(s[0] == "surrendermodkey")
     iSurrenderKeyM = newKeyCode
     SetKeyMapOptionValueST(iSurrenderKeyM)
-  ElseIf(s[0] == "hunterpridemodkey")
-    iHunterKeyM = newKeyCode
-    SetKeyMapOptionValueST(iHunterKeyM)
   ElseIf(s[0] == "assaultmodkey")
     iAssaultKeyM = newKeyCode
     SetKeyMapOptionValueST(iAssaultKeyM)
-  ElseIf(s[0] == "huntercapturesmodkey")
-    iCapturesKeyM = newKeyCode
-    SetKeyMapOptionValueST(iCapturesKeyM)
   ElseIf(newKeyCode != -1 && conflictControl != "")
 		string msg
 		If(conflictName != "")
@@ -580,15 +225,9 @@ Event OnKeyMapChangeST(int newKeyCode, string conflictControl, string conflictNa
   If(s[0] == "surrenderkey")
     iSurrenderKey = newKeyCode
     SetKeyMapOptionValueST(iSurrenderKey)
-  ElseIf(s[0] == "hunterpridekey")
-    iHunterPrideKey = newKeyCode
-    SetKeyMapOptionValueST(iHunterPrideKey)
   ElseIf(s[0] == "assaultkey")
     iAssaultKey = newKeyCode
     SetKeyMapOptionValueST(iAssaultKey)
-  ElseIf(s[0] == "huntercaptureskey")
-    iCapturesKey = newKeyCode
-    SetKeyMapOptionValueST(iCapturesKey)
   EndIf
   ((Self as Quest) as KudasaiMain).RegisterKeys()
 EndEvent
@@ -613,52 +252,14 @@ EndEvent
 Event OnHighlightST()
   String[] s = StringUtil.Split(GetState(), "_")
   ; --------------- General
-  If(s[0] == "creatures")
-    SetInfoText("$YK_CreaturesHighlight")
-  ElseIf(s[0] == "surrendermodkey" || s[0] == "hunterpridemodkey" || s[0] == "assaultmodkey" || s[0] == "huntercapturesmodkey")
+  If(s[0] == "surrendermodkey"  || s[0] == "assaultmodkey")
     SetInfoText("$YK_ModifierKeyHighlight")
   ElseIf(s[0] == "surrenderkey")
     SetInfoText("$YK_SurrenderKeyHighlight")
-  ElseIf(s[0] == "hunterpridekey")
-    SetInfoText("$YK_HunterPrideKeyHighlight")
   ElseIf(s[0] == "assaultkey")
     SetInfoText("$YK_AssaultKeyHighlight")
-  ElseIf(s[0] == "huntercaptureskey")
-    SetInfoText("$YK_CapturesKeyHighlight")
-  ElseIf(s[0] == "followerhunterpride")
-    SetInfoText("$YK_FollowerHunterPrideHighlight")
-  ElseIf(s[0] == "followerrescuedelay")
-    SetInfoText("$YK_FollowerRescueDelayHighlight")
-  ElseIf(s[0] == "notifydefeat")
-    SetInfoText("$YK_NotifyDefeatHighlight")
-  ElseIf(s[0] == "notifydestroy")
-    SetInfoText("$YK_NotifyDestryHighlight")
-  ElseIf(s[0] == "notifycolored")
-    SetInfoText("$YK_NotifyColoredHighlight")
-  ElseIf(s[0] == "notifycolorchoice")
-    SetInfoText("$YK_NotifyColorChoiceHighlight")
 
   ; --------------- Defeat
-  ElseIf(s[0] == "npcpostcombat")
-    SetInfoText("$YK_NPCPostCombatHighlight")
-  ElseIf(s[0] == "lethalessential")
-    SetInfoText("$YK_LethalEssentialHighlight")
-  ElseIf(s[0] == "lethalplayer")
-    SetInfoText("$YK_LethalPlayerHighlight")
-  ElseIf(s[0] == "lethalnpc")
-    SetInfoText("$YK_LethalNPCHighlight")
-  ElseIf(s[0] == "stripchance")
-    SetInfoText("$YK_StripChanceHighlight")
-  ElseIf(s[0] == "stripdstry")
-    SetInfoText("$YK_StripDstryHighlight")
-  ElseIf(s[0] == "stripdrop")
-    SetInfoText("$YK_StripDropHighlight")
-  ElseIf(s[0] == "stripreq")
-    SetInfoText("$YK_StripReqHighlight")
-  ElseIf(s[0] == "stripreqchance")
-    SetInfoText("$YK_StripReqChanceHighlight")
-  ElseIf(s[0] == "midcmbtblackout")
-    SetInfoText("$YK_BlackoutHighlight")
   ElseIf(s[0] == "postcmbtkeeparmor")
     SetInfoText("$YK_StealArmorHighlight")
   ElseIf(s[0] == "postcmbtmaxassaults")
@@ -666,109 +267,19 @@ Event OnHighlightST()
   ElseIf(s[0] == "postcmbtrapiststays")
     SetInfoText("$YK_RapistQuitsHighlight")
 
-  ; --------------- Follower
-  ElseIf(s[0] == "rescuefol")
-    Actor follower = Game.GetForm(s[1] as int) as Actor
-    Location loc = follower.GetCurrentLocation()
-    String locname = "NULL"
-    If(loc)
-      locname = loc.GetName()
-    EndIf
-    SetInfoText("$YK_FollowerInfo{" + locname + "}")
-
-  ; --------------- Consequences
-  ElseIf(s[0] == "Con")
-    int i = s[1] as int
-    SetInfoText(ConDescription[i])
-
   ; --------------- NSFW
   ElseIf(s[0] == "sexlabweight")
     SetInfoText("$YK_SexLabWeightHighlight")
-  ElseIf(s[0] == "ostimweight")
-    SetInfoText("$YK_OStimWeigHighlight")
   ElseIf(s[0] == "scenetype")
-    SetInfoText("$YK_SceneTypeHighlight")    
-  ElseIf(s[0] == "ostimdurmin")
-    SetInfoText("$YK_OStimDurMinHighlight")
-  ElseIf(s[0] == "ostimdurmax")
-    SetInfoText("$YK_OStimDurMaxHighlight")
-
-  ; --------------- Stripping
-  ElseIf(s[0] == "strips")
-    int i = s[1] as int
-    int bit = Math.LeftShift(1, i)
-    Form worn = Game.GetPlayer().GetWornForm(bit)
-    String name
-    If(!worn)
-      name = "---"
-    Else
-       name = worn.GetName()
-      If(name == "" || name == " ")
-        name = "---"
-      EndIf
-    EndIf
-    SetInfoText("$YK_StripsHighlight{" + name + "}")
+    SetInfoText("$YK_SceneTypeHighlight")
   EndIf
 EndEvent
 
-; --------------------- Default State
-State notifycolorchoice
-	Event OnColorOpenST()
-		SetColorDialogStartColor(iNotifyColorChoice)
-		SetColorDialogDefaultColor(0xFF0000)
-	EndEvent
-	Event OnColorAcceptST(int color)
-		iNotifyColorChoice = color
-		SetColorOptionValueST(iNotifyColorChoice)
-    ; Convert the color code into a hex string for display in notifications
-    String hex = ""
-    While(color != 0)
-      int c = color % 16
-      If(c < 10)
-        hex = c + hex
-      Else
-        hex = StringUtil.AsChar(55 + c) + hex
-      EndIf
-      color /= 16
-    EndWhile
-    While(StringUtil.GetLength(hex) < 6)
-      hex = "0" + hex
-    EndWhile
-    sNotifyColorChoice = "#" + hex
-	EndEvent
-EndState
-
 ; --------------------- Misc
-
-bool Function IsCrosshairRefDefeated()
-  Actor ref = Game.GetCurrentCrosshairRef() as Actor
-  If(!ref)
-    ref = Game.GetCurrentConsoleRef() as Actor
-    If(!ref)
-      return false
-    EndIf
-  Else
-    return Kudasai.IsDefeated(ref)
-  EndIf
-EndFunction
-
-bool Function IsCrosshairRefPacified()
-  Actor ref = Game.GetCurrentCrosshairRef() as Actor
-  If(!ref)
-    ref = Game.GetCurrentConsoleRef() as Actor
-    If(!ref)
-      return false
-    EndIf
-  Else
-    return Kudasai.IsPacified(ref) && !Kudasai.IsDefeated(ref)
-  EndIf
-EndFunction
 
 String Function GetCustomControl(int keyCode)
 	If(keyCode == iSurrenderKey)
 		return "Surrender"
-  ElseIf(keyCode == iHunterPrideKey)
-    return "Hunter's Pride"
   ElseIf(keyCode == iAssaultKey)
     return "Assault"
   Else
@@ -781,13 +292,5 @@ int Function getFlag(bool option)
 		return OPTION_FLAG_NONE
 	else
 		return OPTION_FLAG_DISABLED
-	EndIf
-endFunction
-
-int Function getFlagHidden(bool option)
-	If(option)
-		return OPTION_FLAG_NONE
-	else
-		return OPTION_FLAG_HIDDEN
 	EndIf
 endFunction
