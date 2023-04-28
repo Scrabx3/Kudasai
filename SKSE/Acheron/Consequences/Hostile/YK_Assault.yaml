@@ -1,0 +1,11 @@
+
+Version: 1
+
+Name: (YK) Assault
+Quest: 0x937|YameteKudasai.esp
+
+Priority: 30
+Cooldown: 0
+Teleport: false
+InCombat: false
+Hidden: false

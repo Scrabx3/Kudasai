@@ -21,7 +21,7 @@ int Function GetFromWeight(int[] weights) global
   return n
 EndFunction
 
-bool Function IsRadiant(Form akForm) global
+bool Function IsRuntimeGenerated(Form akForm) global
   return akForm.GetFormID() <= -16777216  ; 0xFF000000 as signed integer in decimal
 EndFunction
 

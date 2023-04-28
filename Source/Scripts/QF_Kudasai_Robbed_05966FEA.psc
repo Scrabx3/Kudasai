@@ -37,7 +37,7 @@ ToMapEdge.Start()
 Actor robber = ALias_Robber.GetActorRef()
 ActorBase robberbase = robber.GetActorBase()
 ObjectReference newRobber
-If(KudasaiInternal.IsRadiant(robber))
+If(KudasaiInternal.IsRuntimeGenerated(robber))
   newRobber = robber.PlaceAtMe(robberbase)
 Else
   newRobber = robber
