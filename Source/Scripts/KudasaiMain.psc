@@ -62,7 +62,7 @@ Function CreateAssault()
     return
   EndIf
   Actor Player = Game.GetPlayer()
-  If(Acheron.IsDefeated(ref))
+  If(ref.IsBleedingOut() || Acheron.IsDefeated(ref))
     AssaultDefeated.Show()
     return
   ElseIf(ref.IsInCombat() || ref.IsDead())

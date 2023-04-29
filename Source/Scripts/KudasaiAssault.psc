@@ -5,7 +5,7 @@ String Property HookID = "YKrPlayer_" AutoReadOnly
 KudasaiMCM Property MCM Auto
 
 Actor Property PlayerRef Auto
-ReferenceAlias Property PlayerAlias Auto
+KudasaiAssaultAliasPlayer Property PlayerAlias Auto
 ReferenceAlias Property RefAlly1 Auto
 ReferenceAlias Property RefAlly2 Auto
 
@@ -40,14 +40,11 @@ bool Property CanEnterNSFW_Ally2 Auto Hidden Conditional
 
 ;/  START UP  /;
 
-Event OnInit()
-  If(!IsRunning())
-    return
-  EndIf
-  Debug.Trace("[Kudasai] Started Assault Player -> OnInit()")
+Function Setup()
+  Debug.Trace("[Kudasai] Started Assault Player -> Setup()")
   RegisterForSingleUpdate(0.7)
   cycle_count = new int[3]
-EndEvent
+EndFunction
 
 Event OnUpdate()
   Debug.Trace("[Kudasai] Started Assault Player -> OnUpdate()")
@@ -78,6 +75,7 @@ Event OnUpdate()
   Debug.Trace("[Kudasai] Dialogue Vars -> IsWerewolf: " + IsWerewolf + " | Thane: " + Thane + " | Remembers: " + Remembers + " | CanEnterNSFW: " + CanEnterNSFW)
   ; Gotta set data ( ^ ) before playing player scene. Other scenes are started on quest start
   PlayerScene.Start()
+  SetStage(5)
 EndEvent
 
 Function RescueAll(Actor[] akRefs)
@@ -166,6 +164,7 @@ Function MakeStruggleOr(Actor akVictim, Actor akAggressor)
 EndFunction
 
 Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
+  Debug.Trace("[Kudasai] Struggle End -> Victim: " + akVictim + " // abVictimEscaped: " + abVictimEscaped)
   If(abVictimEscaped) ; Only the player can escape here
     Utility.Wait(5)
     ClearAliasGroup(RefsA)
@@ -180,26 +179,26 @@ Function EnterCycle(Actor akVictim)
   Debug.Trace("[Kudasai] Creating cycle for victim " + akVictim + "(" + id + ")")
   RegisterForModEvent("HookAnimationEnd_" + HookID + id, "PostAssaultSL_" + id)
   RegisterForModEvent("ostim_end", "PostAssaultOStim")
-  NewCycle(akVictim, id)
+  NewCycle(akVictim, id, PapyrusUtil.ActorArray(0))
 EndFunction
 
 ;/  CYCLE  /;
 
 Event PostAssaultSL_0(int tid, bool hasPlayer)
-  Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
-  Actor victim = KudasaiAnimationSL.GetVictim(tid)
-  NewCycle(victim, 0, positions)
+  PostSceneSL(tid, 0)
 EndEvent
 Event PostAssaultSL_1(int tid, bool hasPlayer)
-  Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
-  Actor victim = KudasaiAnimationSL.GetVictim(tid)
-  NewCycle(victim, 1, positions)
+  PostSceneSL(tid, 1)
 EndEvent
 Event PostAssaultSL_2(int tid, bool hasPlayer)
+  PostSceneSL(tid, 2)
+EndEvent
+Function PostSceneSL(int tid, int aiVicID)
   Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
   Actor victim = KudasaiAnimationSL.GetVictim(tid)
-  NewCycle(victim, 2, positions)
-EndEvent
+  Utility.Wait(0.5)
+  NewCycle(victim, aiVicID, positions)
+EndFunction
 Event PostAssaultOStim(string asEventName, string asStringArg, float afNumArg, form akSender)
   Actor[] positions = KudasaiAnimationOStim.GetPositions(afNumArg as int)
   Actor victim
@@ -217,10 +216,11 @@ Event PostAssaultOStim(string asEventName, string asStringArg, float afNumArg, f
   NewCycle(victim, id, positions)
 EndEvent
 
-Function NewCycle(Actor akVictim, int aiVicID, Actor[] akOldPosition = none)
+Function NewCycle(Actor akVictim, int aiVicID, Actor[] akOldPosition)
   Debug.Trace("[Kudasai] Attempting new cycle for victim " + akVictim + "(" + aiVicID + ")")
   cycle_count[aiVicID] = cycle_count[aiVicID] + 1
   If(cycle_count[aiVicID] > MCM.iMaxAssaults)
+    Debug.Trace("[Kudasai] Ending Cycle after " + cycle_count[aiVicID] + "/" + MCM.iMaxAssaults + " animations")
     EndCycle(aiVicID, akVictim)
     return
   ElseIf(aiVicID == 0)
@@ -249,13 +249,13 @@ Function NewCycle(Actor akVictim, int aiVicID, Actor[] akOldPosition = none)
   EndIf
   Actor[] positions = BuildSceneArray(akVictim, group)
   If(positions[1] == none)
+    Debug.Trace("[Kudasai] Unable to build scene array for victim " + akVictim + "(" + aiVicID + ")")
     EndCycle(aiVicID, akVictim)
     return
-  EndIf
-  If(aiVicID == 0 && akOldPosition.Length && positions[1].HasKeyword(ActorTypeNPC))
+  ElseIf(aiVicID == 0 && positions[1].HasKeyword(ActorTypeNPC))
+    RecentSpeaker.ForceRefTo(positions[1])
     positions[1].Say(CycleTopic)
     Utility.Wait(3)
-    RecentSpeaker.ForceRefTo(positions[1])
   EndIf
   If(KudasaiAnimation.CreateAssault(positions, akVictim, HookID + aiVicID) == -1)
     Debug.Trace("[Kudasai] Failed to create scene for victim " + akVictim + "(" + aiVicID + ")")
@@ -267,13 +267,14 @@ Function NewCycle(Actor akVictim, int aiVicID, Actor[] akOldPosition = none)
 EndFunction
 
 Actor[] Function BuildSceneArray(Actor akVictim, Actor[] akPotentials)
+  Debug.Trace("[Kudasai] Building Scene array for victim: " + akVictim + " with potentials: " + akPotentials)
   Actor[] ret = new Actor[5]
   ret[0] = akVictim
   int sexV = akVictim.GetActorBase().GetSex()
   String pType = ""
   int i = 0
   int ii = 1
-  int max = KudasaiAnimation.GetAllowedParticipants(akPotentials.Length + 1) - 1
+  int max = KudasaiAnimation.GetAllowedParticipants(akPotentials.Length + 1)
   While(i < 50 && ii < max)
     Actor it = akPotentials[Utility.RandomInt(0, akPotentials.Length - 1)]
     If(it.Is3DLoaded() && !Acheron.IsDefeated(it))
@@ -295,6 +296,7 @@ Actor[] Function BuildSceneArray(Actor akVictim, Actor[] akPotentials)
 EndFunction
 
 bool Function IsMatchGender(int aiVSex, bool abCrt, Actor akActor)
+  Debug.Trace("[Kudasai] <IsMatchGender> aiVSex:  " + aiVSex + " / abCrt: " + abCrt + " / akActor Sex: " + akActor.GetActorBase().GetSex())
   If(abCrt)
     If(!MCM.bAllowCreatures)
       return false
@@ -343,6 +345,7 @@ bool Function CheckStopConditions()
   ElseIf(RefAlly1.GetReference() && !GetStageDone(200) || RefAlly2.GetReference() && !GetStageDone(300))
     return false
   EndIf
+  Debug.Trace("[Kudasai] All scenes ended, stopping quest..")
   Stop()
   return true
 EndFunction

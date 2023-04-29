@@ -15,10 +15,10 @@ bool Function FindActor(Actor subject, int ID) global
 EndFunction
 
 int Function CreateAnimation(Actor[] akPositions, Actor akVictim) global
+  akPositions = PapyrusUtil.ResizeActorArray(akPositions, 3)
   OSexIntegrationMain OStim = OUtils.GetOStim()
   OStim.AddSceneMetadata("or_player_nocheat")
   OStim.AddSceneMetadata("or_npc_nocheat")
-
   int w = -1
   If(akVictim)
     w = akPositions.Find(akVictim)

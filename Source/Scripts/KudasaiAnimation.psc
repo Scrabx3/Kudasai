@@ -4,10 +4,8 @@ Scriptname KudasaiAnimation Hidden
 ; Assume this to be called with only npc or equal races as partners, partners.length <= 4
 ; Return -1 on failure
 int Function CreateAssault(Actor[] akPositions, Actor akVictim, String asHook, String asTags = "UseConfig") global
-  If(akPositions.Length != 5)
-    akPositions = PapyrusUtil.ResizeActorArray(akPositions, 5)
-  EndIf
   Debug.Trace("[Kudasai] CreateAssault with Actors " + akPositions + " / Victim = " + akVictim + " / Hook = " + asHook)
+  akPositions = PapyrusUtil.RemoveActor(akPositions, none)
   KudasaiMCM MCM = KudasaiInternal.GetMCM()
   If(IncludesCreature(akPositions))
     If(!MCM.FrameCreature)
@@ -27,7 +25,7 @@ bool Function IncludesCreature(Actor[] akPositions) global
   Keyword ActorTypeNPC = Keyword.GetKeyword("ActorTypeNPC")
   int i = 0
   While(i < akPositions.Length)
-    If(!akPositions[i].HasKeyword(ActorTypeNPC))
+    If(akPositions[i] && !akPositions[i].HasKeyword(ActorTypeNPC))
       return true
     EndIf
     i += 1

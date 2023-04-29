@@ -1,7 +1,7 @@
 Scriptname KudasaiInternal Hidden
 
 KudasaiMCM Function GetMCM() global
-  return Game.GetFormFromFile(0x7853F1, "YameteKudasai.esp") as KudasaiMCM
+  return Game.GetFormFromFile(0x805, "YameteKudasai.esp") as KudasaiMCM
 EndFunction
 
 int Function GetFromWeight(int[] weights) global

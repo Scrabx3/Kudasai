@@ -200,7 +200,7 @@ Actor[] Function CreatePositions(Actor akVictim, FormList akAggressorList)
   String racetype = ""
   int i = 0
   int ii = 1
-  int max = KudasaiAnimation.GetAllowedParticipants(potentials.Length + 1) - 1
+  int max = KudasaiAnimation.GetAllowedParticipants(potentials.Length + 1)
   While(i < 50 && ii < max)
     int where = Utility.RandomInt(0, potentials.Length - 1)
     Actor it = potentials[where] as Actor
