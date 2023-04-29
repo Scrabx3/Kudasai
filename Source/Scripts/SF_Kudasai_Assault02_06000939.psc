@@ -2,6 +2,15 @@
 ;NEXT FRAGMENT INDEX 3
 Scriptname SF_Kudasai_Assault02_06000939 Extends Scene Hidden
 
+;BEGIN FRAGMENT Fragment_1
+Function Fragment_1()
+;BEGIN CODE
+Debug.Trace("[Kudasai] AllyScene 1 End")
+GetOwningQuest().SetStage(210)
+;END CODE
+EndFunction
+;END FRAGMENT
+
 ;BEGIN FRAGMENT Fragment_2
 Function Fragment_2()
 ;BEGIN CODE
@@ -15,17 +24,6 @@ EndFunction
 Function Fragment_0()
 ;BEGIN CODE
 Debug.Trace("[Kudasai] AllyScene 1 Start")
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_1
-Function Fragment_1()
-;BEGIN CODE
-Debug.Trace("[Kudasai] AllyScene 1 End")
-KudasaiAssault s = GetOwningQuest() as KudasaiAssault
-Actor ref = s.RefAlly1.GetActorRef()
-s.EndCycle(1, ref)
 ;END CODE
 EndFunction
 ;END FRAGMENT

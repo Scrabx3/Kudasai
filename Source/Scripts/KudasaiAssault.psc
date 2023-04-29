@@ -151,7 +151,7 @@ Function MakeStruggleOr(Actor akVictim, Actor akAggressor)
   If(akVictim == PlayerRef)
     float lvDiff = akAggressor.GetLevel() - akVictim.GetLevel()
     float hpDmg = (1 - akAggressor.GetAVPercentage("Health")) * 100
-    difficulty = 70.0 + hpDmg - lvDIff - 10.0 * GroupA.Length
+    difficulty = 80.0 + hpDmg - lvDIff - 10.0 * GroupA.Length
     Debug.Trace("[Kudasai] Player Assault; Setting difficulty to { " + difficulty + " } // lvDiff = " + lvDiff + "; hpDmg = " + hpDmg + "; GroupA.Length = " + GroupA.Length)
   EndIf
   If(struggle_api.MakeStruggle(akAggressor, akVictim, callbackevent, difficulty))
@@ -166,6 +166,7 @@ EndFunction
 Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
   Debug.Trace("[Kudasai] Struggle End -> Victim: " + akVictim + " // abVictimEscaped: " + abVictimEscaped)
   If(abVictimEscaped) ; Only the player can escape here
+    Acheron.RescueActor(PlayerRef)
     Utility.Wait(5)
     ClearAliasGroup(RefsA)
     PlayerAlias.Clear()
@@ -296,7 +297,6 @@ Actor[] Function BuildSceneArray(Actor akVictim, Actor[] akPotentials)
 EndFunction
 
 bool Function IsMatchGender(int aiVSex, bool abCrt, Actor akActor)
-  Debug.Trace("[Kudasai] <IsMatchGender> aiVSex:  " + aiVSex + " / abCrt: " + abCrt + " / akActor Sex: " + akActor.GetActorBase().GetSex())
   If(abCrt)
     If(!MCM.bAllowCreatures)
       return false
@@ -327,22 +327,17 @@ Function EndCycle(int aiVicID, Actor akVictim)
     return
   EndIf
   Debug.Trace("[Kudasai] Ending cycle for victim " + akVictim + "(" + aiVicID + ")")
+  ; Progress scene
   SetStage(stage)
-  If(aiVicID == 0)
-    PlayerAlias.GoToState("Exhausted")
-  Else
+  If(aiVicID != 0)
     Debug.SendAnimationEvent(akVictim, "bleedoutStart")
-    If(CheckStopConditions())
-      return
-    EndIf
   EndIf
-  ClearAliasGroupByID(aiVicID)
 EndFunction
 
-bool Function CheckStopConditions()
-  If(!GetStageDone(120))  ; Player sets stage to 100 on exhaust, 120 on complete
+bool Function CheckStopConditions(int aiVictimID)
+  If(aiVictimID != 0 && !GetStageDone(120))  ; Player sets stage to 100 on exhaust, 120 on complete
     return false
-  ElseIf(RefAlly1.GetReference() && !GetStageDone(200) || RefAlly2.GetReference() && !GetStageDone(300))
+  ElseIf(aiVictimID != 1 && RefAlly1.GetReference() && !GetStageDone(200) || aiVictimID != 2 && RefAlly2.GetReference() && !GetStageDone(300))
     return false
   EndIf
   Debug.Trace("[Kudasai] All scenes ended, stopping quest..")
@@ -488,20 +483,29 @@ Actor[] Function AsActorArray(ReferenceAlias[] akRefs)
   return PapyrusUtil.RemoveActor(ret, none)
 EndFunction
 
+Function EvaluatePackageGroup(int aiVictimID)
+  ReferenceAlias[] grp = GetVictimRefs(aiVictimID)
+  int i = 0
+  While(i < grp.Length)
+    grp[i].TryToEvaluatePackage()
+    i += 1
+  EndWhile
+EndFunction
+
+ReferenceAlias[] Function GetVictimRefs(int aiVictimID)
+  If(aiVictimID == 0)
+    return RefsA
+  ElseIf(aiVictimID == 1)
+    return RefsB
+  Else
+    return RefsC
+  EndIf
+EndFunction
+
 Function ClearAliasGroup(ReferenceAlias[] akRefs)
   int i = 0
   While(i < akRefs.Length)
     akRefs[i].TryToClear()
     i += 1
   EndWhile
-EndFunction
-
-Function ClearAliasGroupByID(int aiVictimID)
-  If(aiVictimID == 0)
-    ClearAliasGroup(RefsA)
-  ElseIf(aiVictimID == 1)
-    ClearAliasGroup(RefsB)
-  Else
-    ClearAliasGroup(RefsC)
-  EndIf
 EndFunction

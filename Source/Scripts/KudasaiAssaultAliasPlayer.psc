@@ -34,9 +34,7 @@ State Exhausted
 		UnregisterForAllMenus()
 		UnregisterForActorAction(8)
     Acheron.ReleaseActor(Game.GetPlayer())
-    KudasaiAssault scr = GetOwningQuest() as KudasaiAssault
-    scr.SetStage(120)
-		scr.CheckStopConditions()
+    GetOwningQuest().SetStage(120)
 	EndEvent
 EndState
 

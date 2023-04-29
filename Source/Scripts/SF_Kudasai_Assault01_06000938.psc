@@ -1,6 +1,16 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
-;NEXT FRAGMENT INDEX 10
+;NEXT FRAGMENT INDEX 13
 Scriptname SF_Kudasai_Assault01_06000938 Extends Scene Hidden
+
+;BEGIN FRAGMENT Fragment_7
+Function Fragment_7()
+;BEGIN CODE
+Debug.Trace("[Kudasai] Player Scene End")
+KudasaiAssault s = GetOwningQuest() as KudasaiAssault
+s.EndCycle(0, Game.GetPlayer())
+;END CODE
+EndFunction
+;END FRAGMENT
 
 ;BEGIN FRAGMENT Fragment_8
 Function Fragment_8()
@@ -10,10 +20,20 @@ Debug.Trace("[Kudasai] Player Scene Start")
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_7
-Function Fragment_7()
+;BEGIN FRAGMENT Fragment_12
+Function Fragment_12()
 ;BEGIN CODE
-Debug.Trace("[Kudasai] Player Scene End")
+; Post scene end, have actors move on their own again
+KudasaiAssault scr = GetOwningQuest() as KudasaiAssault
+scr.SetStage(110)
+scr.EvaluatePackageGroup(0)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_9
+Function Fragment_9()
+;BEGIN CODE
 KudasaiAssault s = GetOwningQuest() as KudasaiAssault
 s.EndCycle(0, Game.GetPlayer())
 ;END CODE
@@ -31,11 +51,10 @@ endif
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_9
-Function Fragment_9()
+;BEGIN FRAGMENT Fragment_10
+Function Fragment_10(ReferenceAlias akAlias)
 ;BEGIN CODE
-KudasaiAssault s = GetOwningQuest() as KudasaiAssault
-s.EndCycle(0, Game.GetPlayer())
+Player.GoToState("Exhausted")
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -54,3 +73,5 @@ EndFunction
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
 ReferenceAlias Property DialogueNPC  Auto  
+
+ReferenceAlias Property Player  Auto  
