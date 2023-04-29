@@ -1,0 +1,14 @@
+Version: 1
+
+Name: (YK) Robbed
+Quest: 0x89B|YameteKudasai.esp
+
+Priority: 30
+Cooldown: 0
+Teleport: true
+InCombat: true
+Hidden: false
+
+Conditions:
+  RaceType:
+    - Human
