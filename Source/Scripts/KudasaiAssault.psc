@@ -298,9 +298,7 @@ EndFunction
 
 bool Function IsMatchGender(int aiVSex, bool abCrt, Actor akActor)
   If(abCrt)
-    If(!MCM.bAllowCreatures)
-      return false
-    ElseIf(aiVSex == 0)
+    If(aiVSex == 0)
       return MCM.bAllowMC
     Else
       return MCM.bAllowFC

@@ -188,7 +188,8 @@ int Function HookIfAnimating(Actor subject, String hook) global
 EndFunction
 
 bool Function AllowCreatures() global
-  return SexLabUtil.GetAPI().AllowCreatures
+  SexLabFramework sl = SexLabUtil.GetAPI()
+  return sl.Enabled && sl.AllowCreatures
 EndFunction
 
 String Function GetRaceType(Actor akActor) global
