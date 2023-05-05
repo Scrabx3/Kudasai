@@ -64,10 +64,9 @@ Event OnConfigInit()
   Pages[1] = "$YK_NSFW"
   Pages[2] = "$YK_Race"
 
-  If(!Load())
-    SLTagsDefault()
-    iSceneTypeWeightDefault()
-  EndIf
+  SLTagsDefault()
+  iSceneTypeWeightDefault()
+  Load()
 EndEvent
 
 Function SLTagsDefault()
@@ -366,6 +365,9 @@ Function Save()
   If(iFrameSL > -1)
     JsonUtil.SetIntValue(FilePath, "iFrameSL", iFrameSL)
   EndIf
+  If(SLTags.Length != 6)
+    SLTagsDefault()
+  EndIf
   JsonUtil.StringListCopy(FilePath, "SLTags", SLTags)
   If(sRaceKeys.Length)
     JsonUtil.StringListCopy(FilePath, "sRaceKeys", sRaceKeys)
@@ -406,20 +408,18 @@ bool Function Load()
   bAllowMM = JsonUtil.GetIntValue(FilePath, "bAllowMM", bAllowMM as int)
   bAllowMC = JsonUtil.GetIntValue(FilePath, "bAllowMC", bAllowMC as int)
   bAllowFC = JsonUtil.GetIntValue(FilePath, "bAllowFC", bAllowFC as int)
-  If(JsonUtil.StringListCount(FilePath, "iSceneTypeWeight"))
+  If(JsonUtil.StringListCount(FilePath, "iSceneTypeWeight") == 4)
     iSceneTypeWeight = JsonUtil.IntListToArray(FilePath, "iSceneTypeWeight")
-    If(!iSceneTypeWeight.Length)
-      iSceneTypeWeightDefault()
-    EndIf
+  ElseIf(!iSceneTypeWeight.Length != 4)
+    iSceneTypeWeightDefault()
   EndIf
   If(JsonUtil.HasIntValue(FilePath, "iFrameSL"))
     iFrameSL = JsonUtil.GetIntValue(FilePath, "iFrameSL", iFrameSL)
   EndIf
-  If(JsonUtil.StringListCount(FilePath, "SLTags"))
+  If(JsonUtil.StringListCount(FilePath, "SLTags") == 6)
     SLTags = JsonUtil.StringListToArray(FilePath, "SLTags")
-    If(!SLTags.Length)
-      SLTagsDefault()
-    EndIf
+  ElseIf(SLTags.Length != 6)
+    SLTagsDefault()
   EndIf
   If(JsonUtil.StringListCount(FilePath, "sRaceKeys"))
     sRaceKeys = JsonUtil.StringListToArray(FilePath, "sRaceKeys")
