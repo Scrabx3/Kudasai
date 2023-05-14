@@ -413,7 +413,7 @@ bool Function Load()
   ElseIf(!iSceneTypeWeight.Length != 4)
     iSceneTypeWeightDefault()
   EndIf
-  If(JsonUtil.HasIntValue(FilePath, "iFrameSL"))
+  If(iFrameSL > -1 && JsonUtil.HasIntValue(FilePath, "iFrameSL"))
     iFrameSL = JsonUtil.GetIntValue(FilePath, "iFrameSL", iFrameSL)
   EndIf
   If(JsonUtil.StringListCount(FilePath, "SLTags") == 6)
