@@ -154,21 +154,22 @@ EndFunction
 
 ; Make a struggle or start cycle
 Function MakeStruggleOr(Actor akVictim, Actor akAggressor)
-  AELStruggle struggle_api = AELStruggle.Get()
-  String callbackevent = "Kudasai_StruggleResult"
-  float difficulty = 0.0
-  If(akVictim == PlayerRef)
-    float lvDiff = akAggressor.GetLevel() - akVictim.GetLevel()
-    float hpDmg = (1 - akAggressor.GetAVPercentage("Health")) * 100
-    difficulty = 80.0 + hpDmg - lvDIff - 5.0 * GroupA.Length
-    Debug.Trace("[Kudasai] Player Assault; Setting difficulty to { " + difficulty + " } // lvDiff = " + lvDiff + "; hpDmg = " + hpDmg + "; GroupA.Length = " + GroupA.Length)
-  EndIf
-  If(struggle_api.MakeStruggle(akAggressor, akVictim, callbackevent, difficulty))
-    RegisterForModEvent(callbackevent, "OnStruggleEnd")
-    Debug.Trace("[Kudasai] Created Struggle")
-    return
-  Else
-    Debug.Trace("[Kudasai] Failed to create Struggle")
+  bool npc = akAggressor.HasKeyword(ActorTypeNPC)
+  If(npc && MCM.bUseStruggle || !npc && MCM.bUseStruggleCrt)
+    String callbackevent = "Kudasai_StruggleResult"
+    float difficulty = 0.0
+    If(akVictim == PlayerRef)
+      float lvDiff = akAggressor.GetLevel() - akVictim.GetLevel()
+      float hpDmg = (1 - akAggressor.GetAVPercentage("Health")) * 100
+      difficulty = 80.0 + hpDmg - lvDIff - 5.0 * GroupA.Length
+      Debug.Trace("[Kudasai] Player Assault; Setting difficulty to { " + difficulty + " } // lvDiff = " + lvDiff + "; hpDmg = " + hpDmg + "; GroupA.Length = " + GroupA.Length)
+    EndIf
+    If(KudasaiStruggle.MakeStruggle(akAggressor, akVictim, callbackevent, difficulty))
+      RegisterForModEvent(callbackevent, "OnStruggleEnd")
+      Debug.Trace("[Kudasai] Created Struggle")
+      return
+    EndIf
+    Debug.Trace("[Kudasai] Failed to create Struggle, falling back to scene")
   EndIf
   EnterCycle(akVictim)
 EndFunction

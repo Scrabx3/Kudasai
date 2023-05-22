@@ -12,6 +12,9 @@ bool Property bStealArmor = true Auto Hidden
 int Property iMaxAssaults = 4 Auto Hidden
 float Property fRapistQuits = 35.0 Auto Hidden
 
+bool Property bUseStruggle = false Auto Hidden
+bool Property bUseStruggleCrt = true Auto Hidden
+
 bool Property bHunterAssault = true Auto Hidden
 bool Property bHunterStrip = true Auto Hidden
 
@@ -92,14 +95,17 @@ EndEvent
 
 Event OnPageReset(string page)
   SetCursorFillMode(TOP_TO_BOTTOM)
-  If (page == "")
+  If(page == "")
     page = "$YK_General"
   EndIf
-  If (page == "$YK_General")
+  If(page == "$YK_General")
     AddHeaderOption("$YK_Events")
     AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
     AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}")
     AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%")
+    AddEmptyOption()
+    AddToggleOptionST("strugglehuman", "$YK_StruggleHuman", bUseStruggle, getFlag(KudasaiInternal.StruggleThere()))
+    AddToggleOptionST("strugglecreature", "$YK_Strugglecreature", bUseStruggleCrt, getFlag(KudasaiInternal.StruggleThere()))
     AddHeaderOption("$Achr_HunterPride")
     AddToggleOptionST("hunterassault", "$YK_HunterAssaultToggle", bHunterAssault && Acheron.HasOption(KudasaiMain.HunterAssaultID()))
     AddToggleOptionST("hunterstrip", "$YK_HunterStripToggle", bHunterStrip && Acheron.HasOption(KudasaiMain.HunterStripID()))
@@ -112,7 +118,7 @@ Event OnPageReset(string page)
     AddKeyMapOptionST("assaultkey", "$YK_Hotkey", iAssaultKey)
     AddKeyMapOptionST("assaultmodkey", "$YK_ModifierKey", iAssaultKeyM)
 
-  ElseIf (page == "$YK_NSFW")
+  ElseIf(page == "$YK_NSFW")
     AddHeaderOption("$YK_Sex")
     AddToggleOptionST("sexFF", "$YK_AllowFF", bAllowFF)
     AddToggleOptionST("sexMM", "$YK_AllowMM", bAllowMM)
@@ -187,6 +193,12 @@ Event OnSelectST()
       bHunterStrip = hasOption
     EndIf
     SetToggleOptionValueST(bHunterStrip)
+  ElseIf(s[0] == "strugglehuman")
+    bUseStruggle = !bUseStruggle
+    SetToggleOptionValueST(bUseStruggle)
+  ElseIf(s[0] == "strugglecreature")
+    bUseStruggleCrt = !bUseStruggleCrt
+    SetToggleOptionValueST(bUseStruggleCrt)
 
   ; --------------- NSFW
   ElseIf(s[0] == "sexlabweight")
@@ -322,6 +334,10 @@ Event OnHighlightST()
     SetInfoText("$YK_SurrenderKeyHighlight")
   ElseIf(s[0] == "assaultkey")
     SetInfoText("$YK_AssaultKeyHighlight")
+  ElseIf(s[0] == "strugglehuman")
+    SetInfoText("$YK_StruggleHumanHighlight")
+  ElseIf(s[0] == "strugglecreature")
+    SetInfoText("$YK_StrugglecreatureHighlight")
   ; --------------- Hunter Pride
   ElseIf(s[0] == "hunterassault")
     SetInfoText("$YK_HunterAssaultToggleHighlight")
@@ -353,6 +369,10 @@ Function Save()
   JsonUtil.SetFloatValue(FilePath, "fRapistQuits", fRapistQuits)
   JsonUtil.SetIntValue(FilePath, "bHunterAssault", bHunterAssault as int)
   JsonUtil.SetIntValue(FilePath, "bHunterStrip", bHunterStrip as int)
+  If(KudasaiInternal.StruggleThere())
+    JsonUtil.SetIntValue(FilePath, "bUseStruggle", bUseStruggle as int)
+    JsonUtil.SetIntValue(FilePath, "bUseStruggleCrt", bUseStruggleCrt as int)
+  EndIf
   JsonUtil.SetIntValue(FilePath, "iSurrenderKey", iSurrenderKey)
   JsonUtil.SetIntValue(FilePath, "iSurrenderKeyM", iSurrenderKeyM)
   JsonUtil.SetIntValue(FilePath, "iAssaultKey", iAssaultKey)
@@ -399,6 +419,10 @@ bool Function Load()
     Else
       Acheron.RemoveOption(KudasaiMain.HunterStripID())
     EndIf
+  EndIf
+  If(KudasaiInternal.StruggleThere())
+    bUseStruggle = JsonUtil.GetIntValue(FilePath, "bUseStruggle", bUseStruggle as int)
+    bUseStruggleCrt = JsonUtil.GetIntValue(FilePath, "bUseStruggleCrt", bUseStruggleCrt as int)
   EndIf
   iSurrenderKey = JsonUtil.GetIntValue(FilePath, "iSurrenderKey", iSurrenderKey)
   iSurrenderKeyM = JsonUtil.GetIntValue(FilePath, "iSurrenderKeyM", iSurrenderKeyM)

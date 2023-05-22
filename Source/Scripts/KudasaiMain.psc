@@ -28,6 +28,11 @@ Function Maintenance()
     MCM.iFrameSL = 1
   EndIf
 
+  If (!KudasaiInternal.StruggleThere())
+    MCM.bUseStruggle = false
+    MCM.bUseStruggleCrt = false
+  EndIf
+
   If(MCM.bHunterAssault && !Acheron.HasOption(HunterAssaultID()))
     AddHunterAssaultOption()
   EndIf

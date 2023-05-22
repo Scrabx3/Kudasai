@@ -4,6 +4,10 @@ KudasaiMCM Function GetMCM() global
   return Game.GetFormFromFile(0x805, "YameteKudasai.esp") as KudasaiMCM
 EndFunction
 
+bool Function StruggleThere() global
+  Game.GetModByName("AcheronExtensionLibrary.esp") != 255
+EndFunction
+
 int Function GetFromWeight(int[] weights) global
   int all = 0
   int i = 0
