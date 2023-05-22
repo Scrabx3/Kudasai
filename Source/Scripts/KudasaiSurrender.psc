@@ -456,7 +456,8 @@ EndFunction
 bool Function MakeScene(Actor akVictim, Actor akAggressor, Actor[] akPartners, String asTags = "UseConfig", String asHook = "KSurrender")
   Debug.Trace("[Kudasai] <Surrender> MakeScene with first actor = " + akVictim + " / Aggressor = " + akAggressor + " / Partners = " + akPartners + " / Tags = " + asTags)
   String racekey = KudasaiAnimation.GetRaceType(akAggressor)
-  If(MCM.AllowedRaceType(racekey))
+  If(!MCM.AllowedRaceType(racekey))
+    Debug.Trace("[Kudasai] <Surrender> invalid race type: " + racekey)
     return false
   EndIf
   ; assert(akPartners.Find(akAggressor) > -1)
