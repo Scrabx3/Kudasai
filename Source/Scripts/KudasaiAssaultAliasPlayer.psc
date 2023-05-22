@@ -10,6 +10,10 @@ State Exhausted
     ; IDEA: Add an "exhausted" movement Idle here
 		
 		RegisterForSingleUpdate(11)	      ; Time to escape
+		RegisterForActorAction(0)         ; Weapon Swing
+		RegisterForActorAction(1)         ; Spell Cast
+		RegisterForActorAction(3)         ; Voice Cast
+		RegisterForActorAction(5)         ; Bow Draw
 		; RegisterForActorAction(8)         ; Drawing Weapon
 		RegisterForMenu("ContainerMenu")  ; "Looting near Victoires"
 	EndEvent
@@ -32,7 +36,11 @@ State Exhausted
 	Event OnEndState()
 		UnregisterForUpdate()
 		UnregisterForAllMenus()
-		UnregisterForActorAction(8)
+		UnregisterForActorAction(0)
+		UnregisterForActorAction(1)
+		UnregisterForActorAction(3)
+		UnregisterForActorAction(5)
+		; UnregisterForActorAction(8)
     Acheron.ReleaseActor(Game.GetPlayer())
     GetOwningQuest().SetStage(120)
 	EndEvent
