@@ -55,7 +55,6 @@ Event OnUpdate()
   Actor ref2 = RefAlly2.GetActorRef()
   CanEnterNSFW_Ally1 = ref1 && HasInterestedActor(ref1, GroupB)
   CanEnterNSFW_Ally2 = ref2 && HasInterestedActor(ref2, GroupC)
-  SetStage(5)
   RescueAll(GroupA)
   RescueAll(GroupB)
   RescueAll(GroupC)
@@ -74,7 +73,16 @@ Event OnUpdate()
   CanEnterNSFW = HasInterestedActor(PlayerRef, GroupA)
   Debug.Trace("[Kudasai] Dialogue Vars -> IsWerewolf: " + IsWerewolf + " | Thane: " + Thane + " | Remembers: " + Remembers + " | CanEnterNSFW: " + CanEnterNSFW)
   ; Gotta set data ( ^ ) before playing player scene. Other scenes are started on quest start
-  PlayerScene.Start()
+  If (!CanEnterNSFW && !FirstNPC.GetReference())  ; Invalid creature
+    Debug.Trace("[Kudasai] Creature Assault but creature is invalid. Skip player scene...")
+    EndCycle(0, PlayerRef)
+    EvaluatePackageGroup(0)
+    Utility.Wait(5)
+    PlayerAlias.GoToState("Exhausted")
+    Debug.Notification(" " + GroupA[0].GetLeveledActorBase().GetName() + " doesn't seem interested in you...")
+  Else
+    PlayerScene.Start()
+  EndIf
   SetStage(5)
 EndEvent
 
@@ -92,6 +100,7 @@ EndFunction
 
 float Property how_close = 420.0 AutoReadOnly Hidden
 
+; Only called if NSFW == true
 Function MakePlayerCycle()
   Actor ref = FirstNPC.GetReference() as Actor
   If(!ref || ref.IsInDialogueWithPlayer() || PlayerRef.GetDistance(ref) > how_close)
@@ -113,7 +122,7 @@ Function MakePlayerCycle()
     ; Only called after at least 1 actor is less than 300 units away from the player, 
     ; hence this is at least the original ref, make sure for them to finish dialogue
     While(ref.IsInDialogueWithPlayer())
-      Debug.Trace("[Kudasai] Primary aggressor reference in dialogue..")
+      Debug.Trace("[Kudasai] Primary aggressor reference is in dialogue..")
       Utility.Wait(0.5)
     EndWhile
   EndIf
@@ -151,16 +160,17 @@ Function MakeStruggleOr(Actor akVictim, Actor akAggressor)
   If(akVictim == PlayerRef)
     float lvDiff = akAggressor.GetLevel() - akVictim.GetLevel()
     float hpDmg = (1 - akAggressor.GetAVPercentage("Health")) * 100
-    difficulty = 80.0 + hpDmg - lvDIff - 10.0 * GroupA.Length
+    difficulty = 80.0 + hpDmg - lvDIff - 5.0 * GroupA.Length
     Debug.Trace("[Kudasai] Player Assault; Setting difficulty to { " + difficulty + " } // lvDiff = " + lvDiff + "; hpDmg = " + hpDmg + "; GroupA.Length = " + GroupA.Length)
   EndIf
   If(struggle_api.MakeStruggle(akAggressor, akVictim, callbackevent, difficulty))
     RegisterForModEvent(callbackevent, "OnStruggleEnd")
+    Debug.Trace("[Kudasai] Created Struggle")
     return
   Else
     Debug.Trace("[Kudasai] Failed to create Struggle")
   EndIf
-  EnterCycle(akVictim as Actor)
+  EnterCycle(akVictim)
 EndFunction
 
 Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
