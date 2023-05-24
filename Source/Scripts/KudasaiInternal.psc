@@ -5,7 +5,7 @@ KudasaiMCM Function GetMCM() global
 EndFunction
 
 bool Function StruggleThere() global
-  Game.GetModByName("AcheronExtensionLibrary.esp") != 255
+  return Game.GetModByName("AcheronExtensionLibrary.esp") != 255
 EndFunction
 
 int Function GetFromWeight(int[] weights) global
