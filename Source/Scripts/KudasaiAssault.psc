@@ -307,17 +307,21 @@ Actor[] Function BuildSceneArray(Actor akVictim, Actor[] akPotentials)
   return ret
 EndFunction
 
-bool Function IsMatchGender(int aiVSex, bool abCrt, Actor akActor)
+bool Function IsMatchGender(int aiVictimSex, bool abCrt, Actor akActor)
   If(abCrt)
-    If(aiVSex == 0)
+    If(aiVictimSex == 0)
       return MCM.bAllowMC
     Else
       return MCM.bAllowFC
     EndIf
   Else
     int sex = akActor.GetActorBase().GetSex()
-    If(sex != aiVSex)
-      return true
+    If(sex != aiVictimSex)
+      If (aiVictimSex == 0)
+        return MCM.bAllowFM
+      Else
+        return MCM.bAllowMF
+      EndIf
     ElseIf(sex == 0)
       return MCM.bAllowMM
     Else

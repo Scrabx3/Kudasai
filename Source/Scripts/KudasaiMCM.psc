@@ -33,6 +33,8 @@ EndProperty
 
 bool Property bAllowFF = true Auto Hidden
 bool Property bAllowMM = true Auto Hidden
+bool Property bAllowFM = true Auto Hidden
+bool Property bAllowMF = true Auto Hidden
 bool Property bAllowMC = false Auto Hidden
 bool Property bAllowFC = false Auto Hidden
 
@@ -120,6 +122,8 @@ Event OnPageReset(string page)
 
   ElseIf(page == "$YK_NSFW")
     AddHeaderOption("$YK_Sex")
+    AddToggleOptionST("sexMF", "$YK_AllowMF", bAllowMF)
+    AddToggleOptionST("sexFM", "$YK_AllowFM", bAllowFM)
     AddToggleOptionST("sexFF", "$YK_AllowFF", bAllowFF)
     AddToggleOptionST("sexMM", "$YK_AllowMM", bAllowMM)
     AddToggleOptionST("sexMC", "$YK_AllowMC", bAllowMC)
@@ -204,6 +208,12 @@ Event OnSelectST()
   ElseIf(s[0] == "sexlabweight")
     iFrameSL = 1 - iFrameSL
     SetToggleOptionValueST(iFrameSL > 0)
+  ElseIf(s[0] == "sexMF")
+    bAllowMF = !bAllowMF
+    SetToggleOptionValueST(bAllowMF)
+  ElseIf(s[0] == "sexFM")
+    bAllowFM = !bAllowFM
+    SetToggleOptionValueST(bAllowFM)
   ElseIf(s[0] == "sexFF")
     bAllowFF = !bAllowFF
     SetToggleOptionValueST(bAllowFF)
@@ -361,7 +371,7 @@ EndEvent
 
 ; --------------------- Save/Load
 
-String Property FilePath = "YKudasai_Settings.json" AutoReadOnly Hidden
+String Property FilePath = "./YKudasai_Settings.json" AutoReadOnly Hidden
 
 Function Save()
   JsonUtil.SetIntValue(FilePath, "bStealArmor", bStealArmor as int)
@@ -377,6 +387,8 @@ Function Save()
   JsonUtil.SetIntValue(FilePath, "iSurrenderKeyM", iSurrenderKeyM)
   JsonUtil.SetIntValue(FilePath, "iAssaultKey", iAssaultKey)
   JsonUtil.SetIntValue(FilePath, "iAssaultKeyM", iAssaultKeyM)
+  JsonUtil.SetIntValue(FilePath, "bAllowFM", bAllowFM as int)
+  JsonUtil.SetIntValue(FilePath, "bAllowMF", bAllowMF as int)
   JsonUtil.SetIntValue(FilePath, "bAllowFF", bAllowFF as int)
   JsonUtil.SetIntValue(FilePath, "bAllowMM", bAllowMM as int)
   JsonUtil.SetIntValue(FilePath, "bAllowMC", bAllowMC as int)
@@ -395,10 +407,8 @@ Function Save()
 EndFunction
 
 bool Function Load()
-  If(!JsonUtil.JsonExists(FilePath))
-    return false
-  ElseIf(!JsonUtil.Load(FIlePath) || !JsonUtil.IsGood(FilePath))
-    Debug.Trace("Failed to load Json file: " + JsonUtil.GetErrors(FilePath))
+  If(!JsonUtil.Load(FilePath))
+    Debug.Trace("[Kudasai] Failed to load Json file")
     return false
   EndIf
   bStealArmor = JsonUtil.GetIntValue(FilePath, "bStealArmor", bStealArmor as int)
@@ -428,6 +438,8 @@ bool Function Load()
   iSurrenderKeyM = JsonUtil.GetIntValue(FilePath, "iSurrenderKeyM", iSurrenderKeyM)
   iAssaultKey = JsonUtil.GetIntValue(FilePath, "iAssaultKey", iAssaultKey)
   iAssaultKeyM = JsonUtil.GetIntValue(FilePath, "iAssaultKeyM", iAssaultKeyM)
+  bAllowFM = JsonUtil.GetIntValue(FilePath, "bAllowFF", bAllowFM as int)
+  bAllowMF = JsonUtil.GetIntValue(FilePath, "bAllowMM", bAllowMF as int)
   bAllowFF = JsonUtil.GetIntValue(FilePath, "bAllowFF", bAllowFF as int)
   bAllowMM = JsonUtil.GetIntValue(FilePath, "bAllowMM", bAllowMM as int)
   bAllowMC = JsonUtil.GetIntValue(FilePath, "bAllowMC", bAllowMC as int)

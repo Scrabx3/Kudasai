@@ -81,7 +81,11 @@ bool Function IsInterested(Actor akVictim, Actor akAggressor)
   ElseIf(rt == "Human")
     int sexV = akVictim.GetActorBase().GetSex()
     If(akAggressor.GetActorBase().GetSex() != sexV)
-      return true
+      If (sexV == 0)
+        return MCM.bAllowFM
+      Else
+        return MCM.bAllowMF
+      EndIf
     ElseIf(sexV == 0)
       return MCM.bAllowMM
     Else
