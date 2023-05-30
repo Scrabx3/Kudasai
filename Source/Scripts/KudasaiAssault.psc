@@ -58,11 +58,14 @@ Event OnUpdate()
   RescueAll(GroupA)
   RescueAll(GroupB)
   RescueAll(GroupC)
+  bool interested = false
   int i = 0
-  While(i < GroupA.Length)
+  While(i < GroupA.Length && !interested)
     If(GroupA[i].HasKeyword(ActorTypeNPC))
+      If (!interested && IsValidPrime(GroupA[i], PlayerRef))
+        interested = true
+      EndIf
       FirstNPC.ForceRefTo(GroupA[i])
-      i = GroupA.Length
     EndIf
     i += 1
   EndWhile
@@ -314,21 +317,20 @@ bool Function IsMatchGender(int aiVictimSex, bool abCrt, Actor akActor)
     Else
       return MCM.bAllowFC
     EndIf
-  Else
-    int sex = akActor.GetActorBase().GetSex()
-    If(sex != aiVictimSex)
-      If (aiVictimSex == 0)
-        return MCM.bAllowFM
-      Else
-        return MCM.bAllowMF
-      EndIf
-    ElseIf(sex == 0)
-      return MCM.bAllowMM
-    Else
-      return MCM.bAllowFF
-    EndIf
   EndIf
-  return false
+  int aggrSex = akActor.GetLeveledActorBase().GetSex()
+  ; Debug.Trace("[Kudasai] Matching Gender; Vic = " + aiVictimSex + " Aggr = " + aggrSex)
+  If(aggrSex != aiVictimSex)
+    If (aiVictimSex == 0)
+      return MCM.bAllowFM
+    Else
+      return MCM.bAllowMF
+    EndIf
+  ElseIf(aggrSex == 0)
+    return MCM.bAllowMM
+  Else
+    return MCM.bAllowFF
+  EndIf
 EndFunction
 
 ;/  QUEST END  /;
@@ -448,9 +450,9 @@ EndFunction
 
 ;/  UTILITY  /;
 
-String Function IsValidPrime(Actor akActor, Actor akMatchAgainst)
+String Function IsValidPrime(Actor akActor, Actor akVictim)
   String ret = KudasaiAnimation.GetRaceType(akActor)
-  If(ret != "" && MCM.AllowedRaceType(ret) && IsMatchGender(akMatchAgainst.GetActorBase().GetSex(), ret != "Human", akActor))
+  If(ret != "" && MCM.AllowedRaceType(ret) && IsMatchGender(akVictim.GetActorBase().GetSex(), ret != "Human", akActor))
     return ret
   EndIf
   return ""
