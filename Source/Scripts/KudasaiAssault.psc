@@ -319,7 +319,7 @@ bool Function IsMatchGender(int aiVictimSex, bool abCrt, Actor akActor)
     EndIf
   EndIf
   int aggrSex = akActor.GetLeveledActorBase().GetSex()
-  ; Debug.Trace("[Kudasai] Matching Gender; Vic = " + aiVictimSex + " Aggr = " + aggrSex)
+  ; Debug.Trace("[Kudasai] Matching Sex; Vic = " + aiVictimSex + " Aggr = " + aggrSex)
   If(aggrSex != aiVictimSex)
     If (aiVictimSex == 0)
       return MCM.bAllowFM
