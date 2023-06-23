@@ -75,6 +75,7 @@ Event OnUpdate()
   Remembers = IsRemembered()
   CanEnterNSFW = HasInterestedActor(PlayerRef, GroupA)
   Debug.Trace("[Kudasai] Dialogue Vars -> IsWerewolf: " + IsWerewolf + " | Thane: " + Thane + " | Remembers: " + Remembers + " | CanEnterNSFW: " + CanEnterNSFW)
+  Debug.Trace("[Kudasai] Ally Vars     -> CanEnterNSFW (Ally1): " + CanEnterNSFW_Ally1 + " | CanEnterNSFW (Ally2): " + CanEnterNSFW_Ally2)
   ; Gotta set data ( ^ ) before playing player scene. Other scenes are started on quest start
   If (!CanEnterNSFW && !FirstNPC.GetReference())  ; Invalid creature
     Debug.Trace("[Kudasai] Creature Assault but creature is invalid. Skip player scene...")
@@ -180,10 +181,10 @@ EndFunction
 Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
   Debug.Trace("[Kudasai] Struggle End -> Victim: " + akVictim + " // abVictimEscaped: " + abVictimEscaped)
   If(abVictimEscaped) ; Only the player can escape here
-    Acheron.RescueActor(PlayerRef)
-    Utility.Wait(5)
-    ClearAliasGroup(RefsA)
-    PlayerAlias.Clear()
+    Acheron.RescueActor(PlayerRef, false)
+    Utility.Wait(3)
+    Debug.Trace("[Kudasai] Player escaped, stopping quest...")
+    Stop()
     return
   EndIf
   EnterCycle(akVictim as Actor)
