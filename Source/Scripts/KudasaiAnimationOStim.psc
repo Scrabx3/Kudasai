@@ -39,7 +39,13 @@ int Function CreateAnimation(Actor[] akPositions, Actor akVictim) global
   EndIf
 
   If(akPositions.Find(Game.GetPlayer()) > -1)
-    If(OStim.StartScene(p[1], p[0], false, false, false, "", zThirdActor = p[2], aggressive = w > -1, AggressingActor = p[0]))
+    String startanim
+    If(p[0].GetLeveledActorBase().GetSex() == 0)
+      startanim = "OpS|Sta!Sit|Ap|ColiseumMaleStart"
+    Else
+      startanim = "OpS|LyB!Sta|Ap|ColiseumFemaleStart"
+    EndIf
+    If(OStim.StartScene(p[1], p[0], false, false, false, startanim, zThirdActor = p[2], aggressive = w > -1, AggressingActor = p[0]))
       return 29
     EndIf
   Else
