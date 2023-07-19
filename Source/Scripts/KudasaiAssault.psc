@@ -165,8 +165,8 @@ Function MakeStruggleOr(Actor akVictim, Actor akAggressor)
     float difficulty = 0.0
     If(akVictim == PlayerRef)
       float lvDiff = akAggressor.GetLevel() - akVictim.GetLevel()
-      float hpDmg = (1 - akAggressor.GetAVPercentage("Health")) * 100
-      difficulty = 80.0 + hpDmg - lvDIff - 5.0 * GroupA.Length
+      float hpDmg = (1 - akAggressor.GetAVPercentage("Health")) * 50
+      difficulty = 80.0 + hpDmg - lvDIff - 4 * GroupA.Length
       Debug.Trace("[Kudasai] Player Assault; Setting difficulty to { " + difficulty + " } // lvDiff = " + lvDiff + "; hpDmg = " + hpDmg + "; GroupA.Length = " + GroupA.Length)
     EndIf
     If(KudasaiStruggle.MakeStruggle(akAggressor, akVictim, callbackevent, difficulty))
