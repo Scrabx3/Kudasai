@@ -44,6 +44,7 @@ Function Setup()
   Debug.Trace("[Kudasai] Started Assault Player -> Setup()")
   RegisterForSingleUpdate(0.7)
   cycle_count = new int[3]
+  Acheron.RegisterForActorRescued(self)
 EndFunction
 
 Event OnUpdate()
@@ -336,6 +337,25 @@ EndFunction
 
 ;/  QUEST END  /;
 
+Event OnActorRescued(Actor akVictim)
+  Debug.Trace("[Kudasai] Actor has been rescued: " + akVictim)
+  If (akVictim == PlayerRef)
+    If(KudasaiAnimation.IsAnimating(akVictim))
+      KudasaiAnimation.StopAnimating(akVictim)
+    EndIf
+    Utility.Wait(3)
+    Stop()
+  ElseIf (akVictim == RefAlly1.GetReference())
+    ForceStop(RefAlly1)
+    Utility.Wait(0.5)
+    EndCycle(1, akVictim)
+  ElseIf (akVictim == RefAlly2.GetReference())
+    ForceStop(RefAlly2)
+    Utility.Wait(0.5)
+    EndCycle(2, akVictim)
+  EndIf
+EndEvent
+
 Function EndCycle(int aiVicID, Actor akVictim)
   int stage = aiVicID * 100 + 100
   If(GetStageDone(stage))
@@ -363,28 +383,29 @@ EndFunction
 
 Function QuestEnd()
   Debug.Trace("[Kudasai] Assault End")
+  Acheron.UnregisterForActorRescued(self)
+  If(KudasaiAnimation.IsAnimating(PlayerRef))
+    KudasaiAnimation.StopAnimating(PlayerRef)
+  EndIf
   If(Acheron.IsDefeated(PlayerRef))
     Acheron.RescueActor(PlayerRef, true)
   ElseIf(Acheron.IsPacified(PlayerRef))
     Acheron.ReleaseActor(PlayerRef)
   EndIf
-  Actor ref1 = RefAlly1.GetActorRef()
-  If(ref1)
-    If(KudasaiAnimation.IsAnimating(ref1))
-      KudasaiAnimation.StopAnimating(ref1)
-    EndIf
-    If(Acheron.IsDefeated(ref1))
-      Acheron.DefeatActor(ref1)
-    EndIf
+  ForceStop(RefAlly1)
+  ForceStop(RefAlly2)
+EndFunction
+
+Function ForceStop(ReferenceAlias akRef)
+  Actor ref = akRef.GetActorReference()
+  If (!ref)
+    return
   EndIf
-  Actor ref2 = RefAlly2.GetActorRef()
-  If(ref2)
-    If(KudasaiAnimation.IsAnimating(ref2))
-      KudasaiAnimation.StopAnimating(ref2)
-    EndIf
-    If(Acheron.IsDefeated(ref2))
-      Acheron.DefeatActor(ref2)
-    EndIf
+  If(KudasaiAnimation.IsAnimating(ref))
+    KudasaiAnimation.StopAnimating(ref)
+  EndIf
+  If(Acheron.IsDefeated(ref))
+    Acheron.DefeatActor(ref)
   EndIf
 EndFunction
 
