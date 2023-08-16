@@ -370,15 +370,13 @@ Function EndCycle(int aiVicID, Actor akVictim)
   EndIf
 EndFunction
 
-bool Function CheckStopConditions(int aiVictimID)
-  If(aiVictimID != 0 && !GetStageDone(120))  ; Player sets stage to 100 on exhaust, 120 on complete
-    return false
-  ElseIf(aiVictimID != 1 && RefAlly1.GetReference() && !GetStageDone(200) || aiVictimID != 2 && RefAlly2.GetReference() && !GetStageDone(300))
-    return false
+Function CheckStopConditions(int aiVictimID)
+  If (!GetStageDone(120) || RefAlly1.GetRef() && !GetStageDone(200) || RefAlly2.GetRef() && !GetStageDone(300))
+    Debug.Trace("Fully shut down cycle " + aiVictimID)
+    return
   EndIf
   Debug.Trace("[Kudasai] All scenes ended, stopping quest..")
   Stop()
-  return true
 EndFunction
 
 Function QuestEnd()

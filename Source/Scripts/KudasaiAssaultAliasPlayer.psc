@@ -2,9 +2,10 @@ Scriptname KudasaiAssaultAliasPlayer extends ReferenceAlias
 
 State Exhausted
 	Event OnBeginState()
-		If(GetOwningQuest().GetStage() > 300)
+		If(GetOwningQuest().GetStageDone(105))
 			return
 		EndIf
+		GetOwningQuest().SetStage(105)
 		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> Enter State = Exhausted")
 		Acheron.RescueActor(Game.GetPlayer(), false)
     ; IDEA: Add an "exhausted" movement Idle here
