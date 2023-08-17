@@ -463,6 +463,7 @@ bool Function Load()
   If(jRaceKeys && JArray.count(jRaceKeys) == 6)
     SLTags = JArray.asStringArray(jRaceKeys)
   EndIf
+  Main.RegisterKeys()
   return true
 EndFunction
 
