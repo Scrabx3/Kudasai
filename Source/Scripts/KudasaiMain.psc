@@ -50,10 +50,11 @@ Function RegisterKeys()
   If(MCM.iAssaultKey > 0)
     RegisterForKey(MCM.iAssaultKey)
   EndIf
+  Debug.Trace("[Kudasai] Registering keys: " + MCM.iSurrenderKey + " | " + MCM.iAssaultKey)
 EndFunction
 
 Event OnKeyDown(int keyCode)
-  If(Utility.IsInMenuMode() || !Game.IsLookingControlsEnabled() || !Game.IsMovementControlsEnabled() || UI.IsMenuOpen("Dialogue Menu"))
+  If(Utility.IsInMenuMode() || !Game.IsLookingControlsEnabled() || !Game.IsActivateControlsEnabled() || !Game.IsMovementControlsEnabled())
 		return
   Else
     Actor Player = Game.GetPlayer()
@@ -62,12 +63,14 @@ Event OnKeyDown(int keyCode)
     EndIf
 	EndIf
   If(keyCode == MCM.iSurrenderKey)
+    Debug.Trace("[Kudasai] Key press for surrender")
     If(MCM.iSurrenderKeyM == -1 || Input.IsKeyPressed(MCM.iSurrenderKeyM))
       If (!SurrenderQuest.Start())
         SurrenderQFailure.Show()
       EndIf
     EndIf
   ElseIf(keyCode == MCM.iAssaultKey)
+    Debug.Trace("[Kudasai] Key press for assault")
     If(MCM.iAssaultKeyM == -1 || Input.IsKeyPressed(MCM.iAssaultKeyM))
       CreateAssault()
     EndIf

@@ -236,7 +236,7 @@ EndEvent
 Function NewCycle(Actor akVictim, int aiVicID, Actor[] akOldPosition)
   Debug.Trace("[Kudasai] Attempting new cycle for victim " + akVictim + "(" + aiVicID + ")")
   cycle_count[aiVicID] = cycle_count[aiVicID] + 1
-  If(cycle_count[aiVicID] > MCM.iMaxAssaults)
+  If(MCM.iMaxAssaults != 0 && cycle_count[aiVicID] > MCM.iMaxAssaults)
     Debug.Trace("[Kudasai] Ending Cycle after " + cycle_count[aiVicID] + "/" + MCM.iMaxAssaults + " animations")
     EndCycle(aiVicID, akVictim)
     return
