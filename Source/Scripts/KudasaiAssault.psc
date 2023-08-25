@@ -346,6 +346,10 @@ EndFunction
 Event OnActorRescued(Actor akVictim)
   Debug.Trace("[Kudasai] Actor has been rescued: " + akVictim)
   If (akVictim == PlayerRef)
+    If (GetStageDone(105))
+      ; Player exhaustion state
+      return
+    EndIf
     cycle_cancel[0] = true
     If(KudasaiAnimation.IsAnimating(akVictim))
       KudasaiAnimation.StopAnimating(akVictim)

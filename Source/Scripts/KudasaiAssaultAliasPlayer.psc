@@ -44,7 +44,7 @@ Function CompleteExhaustion()
 	UnregisterForActorAction(3)
 	UnregisterForActorAction(5)
 	; UnregisterForActorAction(8)
-  Acheron.ReleaseActor(Game.GetPlayer())
+  Acheron.ReleaseActor(GetActorReference())
   GetOwningQuest().SetStage(120)
 	GoToState("")
 EndFunction
