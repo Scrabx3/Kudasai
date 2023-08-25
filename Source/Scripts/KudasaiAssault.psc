@@ -327,7 +327,6 @@ bool Function IsMatchGender(int aiVictimSex, bool abCrt, Actor akActor)
     EndIf
   EndIf
   int aggrSex = akActor.GetLeveledActorBase().GetSex()
-  ; Debug.Trace("[Kudasai] Matching Sex; Vic = " + aiVictimSex + " Aggr = " + aggrSex)
   If(aggrSex != aiVictimSex)
     If (aiVictimSex == 0)
       return MCM.bAllowFM
@@ -370,6 +369,10 @@ Event OnActorRescued(Actor akVictim)
 EndEvent
 
 Function EndCycle(int aiVicID, Actor akVictim)
+  If (GetStage() == 500 || IsStopped() || IsStopping())
+    Debug.Trace("[Kudasai] Ending cycle for victim " + akVictim + "(" + aiVicID + ") but quest is at Stage 500 (Stopping)")
+    return
+  EndIf
   int stage = aiVicID * 100 + 100
   If(GetStageDone(stage))
     Debug.Trace("[Kudasai] Ending cycle for victim " + akVictim + "(" + aiVicID + ") but stage is already set")
@@ -386,7 +389,7 @@ EndFunction
 
 Function CheckStopConditions(int aiVictimID)
   If (!GetStageDone(120) || RefAlly1.GetRef() && !GetStageDone(200) || RefAlly2.GetRef() && !GetStageDone(300))
-    Debug.Trace("[Kudasai Fully shut down cycle " + aiVictimID)
+    Debug.Trace("[Kudasai] Fully shut down cycle " + aiVictimID)
     return
   EndIf
   Debug.Trace("[Kudasai] All scenes ended, stopping quest..")
