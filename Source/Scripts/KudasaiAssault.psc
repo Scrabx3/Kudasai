@@ -27,6 +27,7 @@ Actor[] GroupA
 Actor[] GroupB
 Actor[] GroupC
 
+bool[] cycle_cancel
 int[] cycle_count
 
 int Property IsWerewolf Auto Hidden Conditional     ; 0 = No Werewolf, 1 = Werewolf, 2 = Werebear
@@ -44,6 +45,7 @@ Function Setup()
   Debug.Trace("[Kudasai] Started Assault Player -> Setup()")
   RegisterForSingleUpdate(0.7)
   cycle_count = new int[3]
+  cycle_cancel = new bool[3]
   Acheron.RegisterForActorRescued(self)
 EndFunction
 
@@ -235,6 +237,10 @@ EndEvent
 
 Function NewCycle(Actor akVictim, int aiVicID, Actor[] akOldPosition)
   Debug.Trace("[Kudasai] Attempting new cycle for victim " + akVictim + "(" + aiVicID + ")")
+  If (cycle_cancel[aiVicID] || IsStopped() || IsStopping())
+    Debug.Trace("[Kudasai] Assault Quest ending, abandon")
+    return
+  EndIf
   cycle_count[aiVicID] = cycle_count[aiVicID] + 1
   If(MCM.iMaxAssaults != 0 && cycle_count[aiVicID] > MCM.iMaxAssaults)
     Debug.Trace("[Kudasai] Ending Cycle after " + cycle_count[aiVicID] + "/" + MCM.iMaxAssaults + " animations")
@@ -340,16 +346,19 @@ EndFunction
 Event OnActorRescued(Actor akVictim)
   Debug.Trace("[Kudasai] Actor has been rescued: " + akVictim)
   If (akVictim == PlayerRef)
+    cycle_cancel[0] = true
     If(KudasaiAnimation.IsAnimating(akVictim))
       KudasaiAnimation.StopAnimating(akVictim)
     EndIf
     Utility.Wait(3)
     Stop()
   ElseIf (akVictim == RefAlly1.GetReference())
+    cycle_cancel[1] = true
     ForceStop(RefAlly1)
     Utility.Wait(0.5)
     EndCycle(1, akVictim)
   ElseIf (akVictim == RefAlly2.GetReference())
+    cycle_cancel[2] = true
     ForceStop(RefAlly2)
     Utility.Wait(0.5)
     EndCycle(2, akVictim)
@@ -362,6 +371,7 @@ Function EndCycle(int aiVicID, Actor akVictim)
     Debug.Trace("[Kudasai] Ending cycle for victim " + akVictim + "(" + aiVicID + ") but stage is already set")
     return
   EndIf
+  cycle_cancel[aiVicID] = true
   Debug.Trace("[Kudasai] Ending cycle for victim " + akVictim + "(" + aiVicID + ")")
   ; Progress scene
   SetStage(stage)
@@ -372,7 +382,7 @@ EndFunction
 
 Function CheckStopConditions(int aiVictimID)
   If (!GetStageDone(120) || RefAlly1.GetRef() && !GetStageDone(200) || RefAlly2.GetRef() && !GetStageDone(300))
-    Debug.Trace("Fully shut down cycle " + aiVictimID)
+    Debug.Trace("[Kudasai Fully shut down cycle " + aiVictimID)
     return
   EndIf
   Debug.Trace("[Kudasai] All scenes ended, stopping quest..")

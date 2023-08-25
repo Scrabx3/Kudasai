@@ -2,12 +2,13 @@ Scriptname KudasaiAssaultAliasPlayer extends ReferenceAlias
 
 State Exhausted
 	Event OnBeginState()
-		If(GetOwningQuest().GetStageDone(105))
+		Quest q = GetOwningQuest()
+		If(q.GetStage() == 500 || q.IsStopped() || q.IsStopping() || q.GetStageDone(105))
 			return
 		EndIf
 		GetOwningQuest().SetStage(105)
 		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> Enter State = Exhausted")
-		Acheron.RescueActor(Game.GetPlayer(), false)
+		Acheron.RescueActor(GetActorReference(), false)
     ; IDEA: Add an "exhausted" movement Idle here
 		
 		RegisterForSingleUpdate(11)	      ; Time to escape
@@ -21,29 +22,29 @@ State Exhausted
 
 	Event OnActorAction(int actionType, Actor akActor, Form source, int slot)
 		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> OnActorAction")
-		GotoState("")
+		CompleteExhaustion()
 	EndEvent
 
 	Event OnMenuOpen(string menuName)
 		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> OnMenuOpen")
-		GotoState("")
+		CompleteExhaustion()
 	EndEvent
 
 	Event OnUpdate()
 		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> OnUpdate")
-		GoToState("")
-	EndEvent
-
-	Event OnEndState()
-		UnregisterForUpdate()
-		UnregisterForAllMenus()
-		UnregisterForActorAction(0)
-		UnregisterForActorAction(1)
-		UnregisterForActorAction(3)
-		UnregisterForActorAction(5)
-		; UnregisterForActorAction(8)
-    Acheron.ReleaseActor(Game.GetPlayer())
-    GetOwningQuest().SetStage(120)
+		CompleteExhaustion()
 	EndEvent
 EndState
 
+Function CompleteExhaustion()
+	UnregisterForUpdate()
+	UnregisterForAllMenus()
+	UnregisterForActorAction(0)
+	UnregisterForActorAction(1)
+	UnregisterForActorAction(3)
+	UnregisterForActorAction(5)
+	; UnregisterForActorAction(8)
+  Acheron.ReleaseActor(Game.GetPlayer())
+  GetOwningQuest().SetStage(120)
+	GoToState("")
+EndFunction
