@@ -257,7 +257,7 @@ Function NewCycle(Actor akVictim, int aiVicID, Actor[] akOldPosition)
     While(i < akOldPosition.Length)
       If(akOldPosition[i] != akVictim && Utility.RandomFloat(0, 99.5) < MCM.fRapistQuits)
         int where = group.find(akOldPosition[i])
-        akOldPosition[where] = none
+        group[where] = none
       EndIf
       i += 1
     EndWhile
