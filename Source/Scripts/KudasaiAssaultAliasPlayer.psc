@@ -3,7 +3,11 @@ Scriptname KudasaiAssaultAliasPlayer extends ReferenceAlias
 State Exhausted
 	Event OnBeginState()
 		Quest q = GetOwningQuest()
-		If(q.GetStage() == 500 || q.IsStopped() || q.IsStopping() || q.GetStageDone(105))
+		If(q.GetStageDone(105))
+			Debug.Trace("[Kudasai] <Assault> Already in exhausted State")
+			return
+		ElseIf(q.GetStage() == 500 || q.IsStopped() || q.IsStopping())
+			Debug.Trace("[Kudasai] <Assault> Enter Exhausted State but Quest is stopping")
 			return
 		EndIf
 		GetOwningQuest().SetStage(105)
@@ -33,6 +37,10 @@ State Exhausted
 	Event OnUpdate()
 		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> OnUpdate")
 		CompleteExhaustion()
+	EndEvent
+
+	Event OnEndState()
+		Debug.Trace("[Kudasai] <Assault> Player leaving Exhausted State")
 	EndEvent
 EndState
 
