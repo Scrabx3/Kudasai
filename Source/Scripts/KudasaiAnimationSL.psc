@@ -20,7 +20,7 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor[] akPositions, Actor akVictim
     sslBaseAnimation[] animations
     String[] tags
     If(asTags == "UseConfig")
-      ; 0: F<-M | 1: M<-M | 2: M<-F | 3: F<-F | 4: M<-* | 5: F<-*
+      ; 0: F<-M | 1: M<-M | 2: M<-F | 3: F<-F | 4: F<-* | 5: M<-*
       int n
       If(akPositions.Length == 2 && !creatures)
         If(genderV == 1 && genders[0] == 1) ; F<-M
@@ -29,7 +29,7 @@ int Function CreateAnimation(KudasaiMCM MCM, Actor[] akPositions, Actor akVictim
           n = 1 + genders[1]
         EndIf
       Else
-        n = 4 + genderV
+        n = 5 - genderV
       EndIf
       tags = GetTags(MCM.SLTags[n])
     Else
