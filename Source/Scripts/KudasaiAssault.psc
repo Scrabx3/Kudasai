@@ -388,7 +388,7 @@ Function EndCycle(int aiVicID, Actor akVictim)
 EndFunction
 
 Function CheckStopConditions(int aiVictimID)
-  If (!GetStageDone(120) || RefAlly1.GetRef() && !GetStageDone(200) || RefAlly2.GetRef() && !GetStageDone(300))
+  If (!GetStageDone(120) || RefAlly1.GetRef() && !GetStageDone(210) || RefAlly2.GetRef() && !GetStageDone(310))
     Debug.Trace("[Kudasai] Fully shut down cycle " + aiVictimID)
     return
   EndIf
