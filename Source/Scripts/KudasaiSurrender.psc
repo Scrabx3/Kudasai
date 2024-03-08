@@ -363,7 +363,6 @@ Function Imprison(Faction crimefaction)
 EndFunction
 
 Function TieUp(Actor akTarget)
-  ; COMEBACK: Reduce the number of tie ups here to 1 or 2 and move everything else into the Black Market(?)
   String[] poses = new String[10]
   poses[0] = "KudasaiAPC006"
   poses[1] = "KudasaiAPC008"
