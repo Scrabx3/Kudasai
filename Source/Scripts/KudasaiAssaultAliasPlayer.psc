@@ -15,7 +15,7 @@ State Exhausted
 		Acheron.RescueActor(GetActorReference(), false)
     ; IDEA: Add an "exhausted" movement Idle here
 		
-		RegisterForSingleUpdate(11)	      ; Time to escape
+		RegisterForSingleUpdate(7)	      ; Time to escape
 		RegisterForActorAction(0)         ; Weapon Swing
 		RegisterForActorAction(1)         ; Spell Cast
 		RegisterForActorAction(3)         ; Voice Cast
@@ -25,7 +25,7 @@ State Exhausted
 	EndEvent
 
 	Event OnActorAction(int actionType, Actor akActor, Form source, int slot)
-		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> OnActorAction")
+		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> OnActorAction " + actionType)
 		CompleteExhaustion()
 	EndEvent
 
@@ -36,7 +36,8 @@ State Exhausted
 
 	Event OnUpdate()
 		Debug.Trace("[Kudasai] <Assault> PLAYER SCRIPT -> OnUpdate")
-		CompleteExhaustion()
+  	Acheron.ReleaseActor(GetActorReference())
+  	GetOwningQuest().SetStage(120)
 	EndEvent
 
 	Event OnEndState()
@@ -53,6 +54,5 @@ Function CompleteExhaustion()
 	UnregisterForActorAction(5)
 	; UnregisterForActorAction(8)
   Acheron.ReleaseActor(GetActorReference())
-  GetOwningQuest().SetStage(120)
-	GoToState("")
+	GetOwningQuest().Stop()
 EndFunction

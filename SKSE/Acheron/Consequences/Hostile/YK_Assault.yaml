@@ -6,5 +6,5 @@ Quest: 0x872|YameteKudasai.esp
 Priority: 30
 Cooldown: 0
 Teleport: false
-InCombat: false
+InCombat: true
 Hidden: false

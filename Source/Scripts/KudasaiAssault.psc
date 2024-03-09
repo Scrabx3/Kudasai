@@ -54,10 +54,10 @@ Event OnUpdate()
   GroupA = AsActorArray(RefsA)
   GroupB = AsActorArray(RefsB)
   GroupC = AsActorArray(RefsC)
-  Actor ref1 = RefAlly1.GetActorRef()
-  Actor ref2 = RefAlly2.GetActorRef()
-  CanEnterNSFW_Ally1 = ref1 && HasInterestedActor(ref1, GroupB)
-  CanEnterNSFW_Ally2 = ref2 && HasInterestedActor(ref2, GroupC)
+  Actor ref1 = RefAlly1.GetReference() as Actor
+  Actor ref2 = RefAlly2.GetReference() as Actor
+  CanEnterNSFW_Ally1 = ref1 && HasInterestedActorAndPlaySurrender(ref1, GroupB)
+  CanEnterNSFW_Ally2 = ref2 && HasInterestedActorAndPlaySurrender(ref2, GroupC)
   RescueAll(GroupA)
   RescueAll(GroupB)
   RescueAll(GroupC)
@@ -383,7 +383,11 @@ Function EndCycle(int aiVicID, Actor akVictim)
   ; Progress scene
   SetStage(stage)
   If(aiVicID != 0)
-    Debug.SendAnimationEvent(akVictim, "bleedoutStart")
+    If(Acheron.IsDefeated(akVictim))
+      Debug.SendAnimationEvent(akVictim, "bleedoutStart")
+    Else
+      Acheron.DefeatActor(akVictim)
+    EndIf
   EndIf
 EndFunction
 
@@ -393,6 +397,7 @@ Function CheckStopConditions(int aiVictimID)
     return
   EndIf
   Debug.Trace("[Kudasai] All scenes ended, stopping quest..")
+  Utility.Wait(4)
   Stop()
 EndFunction
 
@@ -416,10 +421,12 @@ Function ForceStop(ReferenceAlias akRef)
   If (!ref)
     return
   EndIf
-  If(KudasaiAnimation.IsAnimating(ref))
+  If (KudasaiAnimation.IsAnimating(ref))
     KudasaiAnimation.StopAnimating(ref)
   EndIf
-  If(Acheron.IsDefeated(ref))
+  If (Acheron.IsDefeated(ref))
+    Debug.SendAnimationEvent(ref, "bleedoutStart")
+  Else
     Acheron.DefeatActor(ref)
   EndIf
 EndFunction
@@ -433,6 +440,14 @@ int Function IsWerewolf()
     return ret
   EndIf
   return 0
+EndFunction
+
+bool Function HasInterestedActorAndPlaySurrender(Actor akVictim, Actor[] akGroup)
+  If (!Acheron.IsDefeated(akVictim))
+    Acheron.PacifyActor(akVictim)
+    Debug.SendAnimationEvent(akVictim, "KudasaiSurrender")
+  EndIf
+  return HasInterestedActor(akVictim, akGroup)
 EndFunction
 
 bool Function HasInterestedActor(Actor akVictim, Actor[] akGroup)
