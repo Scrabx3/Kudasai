@@ -17,6 +17,9 @@ ReferenceAlias[] Property RefsC Auto
 Scene Property PlayerScene Auto
 Topic Property CycleTopic Auto
 
+Quest Property AcheronBlackout Auto
+Quest Property YKRobbed Auto
+
 FavorJarlsMakeFriendsScript Property ThaneVars Auto
 FormList Property HoldsList Auto
 Quest Property PlayerWerewolfQuest Auto
@@ -39,6 +42,10 @@ int Property CyclesPlayer Auto Hidden Conditional   ; Number of assaults thus fa
 bool Property CanEnterNSFW_Ally1 Auto Hidden Conditional
 bool Property CanEnterNSFW_Ally2 Auto Hidden Conditional
 
+bool Property DoStealItems Auto Hidden Conditional
+bool _Stealitems
+bool _Teleport
+
 ;/  START UP  /;
 
 Function Setup()
@@ -47,6 +54,9 @@ Function Setup()
   cycle_count = new int[3]
   cycle_cancel = new bool[3]
   Acheron.RegisterForActorRescued(self)
+  _Stealitems = Utility.RandomFloat(0, 99.5) < MCM.fAssaultSteal
+  _Teleport = Acheron.IsTeleportAllowed() && Utility.RandomFloat(0, 99.5) < MCM.fBlackoutAssault
+  DoStealItems = _Stealitems && !_Teleport
 EndFunction
 
 Event OnUpdate()
@@ -341,6 +351,21 @@ bool Function IsMatchGender(int aiVictimSex, bool abCrt, Actor akActor)
 EndFunction
 
 ;/  QUEST END  /;
+
+bool Function CheckBlackout()
+  If (!_Teleport)
+    Debug.Trace("[Kudasai] CheckBlackout() but _Teleport == false")
+    return false
+  EndIf
+  bool steal = _Stealitems && (MCM.bCreaturesSteal || FirstNPC.GetReference())
+  Debug.Trace("[Kudasai] CheckBlackout() Attempting to start Blackout Quest, steal = " + steal)
+  If (steal && YKRobbed.Start() || AcheronBlackout.Start())
+    Stop()
+    return true
+  EndIf
+  Debug.Trace("[Kudasai] CheckBlackout() Failed to start Blackout Quest")
+  return false
+EndFunction
 
 Event OnActorRescued(Actor akVictim)
   Debug.Trace("[Kudasai] Actor has been rescued: " + akVictim)

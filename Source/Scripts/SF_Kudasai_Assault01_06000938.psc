@@ -10,13 +10,10 @@ Debug.Trace("[Kudasai] Player Scene Start")
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_6
-Function Fragment_6()
+;BEGIN FRAGMENT Fragment_23
+Function Fragment_23()
 ;BEGIN CODE
-KudasaiAssault s = GetOwningQuest() as KudasaiAssault
-if !s.CanEnterNSFW
-KudasaiInternal.RobActor(s.PlayerRef, s.FirstNPC.GetActorRef())
-endif
+Player.GoToState("Exhausted")
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -32,12 +29,28 @@ Player.GoToState("Exhausted")
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_9
-Function Fragment_9()
+;BEGIN FRAGMENT Fragment_12
+Function Fragment_12()
 ;BEGIN CODE
-Debug.Trace("[Kudasai] Robbing Scene Stage Complete")
+; Post scene end, have actors move on their own again
+KudasaiAssault scr = GetOwningQuest() as KudasaiAssault
+if (scr.CheckBlackout())
+stop()
+return
+endif
+scr.SetStage(110)
+scr.EvaluatePackageGroup(0)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_6
+Function Fragment_6()
+;BEGIN CODE
 KudasaiAssault s = GetOwningQuest() as KudasaiAssault
-s.EndCycle(0, Game.GetPlayer())
+if !s.CanEnterNSFW
+KudasaiInternal.RobActor(s.PlayerRef, s.FirstNPC.GetActorRef())
+endif
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -53,21 +66,12 @@ EndIf
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_23
-Function Fragment_23()
+;BEGIN FRAGMENT Fragment_9
+Function Fragment_9()
 ;BEGIN CODE
-Player.GoToState("Exhausted")
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_12
-Function Fragment_12()
-;BEGIN CODE
-; Post scene end, have actors move on their own again
-KudasaiAssault scr = GetOwningQuest() as KudasaiAssault
-scr.SetStage(110)
-scr.EvaluatePackageGroup(0)
+Debug.Trace("[Kudasai] Robbing Scene Stage Complete")
+KudasaiAssault s = GetOwningQuest() as KudasaiAssault
+s.EndCycle(0, Game.GetPlayer())
 ;END CODE
 EndFunction
 ;END FRAGMENT

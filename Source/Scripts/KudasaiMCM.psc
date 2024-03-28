@@ -9,8 +9,13 @@ EndProperty
 ; ----------- General
 
 bool Property bStealArmor = true Auto Hidden
+bool Property bStealArmorFollower = true Auto Hidden
+
 int Property iMaxAssaults = 4 Auto Hidden
 float Property fRapistQuits = 35.0 Auto Hidden
+float Property fAssaultSteal = 25.0 Auto Hidden
+bool Property bCreaturesSteal = false Auto Hidden
+float Property fBlackoutAssault = 0.0 Auto Hidden
 
 bool Property bUseStruggle = false Auto Hidden
 bool Property bUseStruggleCrt = true Auto Hidden
@@ -102,10 +107,15 @@ Event OnPageReset(string page)
   EndIf
   If(page == "$YK_General")
     AddHeaderOption("$YK_Events")
-    AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)
+    AddToggleOptionST("postcmbtkeeparmor", "$YK_StealArmor", bStealArmor)  
+    AddToggleOptionST("stealarmorfollower", "$YK_StealArmorFollower", bStealArmorFollower)
+    AddEmptyOption()
     AddSliderOptionST("postcmbtmaxassaults", "$YK_MaxAssaults", iMaxAssaults, "{0}")
     AddSliderOptionST("postcmbtrapiststays", "$YK_RapistQuits", fRapistQuits, "{1}%")
-    AddEmptyOption()
+    AddSliderOptionST("assaultsteal", "$YK_AssaultSteal", fAssaultSteal, "{1}%")
+    AddToggleOptionST("creaturessteal", "$YK_CreaturesSteal", bCreaturesSteal)
+    AddSliderOptionST("assaultblackout", "$YK_AssaultBlackout", fBlackoutAssault, "{1}%")
+    AddHeaderOption("$YK_Struggles")
     AddToggleOptionST("strugglehuman", "$YK_StruggleHuman", bUseStruggle, getFlag(KudasaiInternal.StruggleThere()))
     AddToggleOptionST("strugglecreature", "$YK_Strugglecreature", bUseStruggleCrt, getFlag(KudasaiInternal.StruggleThere()))
     AddHeaderOption("$Achr_HunterPride")
@@ -137,7 +147,6 @@ Event OnPageReset(string page)
     SetCursorPosition(1)
     AddHeaderOption("$YK_AdultFrames")
     AddToggleOptionST("sexlabweight", "$YK_SexLabWeight", iFrameSL > 0, OPTION_FLAG_DISABLED)
-    ; IDEA: Toys?
     AddEmptyOption()
     AddHeaderOption("$YK_Tagging")
     int i = 0
@@ -171,6 +180,13 @@ Event OnSelectST()
   If(s[0] == "postcmbtkeeparmor")
     bStealArmor = !bStealArmor
     SetToggleOptionValueST(bStealArmor)
+  ElseIf(s[0] == "creaturessteal")
+    bCreaturesSteal = !bCreaturesSteal
+    SetToggleOptionValueST(bCreaturesSteal)
+  ElseIf(s[0] == "stealarmorfollower")
+    bStealArmorFollower = !bStealArmorFollower
+    SetToggleOptionValueST(bStealArmorFollower)
+
   ElseIf(s[0] == "hunterassault")
     String id = KudasaiMain.HunterAssaultID()
     bool hasOption = Acheron.HasOption(id)
@@ -257,6 +273,16 @@ Event OnSliderOpenST()
 		SetSliderDialogDefaultValue(35)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.5)
+	ElseIf(s[0] == "assaultsteal")
+		SetSliderDialogStartValue(fAssaultSteal)
+		SetSliderDialogDefaultValue(35)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.5)
+	ElseIf(s[0] == "assaultblackout")
+		SetSliderDialogStartValue(fBlackoutAssault)
+		SetSliderDialogDefaultValue(35)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.5)
 
   ; --------------- NSFW
 	ElseIf(s[0] == "scenetype")
@@ -277,6 +303,12 @@ Event OnSliderAcceptST(float value)
 	ElseIf(s[0] == "postcmbtrapiststays")
 		fRapistQuits = value
 		SetSliderOptionValueST(fRapistQuits, "{1}%")
+	ElseIf(s[0] == "assaultsteal")
+		fAssaultSteal = value
+		SetSliderOptionValueST(fAssaultSteal, "{1}%")
+	ElseIf(s[0] == "assaultblackout")
+		fBlackoutAssault = value
+		SetSliderOptionValueST(fBlackoutAssault, "{1}%")
 
   ; --------------- NSFW
 	ElseIf(s[0] == "scenetype")
@@ -356,10 +388,18 @@ Event OnHighlightST()
   ; --------------- Events
   ElseIf(s[0] == "postcmbtkeeparmor")
     SetInfoText("$YK_StealArmorHighlight")
+  ElseIf(s[0] == "creaturessteal")
+    SetInfoText("$YK_CreaturesStealHighlight")
+  ElseIf(s[0] == "stealarmorfollower")
+    SetInfoText("$YK_StealArmorFollowerHighlight")
   ElseIf(s[0] == "postcmbtmaxassaults")
     SetInfoText("$YK_MaxAssaultsHighlight")
   ElseIf(s[0] == "postcmbtrapiststays")
     SetInfoText("$YK_RapistQuitsHighlight")
+  ElseIf(s[0] == "assaultsteal")
+    SetInfoText("$YK_AssaultStealHighlight")
+  ElseIf(s[0] == "assaultblackout")
+    SetInfoText("$YK_AssaultBlackoutHighlight")
 
   ; --------------- NSFW
   ElseIf(s[0] == "sexlabweight")

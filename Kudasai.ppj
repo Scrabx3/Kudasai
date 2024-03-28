@@ -11,7 +11,7 @@
         <Variable Name="ThisProject" Value="."/>
         <Variable Name="Rel" Value=".\.release"/>
         <Variable Name="MO2" Value=".."/>
-        <Variable Name="Ver" Value="2.1.3"/>
+        <Variable Name="Ver" Value="2.2.1.0"/>
     </Variables>
     <Imports>
         <Import>@ThisProject\Source\Scripts</Import>
@@ -26,6 +26,7 @@
         <Import>@MO2\Mfg Fix\Source\Scripts</Import>
         <Import>@MO2\JContainers SE\source\scripts</Import>
         <Import>@MO2\ConsoleUtilSSE\Source\Scripts\</Import>
+        <Import>@MO2\Papyrus Extender\Source\Scripts\</Import>
         <!-- Adult Frameworks -->
         <Import>@MO2\SexLab Framework\Source\Scripts</Import>
         <Import>@MO2\OStim\Source\Scripts</Import>

@@ -31,7 +31,7 @@ EndFunction
 
 Function RobActor(Actor victim, Actor robber, bool animation = true) global
   Debug.Trace("[Kudasai] Robbing Victim = " + victim + "; Robber = " + robber)
-  If(animation)
+  If(animation && robber)
     If(victim.GetDistance(robber) > 128)
       robber.MoveTo(victim, 60 * Math.cos(victim.Z), 60 * Math.sin(victim.Z), 0.0, false)
       robber.SetAngle(victim.GetAngleX(), victim.GetAngleY(), (victim.GetAngleZ() + victim.GetHeadingAngle(robber) - 180))
