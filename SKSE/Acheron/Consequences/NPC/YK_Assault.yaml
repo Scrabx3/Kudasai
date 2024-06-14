@@ -5,6 +5,7 @@ Quest: 0x842|YameteKudasai.esp
 
 Priority: 30
 Cooldown: 0
+StartTeleport: false
 Teleport: false
 InCombat: false
 Hidden: false

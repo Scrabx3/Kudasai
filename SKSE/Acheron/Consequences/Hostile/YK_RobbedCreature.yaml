@@ -6,6 +6,7 @@ Quest: 0x89B|YameteKudasai.esp
 
 Priority: 1
 Cooldown: 0
+StartTeleport: true
 Teleport: true
 InCombat: true
 Hidden: false
