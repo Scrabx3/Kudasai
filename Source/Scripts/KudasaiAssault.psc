@@ -103,11 +103,37 @@ Event OnUpdate()
   SetStage(5)
 EndEvent
 
-Function RescueAll(Actor[] akRefs)
+Function RescueAll(Actor[] akRefs, bool pacify = true)
   int i = 0
   While(i < akRefs.Length)
     If(Acheron.IsDefeated(akRefs[i]))
-      Acheron.RescueActor(akRefs[i], true)
+      Acheron.RescueActor(akRefs[i], pacify)
+    Else
+      If(!Acheron.IsPacified(akRefs[i]))
+        Acheron.PacifyActor(akRefs[i])
+      EndIf
+    EndIf
+    i += 1
+  EndWhile
+EndFunction
+
+Function PacifyAllRefs(ReferenceAlias[] akRefs)
+  int i = 0
+  While(i < akRefs.Length)
+    Actor _actor = akRefs[i].GetReference() as Actor
+    If(!Acheron.IsPacified(_actor))
+      Acheron.PacifyActor(_actor)
+    EndIf
+    i += 1
+  EndWhile
+EndFunction
+
+Function ReleaseAllRefs(ReferenceAlias[] akRefs)
+  int i = 0
+  While(i < akRefs.Length)
+    Actor _actor = akRefs[i].GetReference() as Actor
+    If(Acheron.IsPacified(_actor))
+      Acheron.ReleaseActor(_actor)
     EndIf
     i += 1
   EndWhile
