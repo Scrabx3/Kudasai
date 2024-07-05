@@ -1,9 +1,10 @@
-Version: 1
+Version: 2
 
-Name: (YK) Robbed
+Name: (YK) Robbed (NPC)
+Description: When defeated, go unconcious and lose your items.
 Quest: 0x89B|YameteKudasai.esp
 
-Priority: 30
+Priority: 1
 Cooldown: 0
 StartTeleport: true
 Teleport: true
@@ -11,5 +12,6 @@ InCombat: true
 Hidden: false
 
 Conditions:
-  RaceType:
-    - Human
+  Assailant:
+    RaceType:
+      - Human

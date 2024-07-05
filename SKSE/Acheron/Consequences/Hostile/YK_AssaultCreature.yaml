@@ -1,7 +1,7 @@
 Version: 2
 
-Name: (YK) Assault (NPC)
-Description: When defeated, you may be taken advantage of.
+Name: (YK) Assault (Creatures)
+Description: When defeated, creatures may take advantage of you.
 Quest: 0x872|YameteKudasai.esp
 
 Priority: 1
@@ -14,4 +14,4 @@ Hidden: false
 Conditions:
   Assailant:
     RaceType:
-      - Human
+      - Human: false

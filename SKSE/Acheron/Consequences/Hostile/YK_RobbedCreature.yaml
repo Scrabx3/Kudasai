@@ -1,6 +1,6 @@
 Version: 2
 
-Name: (YK) Robbed by Creature
+Name: (YK) Robbed (Creatures)
 Description: When defeated, go unconcious and lose your items.
 Quest: 0x89B|YameteKudasai.esp
 
@@ -12,5 +12,6 @@ InCombat: true
 Hidden: false
 
 Conditions:
-  RaceType:
-    - Human: false
+  Assailant:
+    RaceType:
+      - Human: false
