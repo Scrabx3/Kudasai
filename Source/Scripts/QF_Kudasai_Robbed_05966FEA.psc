@@ -58,7 +58,7 @@ Else
 EndIf
 Alias_NewRobber.ForceRefTo(newRobber)
 
-KudasaiInternal.RobActor(Game.GetPlayer(), newRobber as Actor, false)
+KudasaiInternal.RobActor(Game.GetPlayer(), newRobber, false)
 If (MCM.bStealArmorFollower)
   Actor[] followers = Acheron.GetFollowers()
   int i = 0

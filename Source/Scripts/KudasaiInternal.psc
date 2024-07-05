@@ -29,9 +29,9 @@ bool Function IsRuntimeGenerated(Form akForm) global
   return akForm.GetFormID() <= -16777216  ; 0xFF000000 as signed integer in decimal
 EndFunction
 
-Function RobActor(Actor victim, Actor robber, bool animation = true) global
+Function RobActor(Actor victim, ObjectReference robber, bool animation = true) global
   Debug.Trace("[Kudasai] Robbing Victim = " + victim + "; Robber = " + robber)
-  If(animation && robber)
+  If(animation && robber as Actor)
     If(victim.GetDistance(robber) > 128)
       robber.MoveTo(victim, 60 * Math.cos(victim.Z), 60 * Math.sin(victim.Z), 0.0, false)
       robber.SetAngle(victim.GetAngleX(), victim.GetAngleY(), (victim.GetAngleZ() + victim.GetHeadingAngle(robber) - 180))
