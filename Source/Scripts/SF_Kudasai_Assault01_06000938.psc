@@ -49,6 +49,7 @@ Function Fragment_6()
 ;BEGIN CODE
 KudasaiAssault s = GetOwningQuest() as KudasaiAssault
 if !s.CanEnterNSFW
+Debug.Trace("[Kudasai] Adult content is disabled, robbing player instead..")
 KudasaiInternal.RobActor(s.PlayerRef, s.FirstNPC.GetActorRef())
 endif
 ;END CODE
