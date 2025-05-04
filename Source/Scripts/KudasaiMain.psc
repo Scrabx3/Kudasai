@@ -62,14 +62,7 @@ Event OnKeyDown(int keyCode)
       return
     EndIf
 	EndIf
-  If(keyCode == MCM.iSurrenderKey)
-    Debug.Trace("[Kudasai] Key press for surrender")
-    If(MCM.iSurrenderKeyM == -1 || Input.IsKeyPressed(MCM.iSurrenderKeyM))
-      If (!SurrenderQuest.Start())
-        SurrenderQFailure.Show()
-      EndIf
-    EndIf
-  ElseIf(keyCode == MCM.iAssaultKey)
+  If(keyCode == MCM.iAssaultKey)
     Debug.Trace("[Kudasai] Key press for assault")
     If(MCM.iAssaultKeyM == -1 || Input.IsKeyPressed(MCM.iAssaultKeyM))
       CreateAssault()

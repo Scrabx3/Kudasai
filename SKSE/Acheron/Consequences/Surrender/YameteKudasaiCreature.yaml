@@ -1,0 +1,17 @@
+Version: 2
+
+Name: Yamete Kudasai (Creatures)
+Description: Surrendering may result in being taken advantage of (multiple times).
+Quest: 0x8D0|YameteKudasai.esp
+
+Priority: 1
+Cooldown: 0
+StartTeleport: false
+Teleport: false
+InCombat: true
+Hidden: false
+
+Conditions:
+  Assailant:
+    RaceType:
+      - Human: false
