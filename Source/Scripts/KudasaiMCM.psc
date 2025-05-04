@@ -32,7 +32,7 @@ int Property iAssaultKeyM = -1 Auto Hidden
 
 bool Property FrameCreature Hidden
   bool Function Get()
-    return iFrameSL > 0 && KudasaiAnimationSL.AllowCreatures()
+    return iFrameSL > 0 && KudasaiAnimation.AllowCreatures()
   EndFunction
 EndProperty
 
@@ -141,9 +141,7 @@ Event OnPageReset(string page)
       n += 1
     EndWhile
     SetCursorPosition(1)
-    AddHeaderOption("$YK_AdultFrames")
     AddToggleOptionST("sexlabweight", "$YK_SexLabWeight", iFrameSL > 0, OPTION_FLAG_DISABLED)
-    AddEmptyOption()
     AddHeaderOption("$YK_Tagging")
     int i = 0
     While(i < SLTags.Length)
@@ -153,14 +151,14 @@ Event OnPageReset(string page)
     AddTextOptionST("sltagsreadme", "", "$YK_AboutTags", getFlag(iFrameSL != -1))
 
   ElseIf(page == "$YK_Race")
-    If(iFrameSL == -1 || !KudasaiAnimationSL.AllowCreatures())
+    If(iFrameSL == -1 || !KudasaiAnimation.AllowCreatures())
       AddTextOption("$YK_RaceDisallowed", "", OPTION_FLAG_DISABLED)
       return
     EndIf
     SetCursorFillMode(LEFT_TO_RIGHT)
     AddHeaderOption("")
     AddTextOptionST("enablecreaturesall", "$YK_EnableAll", "")
-    String[] keys = KudasaiAnimationSL.GetAllRaceKeys()
+    String[] keys = KudasaiAnimation.GetAllRaceKeys()
     int i = 0
     While(i < keys.Length)
       AddToggleOptionST("racekey_" + keys[i], keys[i], sRaceKeys.Find(keys[i]) > -1)
@@ -243,7 +241,7 @@ Event OnSelectST()
 
   ; --------------- Race
   ElseIf(s[0] == "enablecreaturesall")
-    sRaceKeys = PapyrusUtil.RemoveString(KudasaiAnimationSL.GetAllRaceKeys(), "")
+    sRaceKeys = PapyrusUtil.RemoveString(KudasaiAnimation.GetAllRaceKeys(), "")
     ForcePageReset()
   ElseIf(s[0] == "racekey")
     bool includes = sRaceKeys.Find(s[1]) > -1

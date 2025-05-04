@@ -188,7 +188,6 @@ Event OnInit()
   RegisterForSingleUpdate(0.5) ; cant start Scenes in OnInit..
   RegisterForModEvent("HookAnimationEnd_KSurrender", "SLSceneEnd")
   RegisterForModEvent("HookAnimationEnd_KSurrenderFollower", "SLSceneFollower")
-  RegisterForModEvent("ostim_end", "OStimCreatureEnd")
 EndEvent
 Event OnUpdate()
   SurrenderScene.Start()
@@ -479,7 +478,7 @@ bool Function MakeScene(Actor akVictim, Actor akAggressor, Actor[] akPartners, S
 EndFunction
 
 Event SLSceneEnd(int tid, bool hasPlayer)  
-  ToBleedout(KudasaiAnimationSL.GetPositions(tid))
+  ToBleedout(KudasaiAnimation.GetPositions(tid))
   If(!tied_up)
     SetStage(100)
   Else
@@ -487,21 +486,7 @@ Event SLSceneEnd(int tid, bool hasPlayer)
   EndIf
 EndEvent
 Event SLSceneFollower(int tid, bool hasPlayer)
-  ToBleedout(KudasaiAnimationSL.GetPositions(tid))
-EndEvent
-Event OStimEnd(string eventName, string strArg, float numArg, Form sender)
-  If(numArg <= -2)
-    return
-  EndIf
-  Actor[] p = KudasaiAnimationOStim.GetPositions(numArg as int)
-  ToBleedout(p)
-  If(p.Find(scene_target))
-    If(!tied_up)
-      SetStage(100)
-    Else
-      SetStage(95)
-    EndIf
-  EndIf
+  ToBleedout(KudasaiAnimation.GetPositions(tid))
 EndEvent
 
 Function ToBleedout(Actor[] akPositions)

@@ -21,9 +21,7 @@ Function Maintenance()
 
   If(Game.GetModByName("SexLab.esm") == 255)
     MCM.iFrameSL = -1
-    If(!KudasaiAnimation.OStimThere())
-      FrameMissing.Show()
-    EndIf
+    FrameMissing.Show()
   Else
     MCM.iFrameSL = 1
   EndIf
@@ -136,7 +134,6 @@ Event OnHunterPrideSelect(int aiOptionID, Actor akTarget)
       return
     EndIf
     akTarget.SendAssaultAlarm()
-    RegisterForModEvent("ostim_end", "PostSceneOStim")
     RegisterForModEvent("HookAnimationEnd_KudasaiHunterAssault", "PostSceneSL")
   ElseIf(aiOptionID == Acheron.GetOptionID(HunterStripID()))
     Acheron.StripActor(akTarget)
@@ -144,22 +141,13 @@ Event OnHunterPrideSelect(int aiOptionID, Actor akTarget)
 EndEvent
 
 Event PostSceneSL(int tid, bool hasPlayer)
-  Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
-  HandlePostScene(positions)
-EndEvent
-Event PostSceneOStim(string eventName, string strArg, float numArg, Form sender)
-  Actor[] positions = KudasaiAnimationOStim.GetPositions(numArg as int)
-  If(positions.Find(Game.GetPlayer()) > -1)
-    HandlePostScene(positions)
-  EndIf
-EndEvent
-Function HandlePostScene(Actor[] akPositions)
+  Actor[] positions = KudasaiAnimation.GetPositions(tid)
   Utility.Wait(0.3)
   int i = 0
-  While(i < akPositions.Length)
-    If(Acheron.IsDefeated(akPositions[i]))
-      Debug.SendAnimationEvent(akPositions[i], "bleedoutStart")
+  While(i < positions.Length)
+    If(Acheron.IsDefeated(positions[i]))
+      Debug.SendAnimationEvent(positions[i], "bleedoutStart")
     EndIf
     i += 1
   EndWhile
-EndFunction
+EndEvent

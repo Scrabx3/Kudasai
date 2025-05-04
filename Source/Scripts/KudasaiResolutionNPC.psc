@@ -40,7 +40,6 @@ Function Init()
     n += 1
   EndWhile
   RegisterForSingleUpdate(2)
-  RegisterForModEvent("ostim_end", "PostSceneOStim")
   RegisterForModEvent("HookAnimationEnd_Kudasai_rNPC", "PostSceneSL")
 EndFunction
 
@@ -138,10 +137,7 @@ Event OnUpdate()
 EndEvent
 
 Event PostSceneSL(int tid, bool hasPlayer)
-  HandlePostScene(KudasaiAnimationSL.GetPositions(tid))
-EndEvent
-Event PostSceneOStim(string eventName, string strArg, float numArg, Form sender)
-  HandlePostScene(KudasaiAnimationOStim.GetPositions(numArg as int))
+  HandlePostScene(KudasaiAnimation.GetPositions(tid))
 EndEvent
 
 Function HandlePostScene(Actor[] akOldPositions, bool abLooping = false)

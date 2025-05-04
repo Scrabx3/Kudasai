@@ -207,7 +207,6 @@ Function EnterCycle(Actor akVictim)
   int id = GetVictimID(akVictim)
   Debug.Trace("[Kudasai] Creating cycle for victim " + akVictim + "(" + id + ")")
   RegisterForModEvent("HookAnimationEnd_" + HookID + id, "PostAssaultSL_" + id)
-  RegisterForModEvent("ostim_end", "PostAssaultOStim")
   NewCycle(akVictim, id, PapyrusUtil.ActorArray(0))
 EndFunction
 
@@ -223,27 +222,11 @@ Event PostAssaultSL_2(int tid, bool hasPlayer)
   PostSceneSL(tid, 2)
 EndEvent
 Function PostSceneSL(int tid, int aiVicID)
-  Actor[] positions = KudasaiAnimationSL.GetPositions(tid)
-  Actor victim = KudasaiAnimationSL.GetVictim(tid)
+  Actor[] positions = KudasaiAnimation.GetPositions(tid)
+  Actor victim = KudasaiAnimation.GetVictim(tid)
   Utility.Wait(0.5)
   NewCycle(victim, aiVicID, positions)
 EndFunction
-Event PostAssaultOStim(string asEventName, string asStringArg, float afNumArg, form akSender)
-  Actor[] positions = KudasaiAnimationOStim.GetPositions(afNumArg as int)
-  Actor victim
-  int id
-  If(positions.find(Game.GetPlayer()) > -1)
-    victim = Game.GetPlayer()
-  ElseIf(positions.find(RefAlly1.GetActorReference()) > -1)
-    victim = RefAlly1.GetReference() as Actor
-  ElseIf(positions.find(RefAlly2.GetActorReference()) > -1)
-    victim = RefAlly2.GetReference() as Actor
-  EndIf
-  If(!victim)
-    return
-  EndIf
-  NewCycle(victim, id, positions)
-EndEvent
 
 Function NewCycle(Actor akVictim, int aiVicID, Actor[] akOldPosition)
   Debug.Trace("[Kudasai] Attempting new cycle for victim " + akVictim + "(" + aiVicID + ")")
