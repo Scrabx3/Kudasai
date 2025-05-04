@@ -6,3 +6,4 @@
 *.dll
 ChangeLog.txt
 meta.ini
+*.pex
